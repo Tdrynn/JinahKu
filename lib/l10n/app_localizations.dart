@@ -95,11 +95,11 @@ abstract class AppLocalizations {
     Locale('id')
   ];
 
-  /// No description provided for @hello.
+  /// No description provided for @halo.
   ///
   /// In en, this message translates to:
   /// **'Hello 👋'**
-  String get hello;
+  String get halo;
 
   /// No description provided for @keuangan.
   ///
@@ -107,11 +107,89 @@ abstract class AppLocalizations {
   /// **'Manage your finances wisely'**
   String get keuangan;
 
-  /// No description provided for @history.
+  /// No description provided for @saldo.
+  ///
+  /// In en, this message translates to:
+  /// **'Current balance'**
+  String get saldo;
+
+  /// No description provided for @ringkasan.
+  ///
+  /// In en, this message translates to:
+  /// **'This month\'s summary'**
+  String get ringkasan;
+
+  /// No description provided for @pemasukan.
+  ///
+  /// In en, this message translates to:
+  /// **'incoming'**
+  String get pemasukan;
+
+  /// No description provided for @pengeluaran.
+  ///
+  /// In en, this message translates to:
+  /// **'expenditure'**
+  String get pengeluaran;
+
+  /// No description provided for @beranda.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get beranda;
+
+  /// No description provided for @transaksi.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction'**
+  String get transaksi;
+
+  /// No description provided for @riwayat.
   ///
   /// In en, this message translates to:
   /// **'History'**
-  String get history;
+  String get riwayat;
+
+  /// No description provided for @semua.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get semua;
+
+  /// No description provided for @makanan.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get makanan;
+
+  /// No description provided for @kategori.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get kategori;
+
+  /// No description provided for @tanggal.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get tanggal;
+
+  /// No description provided for @namaT.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Name (Optional)'**
+  String get namaT;
+
+  /// No description provided for @catatan.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (Optional)'**
+  String get catatan;
+
+  /// No description provided for @simpan.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get simpan;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

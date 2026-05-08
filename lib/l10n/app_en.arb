@@ -1,5 +1,19 @@
 {
-    "hello": "Hello 👋",
+    "@@locale": "en",
+    "halo": "Hello 👋",
     "keuangan": "Manage your finances wisely",
-    "history": "History"
+    "saldo": "Current balance",
+    "ringkasan": "This month's summary",
+    "pemasukan": "incoming",
+    "pengeluaran": "expenditure",
+    "beranda": "Home",
+    "transaksi": "Transaction",
+    "riwayat": "History",
+    "semua": "All",
+    "makanan": "Food",
+    "kategori": "Category",
+    "tanggal": "Date",
+    "namaT": "Transaction Name (Optional)",
+    "catatan": "Notes (Optional)",
+    "simpan": "Save"
 }
