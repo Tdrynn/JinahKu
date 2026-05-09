@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
-import 'package:jinahku/pages/homepage.dart';
 import 'package:jinahku/theme/app_theme.dart';
+import 'package:jinahku/pages/homepage.dart';
+import 'package:jinahku/pages/firstload.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,10 +57,10 @@ class _MyAppState extends State<MyApp> {
       darkTheme: AppTheme.darkTheme,
       themeMode: _themeMode,
 
-      home: homepage(
-        isDark: isDark,
+      home: firstload(
+        // isDark: isDark,
         isEnglish: isEnglish,
-        onToggleTheme: toggleTheme,
+        // onToggleTheme: toggleTheme,
         onChangeLanguage: changeLanguage,
       ),
     );

@@ -55,4 +55,49 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get simpan => 'Simpan';
+
+  @override
+  String get masukan => 'Masukan Pemasukan Bulanan';
+
+  @override
+  String get total => 'Masukan total uang yang kamu terima bulan ini';
+
+  @override
+  String get namaP => 'Nama Pengguna';
+
+  @override
+  String get kamu => 'Masukan nama kamu';
+
+  @override
+  String get jumlah => 'Jumlah Pemasukan';
+
+  @override
+  String get sumber => 'Sumber Pemasukan';
+
+  @override
+  String get pilih => 'Pilih sumber pemasukan';
+
+  @override
+  String get lanjutkan => 'Lanjutkan';
+
+  @override
+  String get konfirmasi => 'Konfirmasi Pemasukan';
+
+  @override
+  String get pastikan => 'Pastikan detail sudah benar';
+
+  @override
+  String get gaji => 'Gaji';
+
+  @override
+  String get freelance => 'Freelance';
+
+  @override
+  String get bisnis => 'Bisnis';
+
+  @override
+  String get investasi => 'Investasi';
+
+  @override
+  String get lainnya => 'Lainnya';
 }

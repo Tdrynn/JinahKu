@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'package:jinahku/widgets/navbar.dart';
 
-class homepage extends StatelessWidget {
+class homepage extends StatefulWidget {
   final bool isDark;
   final bool isEnglish;
   final Function(bool) onToggleTheme;
@@ -16,10 +16,13 @@ class homepage extends StatelessWidget {
   });
 
   @override
+  State<homepage> createState() => _homepageState();
+}
+
+class _homepageState extends State<homepage> {
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
-    print(Theme.of(context).brightness);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -44,15 +47,15 @@ class homepage extends StatelessWidget {
               ),
             ),
             SwitchListTile(
-              title: Text(isDark ? 'Dark Mode' : 'Light Mode'),
-              value: isDark,
-              onChanged: onToggleTheme,
+              title: Text(widget.isDark ? 'Dark Mode' : 'Light Mode'),
+              value: widget.isDark,
+              onChanged: widget.onToggleTheme,
             ),
             SwitchListTile(
-              title: Text(isEnglish ? 'English' : 'Indonesia'),
-              value: isEnglish,
+              title: Text(widget.isEnglish ? 'English' : 'Indonesia'),
+              value: widget.isEnglish,
               onChanged: (value) {
-                onChangeLanguage(value ? 'en' : 'id');
+                widget.onChangeLanguage(value ? 'en' : 'id');
               },
             ),
           ],

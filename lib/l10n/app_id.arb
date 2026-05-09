@@ -15,5 +15,20 @@
     "tanggal": "Tanggal",
     "namaT": "Nama Transaksi (Opsional)",
     "catatan": "Catatan (Opsional)",
-    "simpan": "Simpan"
+    "simpan": "Simpan",
+    "masukan": "Masukan Pemasukan Bulanan",
+    "total": "Masukan total uang yang kamu terima bulan ini",
+    "namaP": "Nama Pengguna",
+    "kamu": "Masukan nama kamu",
+    "jumlah": "Jumlah Pemasukan",
+    "sumber": "Sumber Pemasukan",
+    "pilih": "Pilih sumber pemasukan",
+    "lanjutkan": "Lanjutkan",
+    "konfirmasi": "Konfirmasi Pemasukan",
+    "pastikan": "Pastikan detail sudah benar",
+    "gaji": "Gaji",
+    "freelance": "Freelance",
+    "bisnis": "Bisnis",
+    "investasi": "Investasi",
+    "lainnya": "Lainnya"
 }

@@ -15,5 +15,20 @@
     "tanggal": "Date",
     "namaT": "Transaction Name (Optional)",
     "catatan": "Notes (Optional)",
-    "simpan": "Save"
+    "simpan": "Save",
+    "masukan": "Enter your monthly income",
+    "total": "Enter the total amount of money you receive per month.",
+    "namaP": "User Name",
+    "kamu": "Enter your user name",
+    "jumlah": "Total Income",
+    "sumber": "Source of Income",
+    "pilih": "Select a source of income",
+    "lanjutkan": "Continue",
+    "konfirmasi": "Entry Confirmation",
+    "pastikan": "Make sure the details are correct",
+    "gaji": "Salary",
+    "freelance": "Freelance",
+    "bisnis": "Business",
+    "investasi": "Investment",
+    "lainnya": "Other"
 }

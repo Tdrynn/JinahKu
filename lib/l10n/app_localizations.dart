@@ -190,6 +190,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get simpan;
+
+  /// No description provided for @masukan.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your monthly income'**
+  String get masukan;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the total amount of money you receive per month.'**
+  String get total;
+
+  /// No description provided for @namaP.
+  ///
+  /// In en, this message translates to:
+  /// **'User Name'**
+  String get namaP;
+
+  /// No description provided for @kamu.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your user name'**
+  String get kamu;
+
+  /// No description provided for @jumlah.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Income'**
+  String get jumlah;
+
+  /// No description provided for @sumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Source of Income'**
+  String get sumber;
+
+  /// No description provided for @pilih.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a source of income'**
+  String get pilih;
+
+  /// No description provided for @lanjutkan.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get lanjutkan;
+
+  /// No description provided for @konfirmasi.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry Confirmation'**
+  String get konfirmasi;
+
+  /// No description provided for @pastikan.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure the details are correct'**
+  String get pastikan;
+
+  /// No description provided for @gaji.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get gaji;
+
+  /// No description provided for @freelance.
+  ///
+  /// In en, this message translates to:
+  /// **'Freelance'**
+  String get freelance;
+
+  /// No description provided for @bisnis.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get bisnis;
+
+  /// No description provided for @investasi.
+  ///
+  /// In en, this message translates to:
+  /// **'Investment'**
+  String get investasi;
+
+  /// No description provided for @lainnya.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get lainnya;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -55,4 +55,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get simpan => 'Save';
+
+  @override
+  String get masukan => 'Enter your monthly income';
+
+  @override
+  String get total => 'Enter the total amount of money you receive per month.';
+
+  @override
+  String get namaP => 'User Name';
+
+  @override
+  String get kamu => 'Enter your user name';
+
+  @override
+  String get jumlah => 'Total Income';
+
+  @override
+  String get sumber => 'Source of Income';
+
+  @override
+  String get pilih => 'Select a source of income';
+
+  @override
+  String get lanjutkan => 'Continue';
+
+  @override
+  String get konfirmasi => 'Entry Confirmation';
+
+  @override
+  String get pastikan => 'Make sure the details are correct';
+
+  @override
+  String get gaji => 'Salary';
+
+  @override
+  String get freelance => 'Freelance';
+
+  @override
+  String get bisnis => 'Business';
+
+  @override
+  String get investasi => 'Investment';
+
+  @override
+  String get lainnya => 'Other';
 }
