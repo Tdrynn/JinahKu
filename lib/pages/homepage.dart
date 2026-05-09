@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+import 'package:jinahku/l10n/app_localizations.dart';
+import 'package:jinahku/widgets/navbar.dart';
+
+class homepage extends StatefulWidget {
+  final bool isDark;
+  final bool isEnglish;
+  final Function(bool) onToggleTheme;
+  final Function(String) onChangeLanguage;
+  const homepage({
+    super.key,
+    required this.isDark,
+    required this.isEnglish,
+    required this.onToggleTheme,
+    required this.onChangeLanguage,
+  });
+
+  @override
+  State<homepage> createState() => _homepageState();
+}
+
+class _homepageState extends State<homepage> {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              l10n.halo,
+
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              l10n.keuangan,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge?.color,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SwitchListTile(
+              title: Text(widget.isDark ? 'Dark Mode' : 'Light Mode'),
+              value: widget.isDark,
+              onChanged: widget.onToggleTheme,
+            ),
+            SwitchListTile(
+              title: Text(widget.isEnglish ? 'English' : 'Indonesia'),
+              value: widget.isEnglish,
+              onChanged: (value) {
+                widget.onChangeLanguage(value ? 'en' : 'id');
+              },
+            ),
+          ],
+        ),
+      ),
+
+      // ================= NAVBAR =================
+      bottomNavigationBar: navbar(
+        selectedIndex: 0,
+
+        isDark: Theme.of(context).brightness == Brightness.dark,
+
+        onItemTapped: (index) {
+          print(index);
+        },
+      ),
+    );
+  }
+}
