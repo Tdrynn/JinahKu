@@ -26,9 +26,14 @@
     "lanjutkan": "Continue",
     "konfirmasi": "Entry Confirmation",
     "pastikan": "Make sure the details are correct",
-    "gaji": "Salary",
+    "edit": "Edit Profile",
+    "namaWajib": "Username is required",
+    "pemasukanWajib": "Income is required",
+    "tanggalWajib": "Date is required",
+
+    "salary": "Salary",
+    "allowance": "Allowance",
     "freelance": "Freelance",
-    "bisnis": "Business",
-    "investasi": "Investment",
-    "lainnya": "Other"
+    "business": "Business",
+    "other": "Other"
 }

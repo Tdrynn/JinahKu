@@ -100,4 +100,16 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get lainnya => 'Lainnya';
+
+  @override
+  String get edit => 'Edit Profile';
+
+  @override
+  String get namaWajib => 'Nama Pengguna wajib diisi';
+
+  @override
+  String get pemasukanWajib => 'Pemasukan wajib diisi';
+
+  @override
+  String get tanggalWajib => 'Tanggal wajib diisi';
 }

@@ -1,36 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:jinahku/l10n/app_localizations.dart';
-import 'package:jinahku/theme/app_theme.dart';
 import 'package:jinahku/pages/homepage.dart';
-import 'package:jinahku/pages/firstload.dart';
+import 'package:jinahku/pages/onboarding/onboardingPage.dart';
+import 'package:jinahku/database/db_helper.dart';
+import 'package:jinahku/l10n/app_localizations.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final isFirstTime = await DBHelper.isFirstTime();
+
+  runApp(MyApp(isFirstTime: isFirstTime));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final bool isFirstTime;
+
+  const MyApp({super.key, required this.isFirstTime});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  ThemeMode themeMode = ThemeMode.system;
+  Locale? locale;
 
-  Locale _locale = const Locale('en');
-  bool get isEnglish => _locale.languageCode == 'en';
-  void changeLanguage(String code) {
+  void toggleTheme(bool isDark) {
     setState(() {
-      _locale = Locale(code);
+      themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
-  ThemeMode _themeMode = ThemeMode.dark;
-  bool get isDark => _themeMode == ThemeMode.dark;
-  void toggleTheme(bool isDark) {
+  void changeLanguage(String lang) {
     setState(() {
-      _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+      locale = Locale(lang);
     });
   }
 
@@ -38,31 +41,35 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'JinahKu',
 
-      locale: _locale,
-      supportedLocales: [
+      // ================= THEME =================
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeMode,
+
+      // ================= L10N =================
+      locale: locale,
+      supportedLocales: const [
         Locale('en'),
-        Locale('id')
+        Locale('id'),
       ],
+      localizationsDelegates:
+          AppLocalizations.localizationsDelegates,
 
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: _themeMode,
-
-      home: firstload(
-        // isDark: isDark,
-        isEnglish: isEnglish,
-        // onToggleTheme: toggleTheme,
-        onChangeLanguage: changeLanguage,
-      ),
+      // ================= ROUTING =================
+      home: widget.isFirstTime
+          ? onboardingPage(
+              isDark: themeMode == ThemeMode.dark,
+              isEnglish: locale?.languageCode == 'en',
+              onToggleTheme: toggleTheme,
+              onChangeLanguage: changeLanguage,
+            )
+          : homepage(
+              isDark: themeMode == ThemeMode.dark,
+              isEnglish: locale?.languageCode == 'en',
+              onToggleTheme: toggleTheme,
+              onChangeLanguage: changeLanguage,
+            ),
     );
   }
 }

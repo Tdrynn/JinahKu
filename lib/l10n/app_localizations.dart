@@ -280,6 +280,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get lainnya;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get edit;
+
+  /// No description provided for @namaWajib.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is required'**
+  String get namaWajib;
+
+  /// No description provided for @pemasukanWajib.
+  ///
+  /// In en, this message translates to:
+  /// **'Income is required'**
+  String get pemasukanWajib;
+
+  /// No description provided for @tanggalWajib.
+  ///
+  /// In en, this message translates to:
+  /// **'Date is required'**
+  String get tanggalWajib;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

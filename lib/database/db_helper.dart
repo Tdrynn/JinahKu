@@ -1,3 +1,4 @@
+import 'package:jinahku/pages/onboarding/onboardingPage.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -17,26 +18,104 @@ class DBHelper {
     return await openDatabase(
       path,
       version: 1,
-      onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            age INTEGER
-          )
-        ''');
-      },
+      onCreate: _createDB,
     );
   }
 
-  static Future<void> insertUser(String name, int age) async {
-    final db = await database;
+  static Future<void> _createDB(Database db, int version) async {
+    await db.execute('PRAGMA foreign_keys = ON');
 
-    await db.insert('users', {'name': name, 'age': age});
+    await db.execute('''
+      CREATE TABLE income_source (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      code TEXT NOT NULL UNIQUE
+      )
+      '''
+    );
+
+    await db.execute('''
+      CREATE TABLE user_profile (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        monthly_income REAL NOT NULL,
+        income_date TEXT NOT NULL,
+        avatar TEXT NOT NULL,
+        income_source_id INTEGER NOT NULL,
+        FOREIGN KEY (income_source_id) REFERENCES income_source(id)
+      )
+      '''
+    );
+
+    await db.insert('income_source', {'code': 'salary'});
+    await db.insert('income_source', {'code': 'allowance'});
+    await db.insert('income_source', {'code': 'freelance'});
+    await db.insert('income_source', {'code': 'business'});
+    await db.insert('income_source', {'code': 'other'});
   }
 
-  static Future<List<Map<String, dynamic>>> getUsers() async {
+  static Future<List<Map<String, dynamic>>> getIncomeSource() async {
     final db = await database;
-    return await db.query('users');
+    return await db.query('income_source');
+  }
+
+  static Future<int> insertUser({
+    required String username,
+    required double monthlyIncome,
+    required DateTime incomeDate,
+    required String avatar,
+    required int incomeSourceId,
+  }) async {
+    final db = await database;
+
+    return await db.insert('user_profile', {
+      'username': username,
+      'monthlyIncome': monthlyIncome,
+      'income_date': incomeDate.toIso8601String(),
+      'avatar': avatar,
+      'income_source_id': incomeSourceId,
+    });
+  }
+
+  static Future<bool> isFirstTime() async {
+    final db = await database;
+    final result = await db.query('user_profile');
+
+    return result.isEmpty;
+  }
+
+  static Future<List<Map<String, dynamic>>> getUserProfile() async {
+    final db = await database;
+
+    return await db.rawQuery('''
+      SELECT
+        user_profile.id,
+        user_profile.username,
+        user_profile.monthly_income,
+        user_profile.income_date,
+        user_profile.avatar,
+        income_source.name as income_source
+      FROM user_profile
+      JOIN income_source
+      ON user_profile.income_source_id = income_source.id
+    '''
+    );
+  }
+
+  static Future<Map<String, dynamic>?> getUser() async {
+    final db = await database;
+
+    final result = await db.rawQuery('''
+      SELECT
+        user_profile.username,
+        user_profile.monthly_incomevoid
+      FROM user_profile
+      LIMIT 1
+      '''
+    );
+
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
   }
 }
