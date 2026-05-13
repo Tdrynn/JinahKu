@@ -1,0 +1,333 @@
+import 'package:flutter/material.dart';
+import 'package:jinahku/database/db_helper.dart';
+import 'package:jinahku/l10n/app_localizations.dart';
+import 'package:jinahku/models/modelUser.dart';
+
+class page2 extends StatefulWidget {
+  final OnboardingData data;
+  final VoidCallback onNext;
+
+  const page2({super.key, required this.data, required this.onNext});
+
+  @override
+  State<page2> createState() => _page2State();
+}
+
+class _page2State extends State<page2> {
+  List<Map<String, dynamic>> sources = [];
+
+  int? selectedId;
+  DateTime? selectedDate;
+
+  final incomeController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    loadSources();
+  }
+
+  void loadSources() async {
+    final data = await DBHelper.getIncomeSource();
+
+    setState(() {
+      sources = data;
+    });
+  }
+
+  Future<void> pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF071739),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              /// HERO IMAGE
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Image.asset(
+                  'assets/images/BG_PG2.webp',
+                  height: 350,
+                  fit: BoxFit.contain,
+                ),
+              ),
+        
+              /// FORM CARD
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF1B263B),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(28),
+                    topRight: Radius.circular(28),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// JUMLAH PEMASUKAN
+                    const Text(
+                      "Jumlah Pemasukan",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+        
+                    const SizedBox(height: 6),
+        
+                    const Text(
+                      "Angka ini akan digunakan sebagai pendapatan bulanan",
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+        
+                    const SizedBox(height: 20),
+        
+                    /// INPUT JUMLAH
+                    TextFormField(
+                      controller: incomeController,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Nama wajib diisi';
+                        }
+        
+                        return null;
+                      },
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      decoration: InputDecoration(
+                        prefixText: "Rp. ",
+                        prefixStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        hintText: "0",
+                        hintStyle: const TextStyle(color: Colors.white54),
+                        filled: true,
+                        fillColor: const Color(0xFF243B55),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide(color: Colors.blue.shade400),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: const BorderSide(
+                            color: Colors.blue,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+        
+                    const SizedBox(height: 28),
+        
+                    /// DROPDOWN TITLE
+                    const Text(
+                      "Sumber pemasukan",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+        
+                    const SizedBox(height: 14),
+        
+                    /// DROPDOWN
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF243B55),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.blue.shade400),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButtonFormField<int>(
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Pilih sumber pemasukan';
+                            }
+        
+                            return null;
+                          },
+                          dropdownColor: const Color(0xFF243B55),
+                          value: selectedId,
+                          hint: Text(
+                            l10n.pilih,
+                            style: const TextStyle(color: Colors.white54),
+                          ),
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.white,
+                          ),
+                          isExpanded: true,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                          items: sources.map((item) {
+                            return DropdownMenuItem<int>(
+                              value: item['id'] as int,
+                              child: Text(item['name'] ?? item['code']),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedId = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+        
+                    const SizedBox(height: 28),
+        
+                    /// TANGGAL
+                    const Text(
+                      "Tanggal",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+        
+                    const SizedBox(height: 14),
+        
+                    /// DATE PICKER
+                    GestureDetector(
+                      onTap: pickDate,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 18,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF243B55),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.blue.shade400),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              selectedDate == null
+                                  ? "10"
+                                  : "${selectedDate!.day}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+        
+                            const Icon(Icons.calendar_month, color: Colors.white),
+                          ],
+                        ),
+                      ),
+                    ),
+        
+                    const SizedBox(height: 32),
+        
+                    /// BUTTON
+                    SizedBox(
+                      width: double.infinity,
+                      height: 58,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2F6BFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (!_formKey.currentState!.validate()) {
+                            return;
+                          }
+        
+                          if (selectedDate == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Tanggal wajib dipilih"),
+                              ),
+                            );
+        
+                            return;
+                          }
+        
+                          widget.data.income = double.tryParse(incomeController.text) ?? 0;
+                          widget.data.sourceId = selectedId;
+                          widget.data.date = selectedDate;
+                          widget.onNext();
+                        },
+                        child: Text(
+                          l10n.lanjutkan,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+        
+                    const SizedBox(height: 24),
+        
+                    /// INDICATOR
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        buildDot(false),
+                        buildDot(true),
+                        buildDot(false),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDot(bool active) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      width: active ? 10 : 8,
+      height: active ? 10 : 8,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: active ? Colors.blue : Colors.white54,
+      ),
+    );
+  }
+}

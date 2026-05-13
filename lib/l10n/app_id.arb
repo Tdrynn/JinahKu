@@ -26,9 +26,14 @@
     "lanjutkan": "Lanjutkan",
     "konfirmasi": "Konfirmasi Pemasukan",
     "pastikan": "Pastikan detail sudah benar",
-    "gaji": "Gaji",
+    "edit": "Edit Profile",
+    "namaWajib": "Nama Pengguna wajib diisi",
+    "pemasukanWajib": "Pemasukan wajib diisi",
+    "tanggalWajib": "Tanggal wajib diisi",
+
+    "salary": "Gaji",
+    "allowance": "Uang Jajan",
     "freelance": "Freelance",
-    "bisnis": "Bisnis",
-    "investasi": "Investasi",
-    "lainnya": "Lainnya"
+    "business": "Bisnis",
+    "other": "Lainnya"
 }

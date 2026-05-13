@@ -100,4 +100,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lainnya => 'Other';
+
+  @override
+  String get edit => 'Edit Profile';
+
+  @override
+  String get namaWajib => 'Username is required';
+
+  @override
+  String get pemasukanWajib => 'Income is required';
+
+  @override
+  String get tanggalWajib => 'Date is required';
 }
