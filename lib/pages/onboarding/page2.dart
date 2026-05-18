@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jinahku/database/db_helper.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'package:jinahku/models/modelUser.dart';
+import 'package:jinahku/pages/onboarding/page1.dart';
+import 'package:jinahku/pages/onboarding/page3.dart';
+import 'package:intl/intl.dart';
 
-class page2 extends StatefulWidget {
+class Page2 extends StatefulWidget {
   final OnboardingData data;
   final VoidCallback onNext;
 
-  const page2({super.key, required this.data, required this.onNext});
+  const Page2({super.key, required this.data, required this.onNext});
 
   @override
-  State<page2> createState() => _page2State();
+  State<Page2> createState() => _Page2State();
 }
 
-class _page2State extends State<page2> {
+class _Page2State extends State<Page2> {
   List<Map<String, dynamic>> sources = [];
 
   int? selectedId;
@@ -26,11 +30,15 @@ class _page2State extends State<page2> {
   void initState() {
     super.initState();
     loadSources();
+    incomeController.text = widget.data.income == 0
+        ? ''
+        : widget.data.income.toStringAsFixed(0);
+    selectedId = widget.data.sourceId;
+    selectedDate = widget.data.date;
   }
 
   void loadSources() async {
     final data = await DBHelper.getIncomeSource();
-
     setState(() {
       sources = data;
     });
@@ -54,26 +62,28 @@ class _page2State extends State<page2> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
-      backgroundColor: const Color(0xFF071739),
+      backgroundColor: const Color(0xFF00041C),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
+          child: Stack(
             children: [
-              /// HERO IMAGE
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Image.asset(
-                  'assets/images/BG_PG2.webp',
-                  height: 350,
-                  fit: BoxFit.contain,
+              SizedBox(
+                height: 460,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 40),
+                  child: Image.asset(
+                    'assets/images/BG_PG2.webp',
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                    alignment: .topCenter,
+                  ),
                 ),
               ),
-        
-              /// FORM CARD
+
               Container(
+                margin: const EdgeInsets.only(top: 430),
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: const BoxDecoration(
@@ -83,10 +93,10 @@ class _page2State extends State<page2> {
                     topRight: Radius.circular(28),
                   ),
                 ),
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// JUMLAH PEMASUKAN
                     const Text(
                       "Jumlah Pemasukan",
                       style: TextStyle(
@@ -95,24 +105,29 @@ class _page2State extends State<page2> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-        
+
                     const SizedBox(height: 6),
-        
+
                     const Text(
                       "Angka ini akan digunakan sebagai pendapatan bulanan",
                       style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
-        
+
                     const SizedBox(height: 20),
-        
-                    /// INPUT JUMLAH
+
                     TextFormField(
                       controller: incomeController,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly,
+                        ThousandsSeparatorInputFormatter(),
+                      ],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Nama wajib diisi';
+                          return 'Jumlah pemasukan wajib diisi';
                         }
-        
+                        if (double.tryParse(value.replaceAll('.', '')) == null) {
+                          return 'Masukkan angka yang valid';
+                        }
                         return null;
                       },
                       keyboardType: TextInputType.number,
@@ -145,10 +160,9 @@ class _page2State extends State<page2> {
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(height: 28),
-        
-                    /// DROPDOWN TITLE
+
                     const Text(
                       "Sumber pemasukan",
                       style: TextStyle(
@@ -157,10 +171,9 @@ class _page2State extends State<page2> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-        
+
                     const SizedBox(height: 14),
-        
-                    /// DROPDOWN
+
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
@@ -174,7 +187,6 @@ class _page2State extends State<page2> {
                             if (value == null) {
                               return 'Pilih sumber pemasukan';
                             }
-        
                             return null;
                           },
                           dropdownColor: const Color(0xFF243B55),
@@ -206,10 +218,9 @@ class _page2State extends State<page2> {
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(height: 28),
-        
-                    /// TANGGAL
+
                     const Text(
                       "Tanggal",
                       style: TextStyle(
@@ -218,10 +229,9 @@ class _page2State extends State<page2> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-        
+
                     const SizedBox(height: 14),
-        
-                    /// DATE PICKER
+
                     GestureDetector(
                       onTap: pickDate,
                       child: Container(
@@ -247,16 +257,18 @@ class _page2State extends State<page2> {
                                 fontSize: 18,
                               ),
                             ),
-        
-                            const Icon(Icons.calendar_month, color: Colors.white),
+
+                            const Icon(
+                              Icons.calendar_month,
+                              color: Colors.white,
+                            ),
                           ],
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(height: 32),
-        
-                    /// BUTTON
+
                     SizedBox(
                       width: double.infinity,
                       height: 58,
@@ -271,22 +283,22 @@ class _page2State extends State<page2> {
                           if (!_formKey.currentState!.validate()) {
                             return;
                           }
-        
+
                           if (selectedDate == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text("Tanggal wajib dipilih"),
                               ),
                             );
-        
                             return;
                           }
-        
-                          widget.data.income = double.tryParse(incomeController.text) ?? 0;
+                          widget.data.income =
+                              double.tryParse(incomeController.text.replaceAll('.', '')) ?? 0;
                           widget.data.sourceId = selectedId;
                           widget.data.date = selectedDate;
                           widget.onNext();
                         },
+
                         child: Text(
                           l10n.lanjutkan,
                           style: const TextStyle(
@@ -297,10 +309,9 @@ class _page2State extends State<page2> {
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(height: 24),
-        
-                    /// INDICATOR
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -328,6 +339,26 @@ class _page2State extends State<page2> {
         shape: BoxShape.circle,
         color: active ? Colors.blue : Colors.white54,
       ),
+    );
+  }
+}
+
+class ThousandsSeparatorInputFormatter extends TextInputFormatter {
+  static const separator = '.';
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    final formatter = NumberFormat.decimalPattern('id');
+    String newText = formatter.format(
+      int.parse(newValue.text.replaceAll(separator, '')),
+    );
+
+    return newValue.copyWith(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
     );
   }
 }
