@@ -7,12 +7,19 @@ import '../theme/dark_colors.dart' as dark;
 class navbar extends StatelessWidget {
   final int selectedIndex;
   final bool isDark;
+  final bool isEnglish;
+  final Function(bool) onToggleTheme;
+  final Function(String) onChangeLanguage;
+
   final Function(int) onItemTapped;
 
   const navbar({
     super.key,
     required this.selectedIndex,
     required this.isDark,
+    required this.isEnglish,
+    required this.onToggleTheme,
+    required this.onChangeLanguage,
     required this.onItemTapped,
   });
 

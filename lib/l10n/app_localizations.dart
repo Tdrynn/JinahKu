@@ -98,7 +98,7 @@ abstract class AppLocalizations {
   /// No description provided for @halo.
   ///
   /// In en, this message translates to:
-  /// **'Hello 👋'**
+  /// **'Hello'**
   String get halo;
 
   /// No description provided for @keuangan.
@@ -251,36 +251,6 @@ abstract class AppLocalizations {
   /// **'Make sure the details are correct'**
   String get pastikan;
 
-  /// No description provided for @gaji.
-  ///
-  /// In en, this message translates to:
-  /// **'Salary'**
-  String get gaji;
-
-  /// No description provided for @freelance.
-  ///
-  /// In en, this message translates to:
-  /// **'Freelance'**
-  String get freelance;
-
-  /// No description provided for @bisnis.
-  ///
-  /// In en, this message translates to:
-  /// **'Business'**
-  String get bisnis;
-
-  /// No description provided for @investasi.
-  ///
-  /// In en, this message translates to:
-  /// **'Investment'**
-  String get investasi;
-
-  /// No description provided for @lainnya.
-  ///
-  /// In en, this message translates to:
-  /// **'Other'**
-  String get lainnya;
-
   /// No description provided for @edit.
   ///
   /// In en, this message translates to:
@@ -304,6 +274,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Date is required'**
   String get tanggalWajib;
+
+  /// No description provided for @salary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get salary;
+
+  /// No description provided for @allowance.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowance'**
+  String get allowance;
+
+  /// No description provided for @freelance.
+  ///
+  /// In en, this message translates to:
+  /// **'Freelance'**
+  String get freelance;
+
+  /// No description provided for @business.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get business;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -9,7 +9,7 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
-  String get halo => 'Halo 👋';
+  String get halo => 'Halo';
 
   @override
   String get keuangan => 'Kelola keuanganmu dengan bijak';
@@ -87,21 +87,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get pastikan => 'Pastikan detail sudah benar';
 
   @override
-  String get gaji => 'Gaji';
-
-  @override
-  String get freelance => 'Freelance';
-
-  @override
-  String get bisnis => 'Bisnis';
-
-  @override
-  String get investasi => 'Investasi';
-
-  @override
-  String get lainnya => 'Lainnya';
-
-  @override
   String get edit => 'Edit Profile';
 
   @override
@@ -112,4 +97,19 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get tanggalWajib => 'Tanggal wajib diisi';
+
+  @override
+  String get salary => 'Gaji';
+
+  @override
+  String get allowance => 'Uang Jajan';
+
+  @override
+  String get freelance => 'Freelance';
+
+  @override
+  String get business => 'Bisnis';
+
+  @override
+  String get other => 'Lainnya';
 }
