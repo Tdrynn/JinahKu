@@ -19,15 +19,25 @@ class DBHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
 
-      onCreate: _createDB,
+      onCreate: (db, version) async {
+        await _createDB(db, version);
+        await _createTransactionTable(db);
+      },
+
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await _createTransactionTable(db);
+        }
+      },
 
       onOpen: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
+        await _createTransactionTable(db);
       },
     );
   }
@@ -58,6 +68,19 @@ class DBHelper {
     await db.insert('income_source', {'code': 'freelance'});
     await db.insert('income_source', {'code': 'business'});
     await db.insert('income_source', {'code': 'other'});
+  }
+
+  static Future<void> _createTransactionTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS transactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        type TEXT NOT NULL,
+        amount REAL NOT NULL,
+        category TEXT NOT NULL,
+        date TEXT NOT NULL,
+        note TEXT
+      )
+    ''');
   }
 
   static Future<List<Map<String, dynamic>>> getIncomeSource() async {
@@ -128,5 +151,36 @@ class DBHelper {
     }
 
     return null;
+  }
+
+  // TRANSACTION METHODS
+  static Future<int> insertTransaction({
+    required String type,
+    required double amount,
+    required String category,
+    required DateTime date,
+    String? note,
+  }) async {
+    final db = await database;
+
+    return await db.insert(
+      'transactions',
+      {
+        'type': type,
+        'amount': amount,
+        'category': category,
+        'date': date.toIso8601String(),
+        'note': note,
+      },
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getTransactions() async {
+    final db = await database;
+
+    return await db.query(
+      'transactions',
+      orderBy: 'date DESC',
+    );
   }
 }

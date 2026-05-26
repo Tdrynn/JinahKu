@@ -99,6 +99,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get tanggalWajib => 'Tanggal wajib diisi';
 
   @override
+  String get pilihK => 'Pilih kategori pemasukan';
+
+  @override
+  String get tambahD => 'Tambah Deskripsi....';
+
+  @override
+  String get pilihs => 'Pilih Sumber Pemasukan';
+
+  @override
   String get salary => 'Gaji';
 
   @override
