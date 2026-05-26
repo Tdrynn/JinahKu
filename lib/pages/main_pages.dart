@@ -39,12 +39,13 @@ class _MainPageState extends State<MainPage> {
         onChangeLanguage: widget.onChangeLanguage,
       ),
 
-      const History(),
-      const Transaction(),
+      History(isDark: widget.isDark),
+      Transaction(isDark: widget.isDark),
     ];
 
     return Scaffold(
-
+      extendBody: true,
+      backgroundColor: widget.isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       body: pages[selectedIndex],
 
       bottomNavigationBar: navbar(

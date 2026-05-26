@@ -344,16 +344,24 @@ class _Page2State extends State<Page2> {
 }
 
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
-  static const separator = '.';
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }
 
+    final cleanString = newValue.text.replaceAll(RegExp(r'\D'), '');
+
+    if (cleanString.isEmpty) {
+      return const TextEditingValue(
+        text: '',
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+
     final formatter = NumberFormat.decimalPattern('id');
-    String newText = formatter.format(
-      int.parse(newValue.text.replaceAll(separator, '')),
+    final newText = formatter.format(
+      int.parse(cleanString),
     );
 
     return newValue.copyWith(

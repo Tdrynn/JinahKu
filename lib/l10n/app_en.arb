@@ -30,6 +30,9 @@
     "namaWajib": "Username is required",
     "pemasukanWajib": "Income is required",
     "tanggalWajib": "Date is required",
+    "pilihK": "Choose Income Category",
+    "tambahD": "Add Description....",
+    "pilihs": "Choose Income Source",
 
     "salary": "Salary",
     "allowance": "Allowance",

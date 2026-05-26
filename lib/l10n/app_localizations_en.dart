@@ -99,6 +99,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tanggalWajib => 'Date is required';
 
   @override
+  String get pilihK => 'Choose Income Category';
+
+  @override
+  String get tambahD => 'Add Description....';
+
+  @override
+  String get pilihs => 'Choose Income Source';
+
+  @override
   String get salary => 'Salary';
 
   @override

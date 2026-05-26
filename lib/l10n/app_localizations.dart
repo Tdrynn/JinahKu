@@ -275,6 +275,24 @@ abstract class AppLocalizations {
   /// **'Date is required'**
   String get tanggalWajib;
 
+  /// No description provided for @pilihK.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Income Category'**
+  String get pilihK;
+
+  /// No description provided for @tambahD.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Description....'**
+  String get tambahD;
+
+  /// No description provided for @pilihs.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Income Source'**
+  String get pilihs;
+
   /// No description provided for @salary.
   ///
   /// In en, this message translates to:
