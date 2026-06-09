@@ -3,6 +3,7 @@ import 'package:jinahku/pages/homepage.dart';
 import 'package:jinahku/pages/onboarding/onboardingPage.dart';
 import 'package:jinahku/database/db_helper.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
+import 'package:jinahku/pages/category.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,27 +50,24 @@ class _MyAppState extends State<MyApp> {
 
       // ================= L10N =================
       locale: locale,
-      supportedLocales: const [
-        Locale('en'),
-        Locale('id'),
-      ],
-      localizationsDelegates:
-          AppLocalizations.localizationsDelegates,
+      supportedLocales: const [Locale('en'), Locale('id')],
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
 
       // ================= ROUTING =================
-      home: widget.isFirstTime
-          ? onboardingPage(
-              isDark: themeMode == ThemeMode.dark,
-              isEnglish: locale?.languageCode == 'en',
-              onToggleTheme: toggleTheme,
-              onChangeLanguage: changeLanguage,
-            )
-          : homepage(
-              isDark: themeMode == ThemeMode.dark,
-              isEnglish: locale?.languageCode == 'en',
-              onToggleTheme: toggleTheme,
-              onChangeLanguage: changeLanguage,
-            ),
+      // home: widget.isFirstTime
+      //     ? onboardingPage(
+      //         isDark: themeMode == ThemeMode.dark,
+      //         isEnglish: locale?.languageCode == 'en',
+      //         onToggleTheme: toggleTheme,
+      //         onChangeLanguage: changeLanguage,
+      //       )
+      //     : homepage(
+      //         isDark: themeMode == ThemeMode.dark,
+      //         isEnglish: locale?.languageCode == 'en',
+      //         onToggleTheme: toggleTheme,
+      //         onChangeLanguage: changeLanguage,
+      //       ),
+      // home: const KategoriScreen(),
     );
   }
 }

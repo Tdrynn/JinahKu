@@ -1,4 +1,3 @@
-import 'package:jinahku/pages/onboarding/onboardingPage.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -15,11 +14,7 @@ class DBHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'jinahku.db');
 
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDB,
-    );
+    return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   static Future<void> _createDB(Database db, int version) async {
@@ -30,8 +25,7 @@ class DBHelper {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       code TEXT NOT NULL UNIQUE
       )
-      '''
-    );
+      ''');
 
     await db.execute('''
       CREATE TABLE user_profile (
@@ -43,8 +37,25 @@ class DBHelper {
         income_source_id INTEGER NOT NULL,
         FOREIGN KEY (income_source_id) REFERENCES income_source(id)
       )
-      '''
-    );
+      ''');
+
+    await db.execute('''
+    CREATE TABLE category (
+      id_category INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      type TEXT NOT NULL CHECK (type IN ('pengeluaran', 'pemasukan')) 
+      )
+      ''');
+
+    await db.execute('''
+    CREATE TABLE user_transaction (
+      id_transaction INTEGER PRIMARY KEY AUTOINCREMENT,
+      id_category INTEGER,
+      id_user INTEGER,
+      FOREIGN KEY (id_category) REFERENCES category(id_category),
+      FOREIGN KEY (id_user) REFERENCES user_profile(id)
+      )
+      ''');
 
     await db.insert('income_source', {'code': 'salary'});
     await db.insert('income_source', {'code': 'allowance'});
@@ -69,7 +80,7 @@ class DBHelper {
 
     return await db.insert('user_profile', {
       'username': username,
-      'monthlyIncome': monthlyIncome,
+      'monthly_income': monthlyIncome,
       'income_date': incomeDate.toIso8601String(),
       'avatar': avatar,
       'income_source_id': incomeSourceId,
@@ -87,18 +98,17 @@ class DBHelper {
     final db = await database;
 
     return await db.rawQuery('''
-      SELECT
-        user_profile.id,
-        user_profile.username,
-        user_profile.monthly_income,
-        user_profile.income_date,
-        user_profile.avatar,
-        income_source.name as income_source
-      FROM user_profile
-      JOIN income_source
-      ON user_profile.income_source_id = income_source.id
-    '''
-    );
+  SELECT
+    user_profile.id,
+    user_profile.username,
+    user_profile.monthly_income,
+    user_profile.income_date,
+    user_profile.avatar,
+    income_source.code as income_source
+  FROM user_profile
+  JOIN income_source
+  ON user_profile.income_source_id = income_source.id
+''');
   }
 
   static Future<Map<String, dynamic>?> getUser() async {
@@ -107,15 +117,53 @@ class DBHelper {
     final result = await db.rawQuery('''
       SELECT
         user_profile.username,
-        user_profile.monthly_incomevoid
+        user_profile.monthly_income
       FROM user_profile
       LIMIT 1
-      '''
-    );
+      ''');
 
     if (result.isNotEmpty) {
       return result.first;
     }
     return null;
+  }
+
+  static Future<List<Map<String, dynamic>>> getCategoriesByType(
+    String type,
+  ) async {
+    final db = await database;
+    return await db.query(
+      'category',
+      where: 'type = ?',
+      whereArgs: [type.toLowerCase()],
+      orderBy: 'name ASC',
+    );
+  }
+
+  static Future<int> insertCategory(String name, String type) async {
+    final db = await database;
+    return await db.insert('category', {
+      'name': name,
+      'type': type.toLowerCase(),
+    });
+  }
+
+  static Future<int> updateCategory(int id, String newName) async {
+    final db = await database;
+    return await db.update(
+      'category',
+      {'name': newName},
+      where: 'id_category = ?',
+      whereArgs: [id],
+    );
+  }
+
+  static Future<int> deleteCategory(int id) async {
+    final db = await database;
+    return await db.delete(
+      'category',
+      where: 'id_category = ?',
+      whereArgs: [id],
+    );
   }
 }

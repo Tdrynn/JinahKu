@@ -71,7 +71,7 @@ class _page2State extends State<page2> {
                   fit: BoxFit.contain,
                 ),
               ),
-        
+
               /// FORM CARD
               Container(
                 width: double.infinity,
@@ -95,16 +95,16 @@ class _page2State extends State<page2> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-        
+
                     const SizedBox(height: 6),
-        
+
                     const Text(
                       "Angka ini akan digunakan sebagai pendapatan bulanan",
                       style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
-        
+
                     const SizedBox(height: 20),
-        
+
                     /// INPUT JUMLAH
                     TextFormField(
                       controller: incomeController,
@@ -112,7 +112,7 @@ class _page2State extends State<page2> {
                         if (value == null || value.trim().isEmpty) {
                           return 'Nama wajib diisi';
                         }
-        
+
                         return null;
                       },
                       keyboardType: TextInputType.number,
@@ -145,9 +145,9 @@ class _page2State extends State<page2> {
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(height: 28),
-        
+
                     /// DROPDOWN TITLE
                     const Text(
                       "Sumber pemasukan",
@@ -157,9 +157,9 @@ class _page2State extends State<page2> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-        
+
                     const SizedBox(height: 14),
-        
+
                     /// DROPDOWN
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -174,11 +174,11 @@ class _page2State extends State<page2> {
                             if (value == null) {
                               return 'Pilih sumber pemasukan';
                             }
-        
+
                             return null;
                           },
                           dropdownColor: const Color(0xFF243B55),
-                          value: selectedId,
+                          initialValue: selectedId,
                           hint: Text(
                             l10n.pilih,
                             style: const TextStyle(color: Colors.white54),
@@ -206,9 +206,9 @@ class _page2State extends State<page2> {
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(height: 28),
-        
+
                     /// TANGGAL
                     const Text(
                       "Tanggal",
@@ -218,9 +218,9 @@ class _page2State extends State<page2> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-        
+
                     const SizedBox(height: 14),
-        
+
                     /// DATE PICKER
                     GestureDetector(
                       onTap: pickDate,
@@ -247,15 +247,18 @@ class _page2State extends State<page2> {
                                 fontSize: 18,
                               ),
                             ),
-        
-                            const Icon(Icons.calendar_month, color: Colors.white),
+
+                            const Icon(
+                              Icons.calendar_month,
+                              color: Colors.white,
+                            ),
                           ],
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(height: 32),
-        
+
                     /// BUTTON
                     SizedBox(
                       width: double.infinity,
@@ -271,18 +274,19 @@ class _page2State extends State<page2> {
                           if (!_formKey.currentState!.validate()) {
                             return;
                           }
-        
+
                           if (selectedDate == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text("Tanggal wajib dipilih"),
                               ),
                             );
-        
+
                             return;
                           }
-        
-                          widget.data.income = double.tryParse(incomeController.text) ?? 0;
+
+                          widget.data.income =
+                              double.tryParse(incomeController.text) ?? 0;
                           widget.data.sourceId = selectedId;
                           widget.data.date = selectedDate;
                           widget.onNext();
@@ -297,9 +301,9 @@ class _page2State extends State<page2> {
                         ),
                       ),
                     ),
-        
+
                     const SizedBox(height: 24),
-        
+
                     /// INDICATOR
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
