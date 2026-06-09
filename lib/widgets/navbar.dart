@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../theme/light_colors.dart' as light;
@@ -7,147 +8,151 @@ import '../theme/dark_colors.dart' as dark;
 class navbar extends StatelessWidget {
   final int selectedIndex;
   final bool isDark;
+  final bool isEnglish;
+  final Function(bool) onToggleTheme;
+  final Function(String) onChangeLanguage;
+
   final Function(int) onItemTapped;
 
   const navbar({
     super.key,
     required this.selectedIndex,
     required this.isDark,
+    required this.isEnglish,
+    required this.onToggleTheme,
+    required this.onChangeLanguage,
     required this.onItemTapped,
   });
 
   @override
   Widget build(BuildContext context) {
-    // ================= THEME COLORS =================
-
     final colors = isDark ? dark.darkColors : light.lightColors;
     final l10n = AppLocalizations.of(context)!;
 
     return SizedBox(
       height: 136,
-
       child: Stack(
         alignment: Alignment.topCenter,
-
         children: [
-          // ================= NAVBAR =================
           Positioned(
-            bottom: 0,
-
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-
-              height: 100,
-
-              decoration: BoxDecoration(
-                color: colors.card,
-
-                border: Border.all(color: colors.divider),
-
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(0),
-                  topRight: Radius.circular(0),
-                ),
-              ),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-                children: [
-                  // ================= HOME =================
-                  _NavItem(
-                    activeImage: 'assets/icons/HomePageA.webp',
-                    inactiveImage: 'assets/icons/HomePage.webp',
-                    label: l10n.beranda,
-                    selected: selectedIndex == 0,
-                    colors: colors,
-                    onTap: () => onItemTapped(0),
-                  ),
-
-                  const SizedBox(width: 100),
-
-                  _NavItem(
-                    activeImage: 'assets/icons/ChequeA.webp',
-                    inactiveImage: 'assets/icons/Cheque.webp',
-                    label: l10n.riwayat,
-                    selected: selectedIndex == 1,
-                    colors: colors,
-                    onTap: () => onItemTapped(1),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // ================= CENTER BUTTON =================
-          Positioned(
-            top: 0,
-
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () => onItemTapped(2),
-
-                  child: Container(
-                    height: 72,
-                    width: 115,
-
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40),
-
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-
-                        colors: isDark
-                            ? [const Color(0xFF404A55), const Color(0xFF1A1D22)]
-                            : [
-                                const Color(0xFFF0F0F0),
-                                const Color(0xFF404A55),
-                              ],
-                      ),
+            bottom: 25,
+            left: 40,
+            right: 40,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  height: 76,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? Colors.black.withOpacity(0.35)
+                        : const Color(0xFFE2E8F0).withOpacity(0.35),
+                    borderRadius: BorderRadius.circular(40),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.white.withOpacity(0.08)
+                          : Colors.white.withOpacity(0.08),
+                      width: 1.5,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                        blurRadius: 24,
+                        spreadRadius: 4,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final width = constraints.maxWidth;
+                      const double indicatorWidth = 100;
+                      double centerX;
+                      if (selectedIndex == 0) {
+                        centerX = width * 0.166;
+                      } else if (selectedIndex == 2) {
+                        centerX = width * 0.5;
+                      } else {
+                        centerX = width * 0.834;
+                      }
+                      final pillLeft = centerX - (indicatorWidth / 2);
 
-                    child: Center(
-                      child: Container(
-                        height: 58,
-                        width: 95,
+                      return Stack(
+                        children: [
+                          
+                          AnimatedPositioned(
+                            duration: const Duration(milliseconds: 350),
+                            curve: Curves.easeInOutCubic,
+                            left: pillLeft,
+                            top: 4.5,
 
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(32),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 350),
+                              curve: Curves.easeInOutCubic,
+                              width: indicatorWidth,
+                              height: 64,
 
-                          gradient: const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? Colors.white.withOpacity(0.12)
+                                    : Colors.black.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(32),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(
+                                    isDark ? 0.08 : 0.15,
+                                  ),
+                                ),
 
-                            colors: [Color(0xFF1B8EC5), Color(0xFF46AADB)],
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.12),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
 
-                        child: const Icon(
-                          Icons.add,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
 
-                          color: Colors.white,
+                              _NavItem(
+                                activeImage: 'assets/icons/HomePageA.webp',
+                                inactiveImage: 'assets/icons/HomePage.webp',
+                                label: l10n.beranda,
+                                selected: selectedIndex == 0,
+                                colors: colors,
+                                onTap: () => onItemTapped(0),
+                              ),
 
-                          size: 42,
-                        ),
-                      ),
-                    ),
+                              _NavItem(
+                                activeImage: 'assets/icons/plusA.webp',
+                                inactiveImage: 'assets/icons/plus.webp',
+                                label: l10n.transaksi,
+                                selected: selectedIndex == 2,
+                                colors: colors,
+                                onTap: () => onItemTapped(2),
+                              ),
+
+                              _NavItem(
+                                activeImage: 'assets/icons/ChequeA.webp',
+                                inactiveImage: 'assets/icons/Cheque.webp',
+                                label: l10n.riwayat,
+                                selected: selectedIndex == 1,
+                                colors: colors,
+                                onTap: () => onItemTapped(1),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
-
-                const SizedBox(height: 25),
-
-                Text(
-                  l10n.transaksi,
-
-                  style: TextStyle(
-                    color: colors.textPrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],
@@ -155,8 +160,6 @@ class navbar extends StatelessWidget {
     );
   }
 }
-
-// ================= NAV ITEM =================
 
 class _NavItem extends StatelessWidget {
   final String activeImage;
@@ -179,46 +182,49 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-
+      behavior: HitTestBehavior.opaque,
       child: SizedBox(
         width: 100,
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
 
-              decoration: BoxDecoration(
-                color: selected
-                    ? colors.blue.withOpacity(0.15)
-                    : Colors.transparent,
-
-                borderRadius: BorderRadius.circular(40),
-              ),
-
-              child: Image.asset(
-                selected ? activeImage : inactiveImage,
-
-                width: 50,
-                height: 50,
+            AnimatedScale(
+              scale: selected ? 1.06 : 0.94,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutBack,
+              child: TweenAnimationBuilder<Color?>(
+                duration: const Duration(milliseconds: 300),
+                tween: ColorTween(
+                  begin: selected ? colors.blue : colors.textSecondary,
+                  end: selected ? colors.blue : colors.textSecondary,
+                ),
+                builder: (context, color, child) {
+                  return Image.asset(
+                    selected ? activeImage : inactiveImage,
+                    width: 28,
+                    height: 28,
+                    color: color,
+                  );
+                },
               ),
             ),
 
-            const SizedBox(height: 0),
-
-            Text(
-              label,
-
+            const SizedBox(height: 6),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
               style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
+                color: selected ? colors.blue : colors.textSecondary,
+                fontSize: 12,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                fontFamily: 'Inter',
+              ),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, fontWeight: .w600),
               ),
             ),
-
-            SizedBox(height: 10),
           ],
         ),
       ),

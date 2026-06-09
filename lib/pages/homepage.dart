@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
-import 'package:jinahku/widgets/navbar.dart';
 import 'package:jinahku/database/db_helper.dart';
 
 class homepage extends StatefulWidget {
@@ -83,17 +82,6 @@ class _homepageState extends State<homepage> {
             Text("${l10n.pemasukan}: Rp.${income.toStringAsFixed(0)}"),
           ],
         ),
-      ),
-
-      // ================= NAVBAR =================
-      bottomNavigationBar: navbar(
-        selectedIndex: 0,
-
-        isDark: Theme.of(context).brightness == Brightness.dark,
-
-        onItemTapped: (index) {
-          print(index);
-        },
       ),
     );
   }

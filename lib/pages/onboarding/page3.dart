@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:jinahku/database/db_helper.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'package:jinahku/models/modelUser.dart';
 import 'package:jinahku/pages/homepage.dart';
+import 'package:jinahku/pages/main_pages.dart';
 import 'package:jinahku/pages/onboarding/page1.dart';
 import 'package:jinahku/pages/onboarding/page2.dart';
 
-class page3 extends StatelessWidget {
+class Page3 extends StatefulWidget {
   final OnboardingData data;
 
   final bool isDark;
@@ -15,7 +17,7 @@ class page3 extends StatelessWidget {
   final Function(bool) onToggleTheme;
   final Function(String) onChangeLanguage;
 
-  const page3({
+  const Page3({
     super.key,
     required this.data,
     required this.isDark,
@@ -25,30 +27,38 @@ class page3 extends StatelessWidget {
   });
 
   @override
+  State<Page3> createState() => _Page3State();
+}
+
+class _Page3State extends State<Page3> {
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF071739),
+      backgroundColor: const Color(0xFF000C2C),
 
       body: SingleChildScrollView(
-        child: Column(
+        child: Stack(
           children: [
-            /// HERO IMAGE
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Image.asset(
-                'assets/images/BG_PG2.webp',
-                height: 350,
-                fit: BoxFit.contain,
+
+            SizedBox(
+              height: 480,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50),
+                child: Image.asset(
+                  'assets/images/BG_PG3.webp',
+                  width: double.infinity,
+                  fit: BoxFit.fitWidth,
+                  alignment: .topCenter,
+                ),
               ),
             ),
 
-            /// CARD
             Container(
+              margin: const EdgeInsets.only(top: 360),
               width: double.infinity,
               padding: const EdgeInsets.all(24),
-
               decoration: const BoxDecoration(
                 color: Color(0xFF1B263B),
                 borderRadius: BorderRadius.only(
@@ -59,15 +69,13 @@ class page3 extends StatelessWidget {
 
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
                 children: [
-                  /// USER INFO TITLE
+
                   const Row(
                     children: [
+
                       Icon(Icons.person, color: Colors.white),
-
                       SizedBox(width: 10),
-
                       Text(
                         "Informasi Pengguna",
                         style: TextStyle(
@@ -81,15 +89,11 @@ class page3 extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  /// USER CARD
                   Container(
                     padding: const EdgeInsets.all(16),
-
                     decoration: BoxDecoration(
                       color: const Color(0xFF243B55),
-
                       borderRadius: BorderRadius.circular(18),
-
                       border: Border.all(color: Colors.blue.shade400),
                     ),
 
@@ -97,7 +101,6 @@ class page3 extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                       children: [
-                        /// USERNAME
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -113,7 +116,7 @@ class page3 extends StatelessWidget {
                             const SizedBox(height: 6),
 
                             Text(
-                              data.username,
+                              widget.data.username,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
@@ -123,10 +126,9 @@ class page3 extends StatelessWidget {
                           ],
                         ),
 
-                        /// AVATAR
                         CircleAvatar(
                           radius: 30,
-                          backgroundImage: AssetImage(data.avatar),
+                          backgroundImage: AssetImage(widget.data.avatar),
                         ),
                       ],
                     ),
@@ -134,13 +136,11 @@ class page3 extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  /// DETAIL TITLE
                   const Row(
                     children: [
+
                       Icon(Icons.arrow_circle_up, color: Colors.white),
-
                       SizedBox(width: 10),
-
                       Text(
                         "Detail Pendapatan",
                         style: TextStyle(
@@ -154,15 +154,11 @@ class page3 extends StatelessWidget {
 
                   const SizedBox(height: 18),
 
-                  /// DETAIL CARD
                   Container(
                     padding: const EdgeInsets.all(18),
-
                     decoration: BoxDecoration(
                       color: const Color(0xFF243B55),
-
                       borderRadius: BorderRadius.circular(18),
-
                       border: Border.all(color: Colors.blue.shade400),
                     ),
 
@@ -170,7 +166,11 @@ class page3 extends StatelessWidget {
                       children: [
                         buildRow(
                           "Jumlah Pemasukan",
-                          "Rp. ${data.income.toStringAsFixed(0)}",
+                          NumberFormat.currency(
+                            locale: 'id',
+                            symbol: 'Rp. ',
+                            decimalDigits: 0,
+                          ).format(widget.data.income),
                           isGreen: true,
                         ),
 
@@ -178,14 +178,14 @@ class page3 extends StatelessWidget {
 
                         buildRow(
                           "Sumber Pemasukan",
-                          data.sourceId == 1 ? "Gaji Bulanan" : "Lainnya",
+                          widget.data.sourceId == 1 ? "Gaji Bulanan" : "Lainnya",
                         ),
 
                         const SizedBox(height: 14),
 
                         buildRow(
                           "Tanggal",
-                          data.date == null ? "-" : "${data.date!.day}",
+                          widget.data.date == null ? "-" : "${widget.data.date!.day}",
                         ),
                       ],
                     ),
@@ -193,15 +193,12 @@ class page3 extends StatelessWidget {
 
                   const SizedBox(height: 32),
 
-                  /// BUTTON SAVE
                   SizedBox(
                     width: double.infinity,
                     height: 58,
-
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2F6BFF),
-
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -209,26 +206,22 @@ class page3 extends StatelessWidget {
 
                       onPressed: () async {
                         await DBHelper.insertUser(
-                          username: data.username,
-
-                          monthlyIncome: data.income,
-
-                          incomeDate: data.date!,
-
-                          avatar: data.avatar,
-
-                          incomeSourceId: data.sourceId!,
+                          username: widget.data.username,
+                          monthlyIncome: widget.data.income,
+                          incomeDate: widget.data.date!,
+                          avatar: widget.data.avatar,
+                          incomeSourceId: widget.data.sourceId!,
                         );
 
                         Navigator.pushReplacement(
                           context,
 
                           MaterialPageRoute(
-                            builder: (_) => homepage(
-                              isDark: true,
-                              isEnglish: false,
-                              onToggleTheme: (val) {},
-                              onChangeLanguage: (lang) {},
+                            builder: (_) => MainPage(
+                              isDark: widget.isDark,
+                              isEnglish: widget.isEnglish,
+                              onToggleTheme: widget.onToggleTheme,
+                              onChangeLanguage: widget.onChangeLanguage,
                             ),
                           ),
                         );
@@ -247,48 +240,40 @@ class page3 extends StatelessWidget {
 
                   const SizedBox(height: 18),
 
-                  /// BACK BUTTON
                   SizedBox(
                     width: double.infinity,
                     height: 58,
-
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: Colors.blue.shade200),
-
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
 
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.pushAndRemoveUntil(
                           context,
-
                           MaterialPageRoute(
-                            builder: (_) => page1(
-                              data: data,
-
+                            builder: (context) => Page1(
+                              data: widget.data,
                               onNext: () {
                                 Navigator.push(
                                   context,
-
                                   MaterialPageRoute(
-                                    builder: (_) => page2(
-                                      data: data,
-
+                                    builder: (context) => Page2(
+                                      data: widget.data,
                                       onNext: () {
                                         Navigator.push(
                                           context,
-
                                           MaterialPageRoute(
-                                            builder: (_) => page3(
-                                              data: data,
-                                              isDark: isDark,
-                                              isEnglish: isEnglish,
-                                              onToggleTheme: onToggleTheme,
+                                            builder: (context) => Page3(
+                                              data: widget.data,
+                                              isDark: widget.isDark,
+                                              isEnglish: widget.isEnglish,
+                                              onToggleTheme: widget.onToggleTheme,
                                               onChangeLanguage:
-                                                  onChangeLanguage,
+                                                  widget.onChangeLanguage,
                                             ),
                                           ),
                                         );
@@ -299,6 +284,7 @@ class page3 extends StatelessWidget {
                               },
                             ),
                           ),
+                          (route) => false,
                         );
                       },
 
@@ -315,10 +301,8 @@ class page3 extends StatelessWidget {
 
                   const SizedBox(height: 24),
 
-                  /// INDICATOR
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-
                     children: [
                       buildDot(false),
                       buildDot(false),
@@ -337,8 +321,8 @@ class page3 extends StatelessWidget {
   Widget buildRow(String title, String value, {bool isGreen = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
       children: [
+
         Text(
           title,
           style: const TextStyle(color: Colors.white70, fontSize: 16),
@@ -348,7 +332,6 @@ class page3 extends StatelessWidget {
           value,
           style: TextStyle(
             color: isGreen ? Colors.greenAccent : Colors.white,
-
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),

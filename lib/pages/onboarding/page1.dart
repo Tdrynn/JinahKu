@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:jinahku/models/modelUser.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 
-class page1 extends StatefulWidget {
+class Page1 extends StatefulWidget {
   final OnboardingData data;
   final VoidCallback onNext;
 
-  const page1({super.key, required this.data, required this.onNext});
+  const Page1({super.key, required this.data, required this.onNext});
 
   @override
-  State<page1> createState() => _page1State();
+  State<Page1> createState() => _Page1State();
 }
 
-class _page1State extends State<page1> {
+class _Page1State extends State<Page1> {
   final TextEditingController controller = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -46,35 +46,32 @@ class _page1State extends State<page1> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF071739),
-
+      backgroundColor: const Color(0xFF000C2C),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
-
-          child: Column(
+          child: Stack(
             children: [
-              /// IMAGE
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Image.asset(
-                  'assets/images/BG_PG2.webp',
-                  height: 350,
-                  fit: BoxFit.contain,
+
+              SizedBox(
+                height: 490,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 35),
+                  child: Image.asset(
+                    'assets/images/BG_P1.webp',
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                    alignment: .topCenter,
+                  ),
                 ),
               ),
 
-              /// CARD FORM
               Container(
+                margin: const EdgeInsets.only(top: 470),
                 width: double.infinity,
-
-                margin: const EdgeInsets.only(top: 10),
-
                 padding: const EdgeInsets.all(24),
-
                 decoration: const BoxDecoration(
                   color: Color(0xFF1B263B),
-
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(28),
                     topRight: Radius.circular(28),
@@ -83,12 +80,10 @@ class _page1State extends State<page1> {
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
-                    /// TITLE
+
                     const Text(
                       "Nama Pengguna",
-
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -100,64 +95,52 @@ class _page1State extends State<page1> {
 
                     const Text(
                       "Nama ini akan digunakan di aplikasi",
-
                       style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
 
                     const SizedBox(height: 20),
 
-                    /// TEXTFIELD
                     TextFormField(
                       controller: controller,
-
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Nama wajib diisi';
                         }
-
                         return null;
                       },
-
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(
+                        color: Colors.white
+                      ),
 
                       decoration: InputDecoration(
                         hintText: l10n.namaP,
-
-                        hintStyle: const TextStyle(color: Colors.white54),
-
+                        hintStyle: const TextStyle(
+                          color: Colors.white54
+                        ),
                         prefixIcon: const Icon(
                           Icons.person,
                           color: Colors.white70,
                         ),
-
                         filled: true,
-
                         fillColor: const Color(0xFF243B55),
-
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-
                           borderSide: BorderSide(color: Colors.blue.shade400),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-
                           borderSide: const BorderSide(
                             color: Colors.blue,
                             width: 2,
                           ),
                         ),
-
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-
                           borderSide: const BorderSide(color: Colors.red),
                         ),
 
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-
                           borderSide: const BorderSide(
                             color: Colors.red,
                             width: 2,
@@ -168,10 +151,8 @@ class _page1State extends State<page1> {
 
                     const SizedBox(height: 28),
 
-                    /// AVATAR TITLE
                     const Text(
                       "Pilih Avatar",
-
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -181,10 +162,8 @@ class _page1State extends State<page1> {
 
                     const SizedBox(height: 18),
 
-                    /// AVATAR LIST
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                       children: List.generate(avatars.length, (index) {
                         final isSelected = selectedAvatarIndex == index;
 
@@ -192,25 +171,20 @@ class _page1State extends State<page1> {
                           onTap: () {
                             setState(() {
                               selectedAvatarIndex = index;
-
                               widget.data.avatar = avatars[index];
                             });
                           },
 
                           child: Container(
                             padding: const EdgeInsets.all(3),
-
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-
                               border: isSelected
                                   ? Border.all(color: Colors.blue, width: 3)
                                   : null,
                             ),
-
                             child: CircleAvatar(
                               radius: 28,
-
                               backgroundImage: AssetImage(avatars[index]),
                             ),
                           ),
@@ -220,34 +194,27 @@ class _page1State extends State<page1> {
 
                     const SizedBox(height: 32),
 
-                    /// BUTTON
                     SizedBox(
                       width: double.infinity,
                       height: 58,
-
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2F6BFF),
-
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
 
                         onPressed: () {
-                          /// VALIDASI
                           if (!_formKey.currentState!.validate()) {
                             return;
                           }
-
                           widget.data.username = controller.text;
-
                           widget.onNext();
                         },
 
                         child: Text(
                           l10n.lanjutkan,
-
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -259,10 +226,8 @@ class _page1State extends State<page1> {
 
                     const SizedBox(height: 24),
 
-                    /// INDICATOR
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-
                       children: [
                         buildDot(true),
                         buildDot(false),
@@ -282,13 +247,10 @@ class _page1State extends State<page1> {
   Widget buildDot(bool active) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
-
       width: active ? 10 : 8,
       height: active ? 10 : 8,
-
       decoration: BoxDecoration(
         color: active ? Colors.blue : Colors.white54,
-
         shape: BoxShape.circle,
       ),
     );

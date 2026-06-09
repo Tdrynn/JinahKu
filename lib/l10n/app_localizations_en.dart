@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get halo => 'Hello 👋';
+  String get halo => 'Hello';
 
   @override
   String get keuangan => 'Manage your finances wisely';
@@ -87,21 +87,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pastikan => 'Make sure the details are correct';
 
   @override
-  String get gaji => 'Salary';
-
-  @override
-  String get freelance => 'Freelance';
-
-  @override
-  String get bisnis => 'Business';
-
-  @override
-  String get investasi => 'Investment';
-
-  @override
-  String get lainnya => 'Other';
-
-  @override
   String get edit => 'Edit Profile';
 
   @override
@@ -112,4 +97,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tanggalWajib => 'Date is required';
+
+  @override
+  String get pilihK => 'Choose Income Category';
+
+  @override
+  String get tambahD => 'Add Description....';
+
+  @override
+  String get pilihs => 'Choose Income Source';
+
+  @override
+  String get salary => 'Salary';
+
+  @override
+  String get allowance => 'Allowance';
+
+  @override
+  String get freelance => 'Freelance';
+
+  @override
+  String get business => 'Business';
+
+  @override
+  String get other => 'Other';
 }

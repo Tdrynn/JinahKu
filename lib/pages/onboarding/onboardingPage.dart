@@ -53,9 +53,9 @@ class _onboardingPageState extends State<onboardingPage> {
               physics: const NeverScrollableScrollPhysics(),
               onPageChanged: onPageChanged,
               children: [
-                page1(data: data, onNext: nextPage),
-                page2(data: data, onNext: nextPage),
-                page3(data: data, isDark: widget.isDark, isEnglish: widget.isEnglish, onToggleTheme: widget.onToggleTheme, onChangeLanguage: widget.onChangeLanguage,
+                Page1(data: data, onNext: nextPage),
+                Page2(data: data, onNext: nextPage),
+                Page3(data: data, isDark: widget.isDark, isEnglish: widget.isEnglish, onToggleTheme: widget.onToggleTheme, onChangeLanguage: widget.onChangeLanguage,
               ),
               ],
             ),
