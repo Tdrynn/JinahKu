@@ -20,7 +20,6 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
-
   String username = '';
   double income = 0;
 
@@ -51,7 +50,7 @@ class _homepageState extends State<homepage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${l10n.halo}, ${username} 👋",
+              "${l10n.halo}, $username 👋",
 
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontSize: 30,
