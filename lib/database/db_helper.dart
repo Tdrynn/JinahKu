@@ -6,15 +6,12 @@ class DBHelper {
 
   static Future<Database> get database async {
     if (_database != null) return _database!;
-
     _database = await _initDB();
-
     return _database!;
   }
 
   static Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
-
     final path = join(dbPath, 'jinahku.db');
 
     return await openDatabase(
