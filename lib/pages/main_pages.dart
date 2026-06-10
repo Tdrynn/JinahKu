@@ -24,14 +24,11 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-
     final pages = [
-
       homepage(
         isDark: widget.isDark,
         isEnglish: widget.isEnglish,
@@ -40,7 +37,14 @@ class _MainPageState extends State<MainPage> {
       ),
 
       History(isDark: widget.isDark),
-      Transaction(isDark: widget.isDark),
+      Transaction(
+        isDark: widget.isDark,
+        onTransactionSaved: () {
+          setState(() {
+            selectedIndex = 1;
+          });
+        }
+      ),
     ];
 
     return Scaffold(

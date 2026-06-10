@@ -15,8 +15,8 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  String _selectedFilter = 'all'; // 'all', 'income', 'expense'
-  String _sortType = 'date_desc'; // 'date_desc', 'date_asc', 'amount_desc', 'amount_asc'
+  String _selectedFilter = 'all';
+  String _sortType = 'date_desc';
 
   // Category Icons Mapping Helper
   IconData _getCategoryIcon(String category) {
@@ -282,7 +282,6 @@ class _HistoryState extends State<History> {
                         ),
                         const SizedBox(width: 8),
 
-                        // 2. Pemasukan Pill
                         GestureDetector(
                           onTap: () => setState(() => _selectedFilter = 'income'),
                           child: AnimatedContainer(
@@ -317,7 +316,6 @@ class _HistoryState extends State<History> {
                         ),
                         const SizedBox(width: 8),
 
-                        // 3. Pengeluaran Pill
                         GestureDetector(
                           onTap: () => setState(() => _selectedFilter = 'expense'),
                           child: AnimatedContainer(
@@ -356,7 +354,6 @@ class _HistoryState extends State<History> {
                 ),
                 const SizedBox(width: 8),
 
-                // 4. Sort Button (Far Right, Fixed Position)
                 GestureDetector(
                   onTap: () => _showSortSheet(context, colors),
                   child: Container(
@@ -378,7 +375,6 @@ class _HistoryState extends State<History> {
           ),
           const SizedBox(height: 10),
 
-          // Live Database List Builder
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: DBHelper.getTransactions(),
@@ -424,7 +420,7 @@ class _HistoryState extends State<History> {
                 }
 
                 return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 160), // bottom margin padding for floating navbar
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 160),
                   itemCount: flatList.length,
                   itemBuilder: (context, index) {
                     final item = flatList[index];

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:jinahku/pages/history.dart';
+import 'package:jinahku/pages/main_pages.dart';
 
 import '../database/db_helper.dart';
 import '../theme/light_colors.dart' as light;
@@ -10,7 +12,13 @@ import 'package:jinahku/l10n/app_localizations.dart';
 
 class Transaction extends StatefulWidget {
   final bool isDark;
-  const Transaction({super.key, required this.isDark});
+  final VoidCallback onTransactionSaved;
+
+  const Transaction({
+    super.key,
+    required this.isDark,
+    required this.onTransactionSaved
+  });
 
   @override
   State<Transaction> createState() => _TransactionState();
@@ -45,7 +53,6 @@ class _TransactionState extends State<Transaction> {
   @override
   void initState() {
     super.initState();
-    // Default to the first category in the list
     _selectedCategory = '';
   }
 
@@ -243,7 +250,8 @@ class _TransactionState extends State<Transaction> {
       textColor: Colors.white,
     );
 
-    // Clear fields
+    widget.onTransactionSaved();
+
     setState(() {
       _amountController.clear();
       _noteController.clear();
@@ -561,7 +569,6 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
-            // Catatan (Optional) text area
             Text(
               l10n.catatan,
               style: TextStyle(
@@ -598,7 +605,6 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 40),
 
-            // Tombol Simpan
             GestureDetector(
               onTap: () => _saveTransaction(colors, l10n),
               child: Container(
@@ -638,7 +644,6 @@ class _TransactionState extends State<Transaction> {
   }
 }
 
-// Menambah titik sebagai pemisah ribuan
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(

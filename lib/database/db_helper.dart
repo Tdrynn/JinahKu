@@ -141,7 +141,8 @@ class DBHelper {
     final result = await db.rawQuery('''
       SELECT
         user_profile.username,
-        user_profile.monthly_income
+        user_profile.monthly_income,
+        user_profile.avatar
       FROM user_profile
       LIMIT 1
     ''');

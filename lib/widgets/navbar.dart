@@ -1,8 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_font_icons/flutter_font_icons.dart';
 
 import '../theme/light_colors.dart' as light;
-import 'package:jinahku/l10n/app_localizations.dart';
 import '../theme/dark_colors.dart' as dark;
 
 class navbar extends StatelessWidget {
@@ -27,7 +28,6 @@ class navbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = isDark ? dark.darkColors : light.lightColors;
-    final l10n = AppLocalizations.of(context)!;
 
     return SizedBox(
       height: 136,
@@ -36,8 +36,8 @@ class navbar extends StatelessWidget {
         children: [
           Positioned(
             bottom: 25,
-            left: 40,
-            right: 40,
+            left: 55,
+            right: 55,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: BackdropFilter(
@@ -67,8 +67,9 @@ class navbar extends StatelessWidget {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final width = constraints.maxWidth;
-                      const double indicatorWidth = 100;
+                      const double indicatorWidth = 90;
                       double centerX;
+
                       if (selectedIndex == 0) {
                         centerX = width * 0.166;
                       } else if (selectedIndex == 2) {
@@ -76,23 +77,21 @@ class navbar extends StatelessWidget {
                       } else {
                         centerX = width * 0.834;
                       }
+
                       final pillLeft = centerX - (indicatorWidth / 2);
 
                       return Stack(
                         children: [
-                          
                           AnimatedPositioned(
                             duration: const Duration(milliseconds: 350),
                             curve: Curves.easeInOutCubic,
                             left: pillLeft,
                             top: 4.5,
-
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 350),
                               curve: Curves.easeInOutCubic,
                               width: indicatorWidth,
                               height: 64,
-
                               decoration: BoxDecoration(
                                 color: isDark
                                     ? Colors.white.withOpacity(0.12)
@@ -103,7 +102,6 @@ class navbar extends StatelessWidget {
                                     isDark ? 0.08 : 0.15,
                                   ),
                                 ),
-
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.12),
@@ -114,33 +112,26 @@ class navbar extends StatelessWidget {
                               ),
                             ),
                           ),
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-
                               _NavItem(
-                                activeImage: 'assets/icons/HomePageA.webp',
-                                inactiveImage: 'assets/icons/HomePage.webp',
-                                label: l10n.beranda,
+                                activeIcons: CupertinoIcons.house_fill,
+                                inactiveIcons: CupertinoIcons.house,
                                 selected: selectedIndex == 0,
                                 colors: colors,
                                 onTap: () => onItemTapped(0),
                               ),
-
                               _NavItem(
-                                activeImage: 'assets/icons/plusA.webp',
-                                inactiveImage: 'assets/icons/plus.webp',
-                                label: l10n.transaksi,
+                                activeImage: "assets/icons/plusA.webp",
+                                inactiveImage: "assets/icons/plus.webp",
                                 selected: selectedIndex == 2,
                                 colors: colors,
                                 onTap: () => onItemTapped(2),
                               ),
-
                               _NavItem(
-                                activeImage: 'assets/icons/ChequeA.webp',
-                                inactiveImage: 'assets/icons/Cheque.webp',
-                                label: l10n.riwayat,
+                                activeIcons: Icons.history,
+                                inactiveIcons: Icons.history_outlined,
                                 selected: selectedIndex == 1,
                                 colors: colors,
                                 onTap: () => onItemTapped(1),
@@ -162,17 +153,20 @@ class navbar extends StatelessWidget {
 }
 
 class _NavItem extends StatelessWidget {
-  final String activeImage;
-  final String inactiveImage;
-  final String label;
+  final IconData? activeIcons;
+  final IconData? inactiveIcons;
+  final String? activeImage;
+  final String? inactiveImage;
   final bool selected;
   final dynamic colors;
   final VoidCallback onTap;
 
   const _NavItem({
-    required this.activeImage,
-    required this.inactiveImage,
-    required this.label,
+    super.key,
+    this.activeIcons,
+    this.inactiveIcons,
+    this.activeImage,
+    this.inactiveImage,
     required this.selected,
     required this.colors,
     required this.onTap,
@@ -184,11 +178,10 @@ class _NavItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
-        width: 100,
+        width: 70,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             AnimatedScale(
               scale: selected ? 1.06 : 0.94,
               duration: const Duration(milliseconds: 300),
@@ -200,29 +193,21 @@ class _NavItem extends StatelessWidget {
                   end: selected ? colors.blue : colors.textSecondary,
                 ),
                 builder: (context, color, child) {
+                  if (activeIcons != null && inactiveIcons != null) {
+                    return Icon(
+                      selected ? activeIcons : inactiveIcons,
+                      size: 32,
+                      color: color,
+                    );
+                  }
+
                   return Image.asset(
-                    selected ? activeImage : inactiveImage,
+                    selected ? activeImage! : inactiveImage!,
                     width: 28,
                     height: 28,
                     color: color,
                   );
                 },
-              ),
-            ),
-
-            const SizedBox(height: 6),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 300),
-              style: TextStyle(
-                color: selected ? colors.blue : colors.textSecondary,
-                fontSize: 12,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                fontFamily: 'Inter',
-              ),
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, fontWeight: .w600),
               ),
             ),
           ],
