@@ -2,11 +2,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
-
 import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 
-class navbar extends StatelessWidget {
+class Navbar extends StatelessWidget {
   final int selectedIndex;
   final bool isDark;
   final bool isEnglish;
@@ -15,7 +14,7 @@ class navbar extends StatelessWidget {
 
   final Function(int) onItemTapped;
 
-  const navbar({
+  const Navbar({
     super.key,
     required this.selectedIndex,
     required this.isDark,
@@ -30,7 +29,7 @@ class navbar extends StatelessWidget {
     final colors = isDark ? dark.darkColors : light.lightColors;
 
     return SizedBox(
-      height: 136,
+      height: 125,
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
@@ -43,7 +42,7 @@ class navbar extends StatelessWidget {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                 child: Container(
-                  height: 76,
+                  height: 65,
                   decoration: BoxDecoration(
                     color: isDark
                         ? Colors.black.withOpacity(0.35)
@@ -86,12 +85,12 @@ class navbar extends StatelessWidget {
                             duration: const Duration(milliseconds: 350),
                             curve: Curves.easeInOutCubic,
                             left: pillLeft,
-                            top: 4.5,
+                            top: 3,
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 350),
                               curve: Curves.easeInOutCubic,
                               width: indicatorWidth,
-                              height: 64,
+                              height: 56,
                               decoration: BoxDecoration(
                                 color: isDark
                                     ? Colors.white.withOpacity(0.12)

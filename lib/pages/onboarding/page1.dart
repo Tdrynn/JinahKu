@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jinahku/models/modelUser.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 
@@ -54,9 +55,9 @@ class _Page1State extends State<Page1> {
             children: [
 
               SizedBox(
-                height: 490,
+                height: 490.h,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 35),
+                  padding: const EdgeInsets.only(top: 45),
                   child: Image.asset(
                     'assets/images/BG_P1.webp',
                     width: double.infinity,
@@ -67,14 +68,14 @@ class _Page1State extends State<Page1> {
               ),
 
               Container(
-                margin: const EdgeInsets.only(top: 470),
+                margin: EdgeInsets.only(top: 445.h),
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: const BoxDecoration(
                   color: Color(0xFF1B263B),
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(28),
-                    topRight: Radius.circular(28),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25),
                   ),
                 ),
 
@@ -82,23 +83,24 @@ class _Page1State extends State<Page1> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    const Text(
+                    Text(
                       "Nama Pengguna",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 24.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 6),
-
-                    const Text(
+                    Text(
                       "Nama ini akan digunakan di aplikasi",
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14.sp
+                      ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
 
                     TextFormField(
                       controller: controller,
@@ -149,18 +151,18 @@ class _Page1State extends State<Page1> {
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 18),
 
-                    const Text(
+                    Text(
                       "Pilih Avatar",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
 
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 10),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -196,7 +198,7 @@ class _Page1State extends State<Page1> {
 
                     SizedBox(
                       width: double.infinity,
-                      height: 58,
+                      height: 50.h,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2F6BFF),
@@ -215,8 +217,8 @@ class _Page1State extends State<Page1> {
 
                         child: Text(
                           l10n.lanjutkan,
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),

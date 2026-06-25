@@ -116,7 +116,7 @@ abstract class AppLocalizations {
   /// No description provided for @ringkasan.
   ///
   /// In en, this message translates to:
-  /// **'This month\'s summary'**
+  /// **'expenditure summary'**
   String get ringkasan;
 
   /// No description provided for @pemasukan.
@@ -292,6 +292,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose Income Source'**
   String get pilihs;
+
+  /// No description provided for @targerT.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings target'**
+  String get targerT;
+
+  /// No description provided for @tambahkanT.
+  ///
+  /// In en, this message translates to:
+  /// **'add targets'**
+  String get tambahkanT;
+
+  /// No description provided for @kategoriPK.
+  ///
+  /// In en, this message translates to:
+  /// **'Select income category'**
+  String get kategoriPK;
+
+  /// No description provided for @kategoriPN.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an expense category'**
+  String get kategoriPN;
+
+  /// No description provided for @deskripsi.
+  ///
+  /// In en, this message translates to:
+  /// **'Add descriptions'**
+  String get deskripsi;
+
+  /// No description provided for @disimpan.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction successfully saved! 🎉'**
+  String get disimpan;
+
+  /// No description provided for @jumlahT.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction amount must be valid'**
+  String get jumlahT;
+
+  /// No description provided for @mohonT.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the transaction amount'**
+  String get mohonT;
+
+  /// No description provided for @transaksiTb.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Transaction'**
+  String get transaksiTb;
+
+  /// No description provided for @transaksiTl.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest Transaction'**
+  String get transaksiTl;
+
+  /// No description provided for @nominalTr.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Amount'**
+  String get nominalTr;
+
+  /// No description provided for @nominalTh.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest Amount'**
+  String get nominalTh;
+
+  /// No description provided for @urutkan.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort History'**
+  String get urutkan;
 
   /// No description provided for @salary.
   ///

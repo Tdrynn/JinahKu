@@ -18,7 +18,6 @@ class _HistoryState extends State<History> {
   String _selectedFilter = 'all';
   String _sortType = 'date_desc';
 
-  // Category Icons Mapping Helper
   IconData _getCategoryIcon(String category) {
     switch (category) {
       case 'Makanan':
@@ -46,16 +45,13 @@ class _HistoryState extends State<History> {
     }
   }
 
-  // Group and sort transactions dynamically
   List<dynamic> _processTransactions(List<Map<String, dynamic>> rawList) {
-    // 1. Apply active filter (Semua, Pemasukan, Pengeluaran)
     List<Map<String, dynamic>> filteredList = rawList.where((tx) {
       if (_selectedFilter == 'income') return tx['type'] == 'income';
       if (_selectedFilter == 'expense') return tx['type'] == 'expense';
       return true;
     }).toList();
 
-    // 2. Apply active sort type
     if (_sortType == 'date_desc') {
       filteredList.sort((a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
     } else if (_sortType == 'date_asc') {
@@ -66,7 +62,6 @@ class _HistoryState extends State<History> {
       filteredList.sort((a, b) => (a['amount'] as double).compareTo(b['amount'] as double));
     }
 
-    // 3. Group by Month and Year (e.g. "Mei 2026")
     Map<String, List<Map<String, dynamic>>> grouped = {};
     const months = [
       'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -82,17 +77,18 @@ class _HistoryState extends State<History> {
       grouped[key]!.add(tx);
     }
 
-    // 4. Flatten grouped map into lists with section header strings
     List<dynamic> flatList = [];
     grouped.forEach((header, items) {
-      flatList.add(header); // section header string
-      flatList.addAll(items); // transaction map items
+      flatList.add(header);
+      flatList.addAll(items);
     });
 
     return flatList;
   }
 
   void _showSortSheet(BuildContext context, dynamic colors) {
+    final l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: widget.isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -115,7 +111,7 @@ class _HistoryState extends State<History> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Urutkan Riwayat',
+                l10n.urutkan,
                 style: TextStyle(
                   color: colors.textPrimary,
                   fontSize: 18,
@@ -127,7 +123,7 @@ class _HistoryState extends State<History> {
               ListTile(
                 leading: Icon(Icons.calendar_today, color: _sortType == 'date_desc' ? colors.blue : colors.textSecondary),
                 title: Text(
-                  'Terbaru (Tanggal Terbaru)',
+                  l10n.transaksiTb,
                   style: TextStyle(
                     color: _sortType == 'date_desc' ? colors.blue : colors.textPrimary,
                     fontWeight: _sortType == 'date_desc' ? FontWeight.w600 : FontWeight.normal,
@@ -143,7 +139,7 @@ class _HistoryState extends State<History> {
               ListTile(
                 leading: Icon(Icons.history, color: _sortType == 'date_asc' ? colors.blue : colors.textSecondary),
                 title: Text(
-                  'Terlama (Tanggal Terlama)',
+                  l10n.transaksiTl,
                   style: TextStyle(
                     color: _sortType == 'date_asc' ? colors.blue : colors.textPrimary,
                     fontWeight: _sortType == 'date_asc' ? FontWeight.w600 : FontWeight.normal,
@@ -159,7 +155,7 @@ class _HistoryState extends State<History> {
               ListTile(
                 leading: Icon(Icons.trending_up, color: _sortType == 'amount_desc' ? colors.blue : colors.textSecondary),
                 title: Text(
-                  'Nominal Tertinggi',
+                  l10n.nominalTr,
                   style: TextStyle(
                     color: _sortType == 'amount_desc' ? colors.blue : colors.textPrimary,
                     fontWeight: _sortType == 'amount_desc' ? FontWeight.w600 : FontWeight.normal,
@@ -175,7 +171,7 @@ class _HistoryState extends State<History> {
               ListTile(
                 leading: Icon(Icons.trending_down, color: _sortType == 'amount_asc' ? colors.blue : colors.textSecondary),
                 title: Text(
-                  'Nominal Terendah',
+                  l10n.nominalTh,
                   style: TextStyle(
                     color: _sortType == 'amount_asc' ? colors.blue : colors.textPrimary,
                     fontWeight: _sortType == 'amount_asc' ? FontWeight.w600 : FontWeight.normal,
@@ -209,10 +205,10 @@ class _HistoryState extends State<History> {
     final numberFormatter = NumberFormat.decimalPattern('id');
     const shortMonths = [
       'Mei', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
-    ]; // Using standard index logic where date.month represents the month
+    ];
 
     return Scaffold(
-      backgroundColor: pageBgColor,
+      backgroundColor: colors.background,
       appBar: AppBar(
         title: Text(
           l10n.riwayat,
@@ -223,22 +219,12 @@ class _HistoryState extends State<History> {
           ),
         ),
         backgroundColor: pageBgColor,
-        elevation: 0,
         foregroundColor: colors.textPrimary,
         centerTitle: false,
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {},
-            tooltip: 'Pengaturan',
-          ),
-          const SizedBox(width: 8),
-        ],
+        leadingWidth: 70,
       ),
       body: Column(
         children: [
-          // Filter Horizontal Scrolling Row
           Container(
             height: 42,
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -249,7 +235,6 @@ class _HistoryState extends State<History> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        // 1. Semua Pill
                         GestureDetector(
                           onTap: () => setState(() => _selectedFilter = 'all'),
                           child: AnimatedContainer(
@@ -440,7 +425,6 @@ class _HistoryState extends State<History> {
                       );
                     }
 
-                    // Render Transaction Card Item
                     final tx = item as Map<String, dynamic>;
                     final isInc = tx['type'] == 'income';
                     final date = DateTime.parse(tx['date']);
@@ -468,7 +452,6 @@ class _HistoryState extends State<History> {
                       ),
                       child: Row(
                         children: [
-                          // Left Compact Date Badge
                           SizedBox(
                             width: 58,
                             child: Column(
@@ -497,7 +480,6 @@ class _HistoryState extends State<History> {
                             ),
                           ),
 
-                          // Vertical Line Divider
                           Container(
                             width: 1.5,
                             height: 44,
@@ -507,7 +489,6 @@ class _HistoryState extends State<History> {
                             margin: const EdgeInsets.symmetric(horizontal: 12),
                           ),
 
-                          // Middle Title Block
                           Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -536,7 +517,6 @@ class _HistoryState extends State<History> {
                             ),
                           ),
 
-                          // Right Side Category Icon & Dynamic Price Tag
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,

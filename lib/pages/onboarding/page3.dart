@@ -7,6 +7,7 @@ import 'package:jinahku/pages/homepage.dart';
 import 'package:jinahku/pages/main_pages.dart';
 import 'package:jinahku/pages/onboarding/page1.dart';
 import 'package:jinahku/pages/onboarding/page2.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Page3 extends StatefulWidget {
   final OnboardingData data;
@@ -41,11 +42,10 @@ class _Page3State extends State<Page3> {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-
             SizedBox(
-              height: 480,
+              height: 350.h,
               child: Padding(
-                padding: const EdgeInsets.only(top: 50),
+                padding: const EdgeInsets.only(top: 40),
                 child: Image.asset(
                   'assets/images/BG_PG3.webp',
                   width: double.infinity,
@@ -56,7 +56,7 @@ class _Page3State extends State<Page3> {
             ),
 
             Container(
-              margin: const EdgeInsets.only(top: 360),
+              margin: const EdgeInsets.only(top: 350),
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               decoration: const BoxDecoration(
@@ -70,24 +70,22 @@ class _Page3State extends State<Page3> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  const Row(
+                  Row(
                     children: [
-
                       Icon(Icons.person, color: Colors.white),
                       SizedBox(width: 10),
                       Text(
                         "Informasi Pengguna",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 22,
+                          fontSize: 24.h,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 5),
 
                   Container(
                     padding: const EdgeInsets.all(16),
@@ -107,19 +105,19 @@ class _Page3State extends State<Page3> {
                           children: [
                             Text(
                               l10n.namaP,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white70,
-                                fontSize: 14,
+                                fontSize: 14.sp,
                               ),
                             ),
 
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 4),
 
                             Text(
                               widget.data.username,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 24,
+                                fontSize: 24.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -134,25 +132,24 @@ class _Page3State extends State<Page3> {
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 18),
 
-                  const Row(
+                  Row(
                     children: [
-
                       Icon(Icons.arrow_circle_up, color: Colors.white),
                       SizedBox(width: 10),
                       Text(
                         "Detail Pendapatan",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 22,
+                          fontSize: 24.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 5),
 
                   Container(
                     padding: const EdgeInsets.all(18),
@@ -178,24 +175,28 @@ class _Page3State extends State<Page3> {
 
                         buildRow(
                           "Sumber Pemasukan",
-                          widget.data.sourceId == 1 ? "Gaji Bulanan" : "Lainnya",
+                          widget.data.sourceId == 1
+                              ? "Gaji Bulanan"
+                              : "Lainnya",
                         ),
 
                         const SizedBox(height: 14),
 
                         buildRow(
                           "Tanggal",
-                          widget.data.date == null ? "-" : "${widget.data.date!.day}",
+                          widget.data.date == null
+                              ? "-"
+                              : "${widget.data.date!.day}",
                         ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 25),
 
                   SizedBox(
                     width: double.infinity,
-                    height: 58,
+                    height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2F6BFF),
@@ -238,11 +239,11 @@ class _Page3State extends State<Page3> {
                     ),
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 10),
 
                   SizedBox(
                     width: double.infinity,
-                    height: 58,
+                    height: 50,
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: Colors.blue.shade200),
@@ -271,7 +272,8 @@ class _Page3State extends State<Page3> {
                                               data: widget.data,
                                               isDark: widget.isDark,
                                               isEnglish: widget.isEnglish,
-                                              onToggleTheme: widget.onToggleTheme,
+                                              onToggleTheme:
+                                                  widget.onToggleTheme,
                                               onChangeLanguage:
                                                   widget.onChangeLanguage,
                                             ),
@@ -322,7 +324,6 @@ class _Page3State extends State<Page3> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-
         Text(
           title,
           style: const TextStyle(color: Colors.white70, fontSize: 16),

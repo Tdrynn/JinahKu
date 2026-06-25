@@ -6,6 +6,7 @@ import 'package:jinahku/models/modelUser.dart';
 import 'package:jinahku/pages/onboarding/page1.dart';
 import 'package:jinahku/pages/onboarding/page3.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Page2 extends StatefulWidget {
   final OnboardingData data;
@@ -70,9 +71,9 @@ class _Page2State extends State<Page2> {
           child: Stack(
             children: [
               SizedBox(
-                height: 460,
+                height: 440.h,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 40),
+                  padding: const EdgeInsets.only(top: 0),
                   child: Image.asset(
                     'assets/images/BG_PG2.webp',
                     width: double.infinity,
@@ -83,7 +84,7 @@ class _Page2State extends State<Page2> {
               ),
 
               Container(
-                margin: const EdgeInsets.only(top: 430),
+                margin: EdgeInsets.only(top: 335.h),
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: const BoxDecoration(
@@ -97,23 +98,24 @@ class _Page2State extends State<Page2> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Jumlah Pemasukan",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 22,
+                        fontSize: 24.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 6),
-
-                    const Text(
+                    Text(
                       "Angka ini akan digunakan sebagai pendapatan bulanan",
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12.sp
+                      ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
 
                     TextFormField(
                       controller: incomeController,
@@ -125,7 +127,8 @@ class _Page2State extends State<Page2> {
                         if (value == null || value.trim().isEmpty) {
                           return 'Jumlah pemasukan wajib diisi';
                         }
-                        if (double.tryParse(value.replaceAll('.', '')) == null) {
+                        if (double.tryParse(value.replaceAll('.', '')) ==
+                            null) {
                           return 'Masukkan angka yang valid';
                         }
                         return null;
@@ -161,18 +164,18 @@ class _Page2State extends State<Page2> {
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 18),
 
-                    const Text(
+                    Text(
                       "Sumber pemasukan",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 10),
 
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -219,18 +222,18 @@ class _Page2State extends State<Page2> {
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 18),
 
-                    const Text(
+                    Text(
                       "Tanggal",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 10),
 
                     GestureDetector(
                       onTap: pickDate,
@@ -293,7 +296,10 @@ class _Page2State extends State<Page2> {
                             return;
                           }
                           widget.data.income =
-                              double.tryParse(incomeController.text.replaceAll('.', '')) ?? 0;
+                              double.tryParse(
+                                incomeController.text.replaceAll('.', ''),
+                              ) ??
+                              0;
                           widget.data.sourceId = selectedId;
                           widget.data.date = selectedDate;
                           widget.onNext();
@@ -345,7 +351,10 @@ class _Page2State extends State<Page2> {
 
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }
@@ -360,9 +369,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
     }
 
     final formatter = NumberFormat.decimalPattern('id');
-    final newText = formatter.format(
-      int.parse(cleanString),
-    );
+    final newText = formatter.format(int.parse(cleanString));
 
     return newValue.copyWith(
       text: newText,

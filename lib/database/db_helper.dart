@@ -95,16 +95,13 @@ class DBHelper {
   }) async {
     final db = await database;
 
-    return await db.insert(
-      'user_profile',
-      {
-        'username': username,
-        'monthly_income': monthlyIncome,
-        'income_date': incomeDate.toIso8601String(),
-        'avatar': avatar,
-        'income_source_id': incomeSourceId,
-      },
-    );
+    return await db.insert('user_profile', {
+      'username': username,
+      'monthly_income': monthlyIncome,
+      'income_date': incomeDate.toIso8601String(),
+      'avatar': avatar,
+      'income_source_id': incomeSourceId,
+    });
   }
 
   static Future<bool> isFirstTime() async {
@@ -161,24 +158,67 @@ class DBHelper {
   }) async {
     final db = await database;
 
-    return await db.insert(
-      'transactions',
-      {
-        'type': type,
-        'amount': amount,
-        'category': category,
-        'date': date.toIso8601String(),
-        'note': note,
-      },
+    return await db.insert('transactions', {
+      'type': type,
+      'amount': amount,
+      'category': category,
+      'date': date.toIso8601String(),
+      'note': note,
+    });
+  }
+
+  static Future<List<Map<String, dynamic>>> getExpenseByCategoryMonthly(
+    int year,
+    int month,
+  ) async {
+    final db = await database;
+
+    final monthString = month.toString().padLeft(2, '0');
+
+    return await db.rawQuery(
+      '''
+    SELECT
+      category,
+      SUM(amount) as total
+    FROM transactions
+    WHERE type = 'expense'
+      AND strftime('%Y', date) = ?
+      AND strftime('%m', date) = ?
+    GROUP BY category
+  ''',
+      [year.toString(), monthString],
     );
   }
 
   static Future<List<Map<String, dynamic>>> getTransactions() async {
     final db = await database;
 
-    return await db.query(
-      'transactions',
-      orderBy: 'date DESC',
-    );
+    return await db.query('transactions', orderBy: 'date DESC');
+  }
+
+  static Future<Map<String, double>> getFinancialSummary() async {
+    final db = await database;
+
+    final incomeResult = await db.rawQuery('''
+    SELECT COALESCE(SUM(amount), 0) as total
+    FROM transactions
+    WHERE type = 'income'
+  ''');
+
+    final expenseResult = await db.rawQuery('''
+    SELECT COALESCE(SUM(amount), 0) as total
+    FROM transactions
+    WHERE type = 'expense'
+  ''');
+
+    final totalIncome = (incomeResult.first['total'] as num).toDouble();
+
+    final totalExpense = (expenseResult.first['total'] as num).toDouble();
+
+    return {
+      'income': totalIncome,
+      'expense': totalExpense,
+      'balance': totalIncome - totalExpense,
+    };
   }
 }

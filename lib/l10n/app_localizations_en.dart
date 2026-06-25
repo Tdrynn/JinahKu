@@ -18,7 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saldo => 'Current balance';
 
   @override
-  String get ringkasan => 'This month\'s summary';
+  String get ringkasan => 'expenditure summary';
 
   @override
   String get pemasukan => 'incoming';
@@ -106,6 +106,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pilihs => 'Choose Income Source';
+
+  @override
+  String get targerT => 'Savings target';
+
+  @override
+  String get tambahkanT => 'add targets';
+
+  @override
+  String get kategoriPK => 'Select income category';
+
+  @override
+  String get kategoriPN => 'Select an expense category';
+
+  @override
+  String get deskripsi => 'Add descriptions';
+
+  @override
+  String get disimpan => 'Transaction successfully saved! 🎉';
+
+  @override
+  String get jumlahT => 'Transaction amount must be valid';
+
+  @override
+  String get mohonT => 'Please enter the transaction amount';
+
+  @override
+  String get transaksiTb => 'Latest Transaction';
+
+  @override
+  String get transaksiTl => 'Oldest Transaction';
+
+  @override
+  String get nominalTr => 'Highest Amount';
+
+  @override
+  String get nominalTh => 'Lowest Amount';
+
+  @override
+  String get urutkan => 'Sort History';
 
   @override
   String get salary => 'Salary';

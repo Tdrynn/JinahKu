@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      homepage(
+      HomePage(
         isDark: widget.isDark,
         isEnglish: widget.isEnglish,
         onToggleTheme: widget.onToggleTheme,
@@ -52,7 +52,7 @@ class _MainPageState extends State<MainPage> {
       backgroundColor: widget.isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       body: pages[selectedIndex],
 
-      bottomNavigationBar: navbar(
+      bottomNavigationBar: Navbar(
         selectedIndex: selectedIndex,
         isDark: widget.isDark,
         isEnglish: widget.isEnglish,

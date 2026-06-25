@@ -31,7 +31,11 @@ dependencies:
   sqflite: ^2.3.0
   path: ^1.9.0
   flutter_font_icons: ^2.2.0
-  
+  flutter_screenutil: ^5.9.3
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.4
+  flutter_timezone: ^3.0.0
+  shared_preferences: ^2.2.3
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
@@ -44,6 +48,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   fluttertoast: ^9.0.0
+  fl_chart: ^1.2.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1

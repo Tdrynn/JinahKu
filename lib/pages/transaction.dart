@@ -31,7 +31,6 @@ class _TransactionState extends State<Transaction> {
   String _selectedCategory = '';
   DateTime _selectedDate = DateTime.now();
 
-  // Categories list with matching iOS icons
   final List<Map<String, dynamic>> expenseCategories = [
     {'name': 'Makanan', 'icon': Icons.restaurant},
     {'name': 'Transportasi', 'icon': Icons.directions_car},
@@ -198,7 +197,7 @@ class _TransactionState extends State<Transaction> {
     final rawAmount = _amountController.text.replaceAll('.', '');
     if (rawAmount.isEmpty) {
       Fluttertoast.showToast(
-        msg: "Mohon isi jumlah transaksi",
+        msg: l10n.mohonT,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: colors.red,
@@ -210,7 +209,7 @@ class _TransactionState extends State<Transaction> {
     final double? amount = double.tryParse(rawAmount);
     if (amount == null || amount <= 0) {
       Fluttertoast.showToast(
-        msg: "Jumlah transaksi harus valid",
+        msg: l10n.jumlahT,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: colors.red,
@@ -222,8 +221,8 @@ class _TransactionState extends State<Transaction> {
     if (_selectedCategory.isEmpty) {
       Fluttertoast.showToast(
         msg: isExpense
-            ? "Pilih kategori pengeluaran"
-            : "Pilih sumber pemasukan",
+            ? l10n.kategoriPK
+            : l10n.kategoriPN,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: colors.red,
@@ -243,7 +242,7 @@ class _TransactionState extends State<Transaction> {
     );
 
     Fluttertoast.showToast(
-      msg: "Transaksi berhasil disimpan! 🎉",
+      msg: l10n.disimpan,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: colors.green,
@@ -501,8 +500,8 @@ class _TransactionState extends State<Transaction> {
                       child: Text(
                         _selectedCategory.isEmpty
                             ? (isExpense
-                                  ? 'Pilih kategori pengeluaran'
-                                  : 'Pilih sumber pemasukan')
+                                  ? l10n.kategoriPN
+                                  : l10n.kategoriPK)
                             : _selectedCategory,
                         style: TextStyle(
                           color: _selectedCategory.isEmpty
@@ -592,7 +591,7 @@ class _TransactionState extends State<Transaction> {
                   fontFamily: 'Inter',
                 ),
                 decoration: InputDecoration(
-                  hintText: 'tambahkan deskripsi....',
+                  hintText: l10n.tambahD,
                   hintStyle: TextStyle(
                     color: colors.textSecondary.withOpacity(0.5),
                     fontFamily: 'Inter',
