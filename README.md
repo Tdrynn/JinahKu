@@ -1,6 +1,6 @@
-# jinahku
+# JinahKu
 
-A new Flutter project.
+Project Based Learning Semester 4 ~ Aplikasi pengelola keuangan pribadi
 
 ## Getting Started
 
