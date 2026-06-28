@@ -173,6 +173,12 @@ abstract class AppLocalizations {
   /// **'Date'**
   String get tanggal;
 
+  /// No description provided for @tanggalP.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming Date'**
+  String get tanggalP;
+
   /// No description provided for @namaT.
   ///
   /// In en, this message translates to:

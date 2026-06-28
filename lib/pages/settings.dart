@@ -57,7 +57,7 @@ class _SettingsState extends State<Settings> {
     setState(() {
       selectedTime = TimeOfDay(
         hour: prefs.getInt('hour') ?? 20,
-        minute: prefs.getInt('minute') ?? 0
+        minute: prefs.getInt('minute') ?? 0,
       );
     });
   }
@@ -238,7 +238,7 @@ class _SettingsState extends State<Settings> {
         ),
         title: const Text(
           "Settings",
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight(600)),
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
         ),
         actions: [
           Padding(
@@ -251,18 +251,17 @@ class _SettingsState extends State<Settings> {
           ),
         ],
       ),
-
       backgroundColor: colors.background,
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: .center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               padding: const EdgeInsets.symmetric(vertical: 24),
               child: Column(
                 children: [
                   Stack(
-                    alignment: .bottomRight,
+                    alignment: Alignment.bottomRight,
                     children: [
                       CircleAvatar(
                         radius: 55,
@@ -273,7 +272,6 @@ class _SettingsState extends State<Settings> {
                             ? const Icon(Icons.person, size: 50)
                             : null,
                       ),
-
                       GestureDetector(
                         onTap: () {},
                         child: Container(
@@ -290,65 +288,149 @@ class _SettingsState extends State<Settings> {
                 ],
               ),
             ),
+            Column(
+              children: [
+                Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: BoxDecoration(
+                      color: colors.card,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(7, 10),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.person_outline),
+                          title: Text(l10n.namaP),
+                          subtitle: Text(username),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(
+                            Icons.account_balance_wallet_outlined,
+                          ),
+                          title: Text(l10n.pemasukan),
+                          subtitle: Text(
+                            NumberFormat.currency(
+                              locale: 'id_ID',
+                              symbol: 'Rp ',
+                              decimalDigits: 0,
+                            ).format(income),
+                          ),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(Icons.calendar_month),
+                          title: Text(l10n.tanggalP),
+                          subtitle: Text(
+                            NumberFormat.currency(
+                              locale: 'id_ID',
+                              symbol: 'Rp ',
+                              decimalDigits: 0,
+                            ).format(income),
+                          ),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(Icons.arrow_upward_rounded),
+                          title: const Text("Kategori Pemasukan"),
+                          trailing: const Icon(Icons.chevron_right_rounded),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(Icons.arrow_downward_rounded),
+                          title: const Text("Kategori Pengeluaran"),
+                          trailing: const Icon(Icons.chevron_right_rounded),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(Icons.notifications_active),
+                          title: const Text("Jam Pengingat"),
+                          subtitle: Text(
+                            "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}",
+                          ),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () async {
+                            final picked = await showTimePicker(
+                              context: context,
+                              initialTime: selectedTime,
+                            );
 
-            Center(
+                            if (picked != null) {
+                              setState(() {
+                                selectedTime = picked;
+                              });
+
+                              await saveReminder();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+            GestureDetector(
+              onTap: () {},
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.9,
+                height: 60,
                 decoration: BoxDecoration(
-                  color: colors.card,
-                  borderRadius: .circular(20),
-                ),
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.person_outline),
-                      title: Text(l10n.namaP),
-                      subtitle: Text(username),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {},
-                    ),
-                    Divider(height: 1, color: colors.divider),
-                    ListTile(
-                      leading: const Icon(
-                        Icons.account_balance_wallet_outlined,
-                      ),
-                      title: Text(l10n.pemasukan),
-                      subtitle: Text(
-                        NumberFormat.currency(
-                          locale: 'id_ID',
-                          symbol: 'Rp ',
-                          decimalDigits: 0,
-                        ).format(income),
-                      ),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.notifications_active),
-                      title: const Text("Jam Pengingat"),
-                      subtitle: Text(
-                        "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}",
-                      ),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () async {
-                        final picked = await showTimePicker(
-                          context: context,
-                          initialTime: selectedTime,
-                        );
-
-                        if (picked != null) {
-                          setState(() {
-                            selectedTime = picked;
-                          });
-
-                          await saveReminder();
-                        }
-                      },
+                  gradient: LinearGradient(
+                    colors: [colors.red, colors.red.withOpacity(0.85)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: colors.red.withOpacity(0.3),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
                     ),
                   ],
                 ),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.restart_alt_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        "Reset Aplikasi",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),

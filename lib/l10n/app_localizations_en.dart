@@ -48,6 +48,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tanggal => 'Date';
 
   @override
+  String get tanggalP => 'Incoming Date';
+
+  @override
   String get namaT => 'Transaction Name (Optional)';
 
   @override

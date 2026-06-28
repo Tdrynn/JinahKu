@@ -13,6 +13,7 @@
     "makanan": "Food",
     "kategori": "Category",
     "tanggal": "Date",
+    "tanggalP": "Incoming Date",
     "namaT": "Transaction Name (Optional)",
     "catatan": "Notes (Optional)",
     "simpan": "Save",
