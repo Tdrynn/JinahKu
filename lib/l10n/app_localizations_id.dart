@@ -48,6 +48,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get tanggal => 'Tanggal';
 
   @override
+  String get tanggalP => 'Tanggal Pemasukan';
+
+  @override
   String get namaT => 'Nama Transaksi (Opsional)';
 
   @override

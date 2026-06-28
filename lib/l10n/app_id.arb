@@ -13,6 +13,7 @@
     "makanan": "Makanan",
     "kategori": "Kategori",
     "tanggal": "Tanggal",
+    "tanggalP": "Tanggal Pemasukan",
     "namaT": "Nama Transaksi (Opsional)",
     "catatan": "Catatan (Opsional)",
     "simpan": "Simpan",
