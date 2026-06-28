@@ -1,5 +1,5 @@
-<div align="center">
-  <img src="android/app/src/main/res/mipmap-hdpi/ic_launcher.png" height="30" alt="JinahKu">
+<div align="start">
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" height="30" alt="JinahKu">
 </div>
 # JinahKu
 
