@@ -1,7 +1,7 @@
 <div align="start">
   <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" height="100" width="100" alt="JinahKu">
 </div>
-# JinahKu
+## JinahKu
 
 Project Based Learning Semester 4 ~ Aplikasi pengelola keuangan pribadi
 
