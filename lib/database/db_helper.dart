@@ -291,5 +291,38 @@ class DBHelper {
     final db = await database;
     await db.delete('transactions');
     await db.delete('user_profile');
+  // Mengambil kategori unik untuk Pemasukan
+  static Future<List<Map<String, dynamic>>> getIncomeCategories() async {
+    final db = await database;
+    return await db.query('income_source', orderBy: 'code ASC');
+  }
+
+  static Future<int> insertIncomeCategories(String code) async {
+    final db = await database;
+    return await db.insert('income_source', {'code': code});
+  }
+
+  static Future<int> updateIncomeSource(int id, String newCode) async {
+    final db = await database;
+    return await db.update(
+      'income_source',
+      {'code': newCode},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  static Future<int> deleteIncomeSource(int id) async {
+    final db = await database;
+    return await db.delete('income_source', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // Mengambil kategori unik untuk Pengeluaran
+  static Future<List<String>> getExpenseCategories() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+      SELECT DISTINCT category FROM transactions WHERE type = 'expense' ORDER BY category ASC
+    ''');
+    return List.generate(maps.length, (i) => maps[i]['category'] as String);
   }
 }
