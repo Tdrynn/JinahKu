@@ -10,6 +10,7 @@ class MainPage extends StatefulWidget {
   final bool isEnglish;
   final Function(bool) onToggleTheme;
   final Function(String) onChangeLanguage;
+  final VoidCallback restartOnBoarding;
 
   const MainPage({
     super.key,
@@ -17,6 +18,7 @@ class MainPage extends StatefulWidget {
     required this.isEnglish,
     required this.onToggleTheme,
     required this.onChangeLanguage,
+    required this.restartOnBoarding,
   });
 
   @override
@@ -34,6 +36,7 @@ class _MainPageState extends State<MainPage> {
         isEnglish: widget.isEnglish,
         onToggleTheme: widget.onToggleTheme,
         onChangeLanguage: widget.onChangeLanguage,
+        restartOnBoarding: widget.restartOnBoarding,
       ),
 
       History(isDark: widget.isDark),

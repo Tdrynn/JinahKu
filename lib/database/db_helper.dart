@@ -138,6 +138,7 @@ class DBHelper {
         user_profile.monthly_income,
         user_profile.avatar
       FROM user_profile
+      ORDER BY id DESC
       LIMIT 1
     ''');
 
@@ -220,5 +221,75 @@ class DBHelper {
       'expense': totalExpense,
       'balance': totalIncome - totalExpense,
     };
+  }
+
+  // =========================================================================
+  // METODE TAMBAHAN UNTUK SETTINGS (EDIT & RESET)
+  // =========================================================================
+
+  /// Memperbarui data profil pengguna secara dinamis berdasarkan map key-value.
+  /// Digunakan oleh fitur Edit Username, Pemasukan, dan Tanggal Pemasukan.
+  static Future<int> updateUser(Map<String, dynamic> data) async {
+    final db = await database;
+
+    // Jika ada pembaruan pada income_date (berupa angka hari int 1-31),
+    // kita konversi ke format ISO8601String agar konsisten dengan insertUser.
+    if (data.containsKey('income_date') && data['income_date'] is int) {
+      final now = DateTime.now();
+      final day = data['income_date'] as int;
+      // Membuat DateTime dengan tanggal yang dipilih di bulan & tahun saat ini
+      final targetDate = DateTime(now.year, now.month, day);
+      data['income_date'] = targetDate.toIso8601String();
+    }
+
+    // Mengupdate baris pertama pada tabel user_profile
+    return await db.update(
+      'user_profile',
+      data,
+      where: 'id = (SELECT id FROM user_profile ORDER BY id DESC LIMIT 1)',
+    );
+  }
+
+  /// Mengambil data user spesifik beserta ekstraksi angka tanggal gajian.
+  /// Menggantikan atau melengkapi fungsi `getUser()` sebelumnya agar menyertakan data tanggal.
+  static Future<Map<String, dynamic>?> getUserWithDate() async {
+    final db = await database;
+
+    final result = await db.rawQuery('''
+      SELECT
+        username,
+        monthly_income,
+        avatar,
+        income_date
+      FROM user_profile
+      ORDER BY id DESC
+      LIMIT 1
+    ''');
+
+    if (result.isNotEmpty) {
+      final userMap = Map<String, dynamic>.from(result.first);
+
+      // Mengambil substring angka hari dari ISO8601 String (misal: "2026-06-28..." diambil 28)
+      if (userMap['income_date'] != null) {
+        try {
+          final dateTime = DateTime.parse(userMap['income_date'].toString());
+          userMap['income_date'] =
+              dateTime.day; // Mengubah nilainya menjadi int (1-31)
+        } catch (_) {
+          userMap['income_date'] = 1; // Default jika gagal parsing
+        }
+      } else {
+        userMap['income_date'] = 1;
+      }
+
+      return userMap;
+    }
+    return null;
+  }
+
+  static Future<void> clearAllData() async {
+    final db = await database;
+    await db.delete('transactions');
+    await db.delete('user_profile');
   }
 }
