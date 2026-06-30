@@ -7,6 +7,7 @@ import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jinahku/services/notification_service.dart';
+import 'package:jinahku/pages/income_category.dart';
 
 class Settings extends StatefulWidget {
   final bool isDark;
@@ -348,7 +349,15 @@ class _SettingsState extends State<Settings> {
                           leading: const Icon(Icons.arrow_upward_rounded),
                           title: const Text("Kategori Pemasukan"),
                           trailing: const Icon(Icons.chevron_right_rounded),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const IncomeCategoryPage(),
+                              ),
+                            );
+                          },
                         ),
                         Divider(height: 2, color: colors.background),
                         ListTile(
