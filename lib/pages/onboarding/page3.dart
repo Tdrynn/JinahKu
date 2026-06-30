@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:jinahku/database/db_helper.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'package:jinahku/models/modelUser.dart';
-import 'package:jinahku/pages/homepage.dart';
-import 'package:jinahku/pages/main_pages.dart';
-import 'package:jinahku/pages/onboarding/page1.dart';
-import 'package:jinahku/pages/onboarding/page2.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Page3 extends StatefulWidget {
   final OnboardingData data;
-
   final bool isDark;
   final bool isEnglish;
-
   final Function(bool) onToggleTheme;
   final Function(String) onChangeLanguage;
+  final VoidCallback finishOnboarding;
+  final VoidCallback? onBack;
 
   const Page3({
     super.key,
@@ -25,6 +22,8 @@ class Page3 extends StatefulWidget {
     required this.isEnglish,
     required this.onToggleTheme,
     required this.onChangeLanguage,
+    required this.finishOnboarding,
+    this.onBack,
   });
 
   @override
@@ -35,286 +34,215 @@ class _Page3State extends State<Page3> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final paddingTop = MediaQuery.of(context).padding.top;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF000C2C),
-
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            SizedBox(
-              height: 350.h,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 40),
-                child: Image.asset(
-                  'assets/images/BG_PG3.webp',
-                  width: double.infinity,
-                  fit: BoxFit.fitWidth,
-                  alignment: .topCenter,
-                ),
-              ),
-            ),
-
-            Container(
-              margin: const EdgeInsets.only(top: 350),
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                color: Color(0xFF1B263B),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(28),
-                  topRight: Radius.circular(28),
-                ),
-              ),
-
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: const Color(0xFF1B263B),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
                     children: [
-                      Icon(Icons.person, color: Colors.white),
-                      SizedBox(width: 10),
-                      Text(
-                        "Informasi Pengguna",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24.h,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 5),
-
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF243B55),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: Colors.blue.shade400),
-                    ),
-
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-
-                          children: [
-                            Text(
-                              l10n.namaP,
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-
-                            const SizedBox(height: 4),
-
-                            Text(
-                              widget.data.username,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: AssetImage(widget.data.avatar),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  Row(
-                    children: [
-                      Icon(Icons.arrow_circle_up, color: Colors.white),
-                      SizedBox(width: 10),
-                      Text(
-                        "Detail Pendapatan",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 5),
-
-                  Container(
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF243B55),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: Colors.blue.shade400),
-                    ),
-
-                    child: Column(
-                      children: [
-                        buildRow(
-                          "Jumlah Pemasukan",
-                          NumberFormat.currency(
-                            locale: 'id',
-                            symbol: 'Rp. ',
-                            decimalDigits: 0,
-                          ).format(widget.data.income),
-                          isGreen: true,
-                        ),
-
-                        const SizedBox(height: 14),
-
-                        buildRow(
-                          "Sumber Pemasukan",
-                          widget.data.sourceId == 1
-                              ? "Gaji Bulanan"
-                              : "Lainnya",
-                        ),
-
-                        const SizedBox(height: 14),
-
-                        buildRow(
-                          "Tanggal",
-                          widget.data.date == null
-                              ? "-"
-                              : "${widget.data.date!.day}",
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2F6BFF),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-
-                      onPressed: () async {
-                        await DBHelper.insertUser(
-                          username: widget.data.username,
-                          monthlyIncome: widget.data.income,
-                          incomeDate: widget.data.date!,
-                          avatar: widget.data.avatar,
-                          incomeSourceId: widget.data.sourceId!,
-                        );
-
-                        Navigator.pushReplacement(
-                          context,
-
-                          MaterialPageRoute(
-                            builder: (_) => MainPage(
-                              isDark: widget.isDark,
-                              isEnglish: widget.isEnglish,
-                              onToggleTheme: widget.onToggleTheme,
-                              onChangeLanguage: widget.onChangeLanguage,
+                      Stack(
+                        children: [
+                          Container(
+                            color: const Color(0xFF000C2C),
+                            width: double.infinity,
+                            padding: EdgeInsets.only(top: paddingTop + 70),
+                            child: Image.asset(
+                              'assets/images/BG_PG3.webp',
+                              width: double.infinity,
+                              fit: BoxFit.fitWidth,
+                              alignment: Alignment.topCenter,
                             ),
                           ),
-                        );
-                      },
-
-                      child: Text(
-                        l10n.simpan,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.blue.shade200),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                          
+                          if (widget.onBack != null)
+                            Positioned(
+                              top: paddingTop + 10,
+                              left: 16,
+                              child: ClipOval(
+                                child: Material(
+                                  color: Colors.black26,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                                    onPressed: widget.onBack,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
 
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Page1(
-                              data: widget.data,
-                              onNext: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Page2(
-                                      data: widget.data,
-                                      onNext: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => Page3(
-                                              data: widget.data,
-                                              isDark: widget.isDark,
-                                              isEnglish: widget.isEnglish,
-                                              onToggleTheme:
-                                                  widget.onToggleTheme,
-                                              onChangeLanguage:
-                                                  widget.onChangeLanguage,
-                                            ),
+                      Expanded(
+                        child: Transform.translate(
+                          offset: const Offset(0, -15),
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(24),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF1B263B),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(28),
+                                topRight: Radius.circular(28),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.person, color: Colors.white),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      "Informasi Pengguna",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF243B55),
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(color: Colors.blue.shade400),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            l10n.namaP,
+                                            style: TextStyle(color: Colors.white70, fontSize: 14.sp),
                                           ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            widget.data.username,
+                                            style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      CircleAvatar(
+                                        radius: 28,
+                                        backgroundImage: AssetImage(widget.data.avatar),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 18),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.arrow_circle_up, color: Colors.white),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      "Detail Pendapatan",
+                                      style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  padding: const EdgeInsets.all(18),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF243B55),
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(color: Colors.blue.shade400),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      buildRow(
+                                        "Jumlah Pemasukan",
+                                        NumberFormat.currency(
+                                          locale: 'id',
+                                          symbol: 'Rp. ',
+                                          decimalDigits: 0,
+                                        ).format(widget.data.income),
+                                        isGreen: true,
+                                      ),
+                                      const SizedBox(height: 14),
+                                      buildRow(
+                                        "Sumber Pemasukan",
+                                        widget.data.sourceId == 1 ? "Gaji Bulanan" : "Lainnya",
+                                      ),
+                                      const SizedBox(height: 14),
+                                      buildRow(
+                                        "Tanggal",
+                                        widget.data.date == null ? "-" : "${widget.data.date!.day}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                
+                                const Spacer(),
+                                const SizedBox(height: 32),
+                                
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 50.h,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF2F6BFF),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      try {
+                                        await DBHelper.insertUser(
+                                          username: widget.data.username,
+                                          monthlyIncome: widget.data.income,
+                                          incomeDate: widget.data.date!,
+                                          avatar: widget.data.avatar,
+                                          incomeSourceId: widget.data.sourceId!,
                                         );
-                                      },
+                                        widget.finishOnboarding();
+                                      } catch (e) {
+                                        debugPrint(e.toString());
+                                      }
+                                    },
+                                    child: Text(
+                                      l10n.simpan,
+                                      style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                );
-                              },
+                                ),
+                                const SizedBox(height: 24),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    buildDot(false),
+                                    buildDot(false),
+                                    buildDot(true),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          (route) => false,
-                        );
-                      },
-
-                      child: const Text(
-                        "Kembali & Ubah Data",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildDot(false),
-                      buildDot(false),
-                      buildDot(true),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -324,11 +252,7 @@ class _Page3State extends State<Page3> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: const TextStyle(color: Colors.white70, fontSize: 16),
-        ),
-
+        Text(title, style: const TextStyle(color: Colors.white70, fontSize: 16)),
         Text(
           value,
           style: TextStyle(
@@ -344,15 +268,12 @@ class _Page3State extends State<Page3> {
   Widget buildDot(bool active) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
-
       width: active ? 10 : 8,
       height: active ? 10 : 8,
-
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-
         color: active ? Colors.blue : Colors.white54,
       ),
     );
   }
-}
+} 

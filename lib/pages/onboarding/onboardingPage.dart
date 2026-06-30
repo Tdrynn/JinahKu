@@ -9,13 +9,14 @@ class onboardingPage extends StatefulWidget {
   final bool isEnglish;
   final Function(bool) onToggleTheme;
   final Function(String) onChangeLanguage;
-
+  final VoidCallback finishOnboarding;
   const onboardingPage ({
     super.key,
     required this.isDark,
     required this.isEnglish,
     required this.onToggleTheme,
     required this.onChangeLanguage,
+    required this.finishOnboarding,
   });
 
   @override
@@ -55,13 +56,17 @@ class _onboardingPageState extends State<onboardingPage> {
               children: [
                 Page1(data: data, onNext: nextPage),
                 Page2(data: data, onNext: nextPage),
-                Page3(data: data, isDark: widget.isDark, isEnglish: widget.isEnglish, onToggleTheme: widget.onToggleTheme, onChangeLanguage: widget.onChangeLanguage,
+                Page3(
+                  data: data,
+                  isDark: widget.isDark,
+                  isEnglish: widget.isEnglish,
+                  onToggleTheme: widget.onToggleTheme,
+                  onChangeLanguage: widget.onChangeLanguage,
+                  finishOnboarding: widget.finishOnboarding,
               ),
               ],
             ),
           ),
-
-          const SizedBox(height: 20),
         ],
       ),
     );

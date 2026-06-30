@@ -63,273 +63,320 @@ class _Page2State extends State<Page2> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: const Color(0xFF00041C),
-      body: SingleChildScrollView(
-        child: Form(
+    final paddingTop = MediaQuery.of(context).padding.top;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: const Color(0xFF1B263B),
+        body: Form(
           key: _formKey,
-          child: Stack(
-            children: [
-              SizedBox(
-                height: 440.h,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: Image.asset(
-                    'assets/images/BG_PG2.webp',
-                    width: double.infinity,
-                    fit: BoxFit.fitWidth,
-                    alignment: .topCenter,
-                  ),
-                ),
-              ),
-
-              Container(
-                margin: EdgeInsets.only(top: 335.h),
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1B263B),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(28),
-                    topRight: Radius.circular(28),
-                  ),
-                ),
-
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Jumlah Pemasukan",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    Text(
-                      "Angka ini akan digunakan sebagai pendapatan bulanan",
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 12.sp
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    TextFormField(
-                      controller: incomeController,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly,
-                        ThousandsSeparatorInputFormatter(),
-                      ],
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Jumlah pemasukan wajib diisi';
-                        }
-                        if (double.tryParse(value.replaceAll('.', '')) ==
-                            null) {
-                          return 'Masukkan angka yang valid';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.number,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      decoration: InputDecoration(
-                        prefixText: "Rp. ",
-                        prefixStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        hintText: "0",
-                        hintStyle: const TextStyle(color: Colors.white54),
-                        filled: true,
-                        fillColor: const Color(0xFF243B55),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide(color: Colors.blue.shade400),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: const BorderSide(
-                            color: Colors.blue,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    Text(
-                      "Sumber pemasukan",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF243B55),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.blue.shade400),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField<int>(
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Pilih sumber pemasukan';
-                            }
-                            return null;
-                          },
-                          dropdownColor: const Color(0xFF243B55),
-                          value: selectedId,
-                          hint: Text(
-                            l10n.pilih,
-                            style: const TextStyle(color: Colors.white54),
-                          ),
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.white,
-                          ),
-                          isExpanded: true,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                          items: sources.map((item) {
-                            return DropdownMenuItem<int>(
-                              value: item['id'] as int,
-                              child: Text(item['name'] ?? item['code']),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedId = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    Text(
-                      "Tanggal",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    GestureDetector(
-                      onTap: pickDate,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 18,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF243B55),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.blue.shade400),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              selectedDate == null
-                                  ? "10"
-                                  : "${selectedDate!.day}",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
-                            ),
-
-                            const Icon(
-                              Icons.calendar_month,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    SizedBox(
-                      width: double.infinity,
-                      height: 58,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2F6BFF),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        onPressed: () {
-                          if (!_formKey.currentState!.validate()) {
-                            return;
-                          }
-
-                          if (selectedDate == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Tanggal wajib dipilih"),
-                              ),
-                            );
-                            return;
-                          }
-                          widget.data.income =
-                              double.tryParse(
-                                incomeController.text.replaceAll('.', ''),
-                              ) ??
-                              0;
-                          widget.data.sourceId = selectedId;
-                          widget.data.date = selectedDate;
-                          widget.onNext();
-                        },
-
-                        child: Text(
-                          l10n.lanjutkan,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
                       children: [
-                        buildDot(false),
-                        buildDot(true),
-                        buildDot(false),
+                        Container(
+                          width: double.infinity,
+                          child: Image.asset(
+                            'assets/images/BG_PG2.webp',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+
+                        Expanded(
+                          child: Transform.translate(
+                            offset: const Offset(0, -19),
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.fromLTRB(
+                                24,
+                                24,
+                                24,
+                                32,
+                              ),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF1B263B),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(28),
+                                  topRight: Radius.circular(28),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: .start,
+                                children: [
+                                  Text(
+                                    "Jumlah Pemasukan",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  Text(
+                                    "Angka ini akan digunakan sebagai pendapatan bulanan",
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 10),
+
+                                  TextFormField(
+                                    controller: incomeController,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      ThousandsSeparatorInputFormatter(),
+                                    ],
+                                    validator: (value) {
+                                      if (value == null ||
+                                          value.trim().isEmpty) {
+                                        return 'Jumlah pemasukan wajib diisi';
+                                      }
+                                      if (double.tryParse(
+                                            value.replaceAll('.', ''),
+                                          ) ==
+                                          null) {
+                                        return 'Masukkan angka yang valid';
+                                      }
+                                      return null;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    decoration: InputDecoration(
+                                      prefixText: "Rp. ",
+                                      prefixStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      hintText: "0",
+                                      hintStyle: const TextStyle(
+                                        color: Colors.white70,
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFF243B55),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                        borderSide: BorderSide(
+                                          color: Colors.blue.shade400,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                        borderSide: const BorderSide(
+                                          color: Colors.blue,
+                                          width: 2,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 18),
+
+                                  Text(
+                                    "Sumber pemasukan",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 10),
+
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF243B55),
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color: Colors.blue.shade400,
+                                      ),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButtonFormField<int>(
+                                        validator: (value) {
+                                          if (value == null) {
+                                            return 'Pilih sumber pemasukan';
+                                          }
+                                          return null;
+                                        },
+                                        dropdownColor: const Color(0xFF243B55),
+                                        value: selectedId,
+                                        hint: Text(
+                                          l10n.pilih,
+                                          style: const TextStyle(
+                                            color: Colors.white54,
+                                          ),
+                                        ),
+                                        icon: const Icon(
+                                          Icons.keyboard_arrow_down,
+                                          color: Colors.white,
+                                        ),
+                                        isExpanded: true,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                        items: sources.map((item) {
+                                          return DropdownMenuItem<int>(
+                                            value: item['id'] as int,
+                                            child: Text(
+                                              item['name'] ?? item['code'],
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedId = value;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 18),
+
+                                  Text(
+                                    "Tanggal",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 10),
+
+                                  GestureDetector(
+                                    onTap: pickDate,
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 18,
+                                        vertical: 18,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF243B55),
+                                        borderRadius: BorderRadius.circular(16),
+                                        border: Border.all(
+                                          color: Colors.blue.shade400,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            selectedDate == null
+                                                ? " "
+                                                : "${selectedDate!.day}",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+
+                                          const Icon(
+                                            Icons.calendar_month,
+                                            color: Colors.white,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 32),
+
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 50.h,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF2F6BFF),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        if (!_formKey.currentState!
+                                            .validate()) {
+                                          return;
+                                        }
+
+                                        if (selectedDate == null) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Tanggal wajib dipilih",
+                                              ),
+                                            ),
+                                          );
+                                          return;
+                                        }
+                                        widget.data.income =
+                                            double.tryParse(
+                                              incomeController.text.replaceAll(
+                                                '.',
+                                                '',
+                                              ),
+                                            ) ??
+                                            0;
+                                        widget.data.sourceId = selectedId;
+                                        widget.data.date = selectedDate;
+                                        widget.onNext();
+                                      },
+
+                                      child: Text(
+                                        l10n.lanjutkan,
+                                        style: TextStyle(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 24),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      buildDot(false),
+                                      buildDot(true),
+                                      buildDot(false),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),

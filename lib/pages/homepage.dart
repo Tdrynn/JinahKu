@@ -13,12 +13,14 @@ class HomePage extends StatefulWidget {
   final bool isEnglish;
   final Function(bool) onToggleTheme;
   final Function(String) onChangeLanguage;
+  final VoidCallback restartOnBoarding;
   const HomePage({
     super.key,
     required this.isDark,
     required this.isEnglish,
     required this.onToggleTheme,
     required this.onChangeLanguage,
+    required this.restartOnBoarding,
   });
 
   @override
@@ -200,14 +202,26 @@ class _HomePageState extends State<HomePage> {
                           ),
 
                           IconButton(
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Settings(isDark: widget.isDark, isEnglish: widget.isEnglish, onToggleTheme: widget.onToggleTheme, onChangeLanguage: widget.onChangeLanguage),
+                                  builder: (context) => Settings(
+                                    isDark: widget.isDark,
+                                    isEnglish: widget.isEnglish,
+                                    onToggleTheme: widget.onToggleTheme,
+                                    onChangeLanguage: widget.onChangeLanguage,
+                                    restartOnBoarding: widget.restartOnBoarding,
+                                  ),
                                 ),
                               );
+                              if (mounted) {
+                                loadUser();
+                                loadFinancialSummary();
+                                loadExpenseChart();
+                              }
                             },
+
                             iconSize: 34,
                             icon: Icon(
                               Icons.settings,
