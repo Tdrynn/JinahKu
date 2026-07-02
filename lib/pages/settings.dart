@@ -12,6 +12,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jinahku/services/notification_service.dart';
+import 'package:jinahku/pages/income_category.dart';
 
 class Settings extends StatefulWidget {
   final bool isDark;
@@ -1074,16 +1077,91 @@ class _SettingsState extends State<Settings> {
                       blurRadius: 4,
                       offset: const Offset(7, 10),
                     ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.person_outline),
-                      title: Text(l10n.namaP),
-                      subtitle: Text(username.isEmpty ? "-" : username),
-                      trailing: const Icon(Icons.edit),
-                      onTap: () => _showEditNameDialog(l10n),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.person_outline),
+                          title: Text(l10n.namaP),
+                          subtitle: Text(username),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(
+                            Icons.account_balance_wallet_outlined,
+                          ),
+                          title: Text(l10n.pemasukan),
+                          subtitle: Text(
+                            NumberFormat.currency(
+                              locale: 'id_ID',
+                              symbol: 'Rp ',
+                              decimalDigits: 0,
+                            ).format(income),
+                          ),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(Icons.calendar_month),
+                          title: Text(l10n.tanggalP),
+                          subtitle: Text(
+                            NumberFormat.currency(
+                              locale: 'id_ID',
+                              symbol: 'Rp ',
+                              decimalDigits: 0,
+                            ).format(income),
+                          ),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(Icons.arrow_upward_rounded),
+                          title: const Text("Kategori Pemasukan"),
+                          trailing: const Icon(Icons.chevron_right_rounded),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const IncomeCategoryPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(Icons.arrow_downward_rounded),
+                          title: const Text("Kategori Pengeluaran"),
+                          trailing: const Icon(Icons.chevron_right_rounded),
+                          onTap: () {},
+                        ),
+                        Divider(height: 2, color: colors.background),
+                        ListTile(
+                          leading: const Icon(Icons.notifications_active),
+                          title: const Text("Jam Pengingat"),
+                          subtitle: Text(
+                            "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}",
+                          ),
+                          trailing: const Icon(Icons.edit),
+                          onTap: () async {
+                            final picked = await showTimePicker(
+                              context: context,
+                              initialTime: selectedTime,
+                            );
+
+                            if (picked != null) {
+                              setState(() {
+                                selectedTime = picked;
+                              });
+
+                              await saveReminder();
+                            }
+                          },
+                        ),
+                      ],
                     ),
                     Divider(height: 2, color: colors.background),
                     ListTile(
