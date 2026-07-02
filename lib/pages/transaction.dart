@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jinahku/pages/history.dart';
 import 'package:jinahku/pages/main_pages.dart';
+import 'package:jinahku/models/transaction_data.dart';
 
 import '../database/db_helper.dart';
 import '../theme/light_colors.dart' as light;
@@ -14,10 +15,13 @@ class Transaction extends StatefulWidget {
   final bool isDark;
   final VoidCallback onTransactionSaved;
 
+  final TransactionData? initialData;
+
   const Transaction({
     super.key,
     required this.isDark,
-    required this.onTransactionSaved
+    required this.onTransactionSaved,
+    this.initialData,
   });
 
   @override
@@ -53,9 +57,18 @@ class _TransactionState extends State<Transaction> {
   void initState() {
     super.initState();
     _selectedCategory = '';
+
+    print(widget.initialData);
+
+    if (widget.initialData != null) {
+      final formatter = NumberFormat.decimalPattern('id');
+
+      _amountController.text = formatter.format(widget.initialData!.amount);
+      isExpense = true;
+      _selectedDate = widget.initialData!.date;
+    }
   }
 
-  // Indonesian custom date formatting
   String _formatIndonesianDate(DateTime date) {
     const months = [
       'Januari',
@@ -72,6 +85,21 @@ class _TransactionState extends State<Transaction> {
       'Desember',
     ];
     return "${date.day}-${months[date.month - 1]}-${date.year}";
+  }
+
+  void didUpdateWidget(covariant Transaction oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.initialData != oldWidget.initialData &&
+        widget.initialData != null) {
+          final formatter = NumberFormat.decimalPattern('id');
+      _amountController.text = formatter.format(widget.initialData!.amount);
+      _selectedCategory = 'Belanja';
+      _noteController.text = widget.initialData!.merchant ?? '';
+      _selectedDate = widget.initialData!.date;
+
+      setState(() {});
+    }
   }
 
   void _showCategoryPicker(BuildContext context, dynamic colors) {
@@ -220,9 +248,7 @@ class _TransactionState extends State<Transaction> {
 
     if (_selectedCategory.isEmpty) {
       Fluttertoast.showToast(
-        msg: isExpense
-            ? l10n.kategoriPK
-            : l10n.kategoriPN,
+        msg: isExpense ? l10n.kategoriPN : l10n.kategoriPK,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: colors.red,
@@ -314,7 +340,6 @@ class _TransactionState extends State<Transaction> {
                 borderRadius: BorderRadius.circular(16),
                 child: Stack(
                   children: [
-                    // Smooth Sliding Liquid Glass Active Indicator Pill
                     AnimatedAlign(
                       duration: const Duration(milliseconds: 320),
                       curve: Curves.fastOutSlowIn,
@@ -341,10 +366,8 @@ class _TransactionState extends State<Transaction> {
                       ),
                     ),
 
-                    // Label Buttons Layer
                     Row(
                       children: [
-                        // Pemasukan Button
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
@@ -370,7 +393,7 @@ class _TransactionState extends State<Transaction> {
                             ),
                           ),
                         ),
-                        // Pengeluaran Button
+
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
@@ -404,7 +427,6 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
-            // Jumlah (Amount) Label and Styled Input
             Text(
               l10n.jumlah,
               style: TextStyle(
@@ -463,7 +485,6 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
-            // Kategori Dropdown Box
             Text(
               l10n.kategori,
               style: TextStyle(
@@ -499,9 +520,7 @@ class _TransactionState extends State<Transaction> {
                     Expanded(
                       child: Text(
                         _selectedCategory.isEmpty
-                            ? (isExpense
-                                  ? l10n.kategoriPN
-                                  : l10n.kategoriPK)
+                            ? (isExpense ? l10n.kategoriPN : l10n.kategoriPK)
                             : _selectedCategory,
                         style: TextStyle(
                           color: _selectedCategory.isEmpty
@@ -524,7 +543,6 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
-            // Tanggal Date Picker Box
             Text(
               l10n.tanggal,
               style: TextStyle(
