@@ -123,7 +123,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get tambahkanT => 'Tambahkan Target';
 
   @override
-  String get kategoriPK => 'Pilih sumber pemmasukan';
+  String get kategoriPK => 'Pilih sumber pemasukan';
 
   @override
   String get kategoriPN => 'Pilih kategori pengeluaran';

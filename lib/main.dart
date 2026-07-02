@@ -6,6 +6,8 @@ import 'package:jinahku/database/db_helper.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jinahku/services/notification_service.dart';
+import 'package:jinahku/services/share_service.dart';
+import 'package:jinahku/services/ocr_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +32,15 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _isFirstTime = DBHelper.isFirstTime();
+
+    ShareService.startListening((media) async {
+      final attachments = media.attachments;
+      if (attachments == null || attachments.isEmpty) return;
+      final imagePath = attachments.first?.path;
+      if (imagePath == null) return;
+      final text = await OcrService.readText(imagePath);
+      print(text);
+    });
   }
 
   void finishOnboarding() {

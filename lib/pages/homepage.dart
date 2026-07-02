@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
@@ -7,6 +8,7 @@ import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jinahku/pages/settings.dart';
+
 
 class HomePage extends StatefulWidget {
   final bool isDark;
@@ -41,12 +43,20 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> expenseData = [];
   double totalExpense = 0;
 
+  StreamSubscription? subscription;
+
   @override
   void initState() {
     super.initState();
     loadUser();
     loadExpenseChart();
     loadFinancialSummary();
+  }
+
+  @override
+  void dispose() {
+    subscription?.cancel();
+    super.dispose();
   }
 
   void loadUser() async {
