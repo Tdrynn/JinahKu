@@ -1119,7 +1119,12 @@ class _SettingsState extends State<Settings> {
                       title: Text(l10n.kpemasukan),
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () {
-                        Navigator.pushNamed(context, '/manage_income_category');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const IncomeCategoryPage(),
+                          ),
+                        );
                       },
                     ),
                     Divider(height: 2, color: colors.background),

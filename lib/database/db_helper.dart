@@ -41,13 +41,6 @@ class DBHelper {
 
   static Future<void> _createDB(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE IF NOT EXISTS income_source (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        code TEXT NOT NULL UNIQUE
-      )
-    ''');
-
-    await db.execute('''
       CREATE TABLE IF NOT EXISTS user_profile (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL,
@@ -57,6 +50,13 @@ class DBHelper {
         income_source_id INTEGER NOT NULL,
         FOREIGN KEY (income_source_id)
         REFERENCES income_source(id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS income_source (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT NOT NULL UNIQUE
       )
     ''');
 
