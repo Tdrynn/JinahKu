@@ -39,7 +39,7 @@ class _Page2State extends State<Page2> {
   }
 
   void loadSources() async {
-    final data = await DBHelper.getIncomeSource();
+    final data = await DBHelper.getIncomeCategories();
     setState(() {
       sources = data;
     });
@@ -309,9 +309,13 @@ class _Page2State extends State<Page2> {
                                     height: 50.h,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF2F6BFF),
+                                        backgroundColor: const Color(
+                                          0xFF2F6BFF,
+                                        ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
                                         ),
                                       ),
                                       onPressed: () {

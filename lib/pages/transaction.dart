@@ -11,10 +11,64 @@ import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 import 'package:jinahku/l10n/app_localizations.dart';
 
+// --- HELPER MAPPING UNTUK UI ---
+class CategoryUI {
+  static String getName(String code) {
+    switch (code) {
+      // Income
+      case 'salary':
+        return 'Gaji';
+      case 'allowance':
+        return 'Uang Saku / Tunjangan';
+      case 'freelance':
+        return 'Freelance';
+      case 'business':
+        return 'Bisnis';
+      case 'other':
+        return 'Lainnya';
+      // Expense
+      case 'food':
+        return 'Makanan';
+      case 'transport':
+        return 'Transportasi';
+      case 'entertainment':
+        return 'Hiburan';
+      case 'bills':
+        return 'Tagihan';
+      default:
+        return 'Lainnya';
+    }
+  }
+
+  static IconData getIcon(String code) {
+    switch (code) {
+      // Income
+      case 'salary':
+        return Icons.work;
+      case 'allowance':
+        return Icons.wallet;
+      case 'freelance':
+        return Icons.laptop;
+      case 'business':
+        return Icons.store;
+      // Expense
+      case 'food':
+        return Icons.restaurant;
+      case 'transport':
+        return Icons.directions_car;
+      case 'entertainment':
+        return Icons.movie;
+      case 'bills':
+        return Icons.receipt;
+      default:
+        return Icons.more_horiz;
+    }
+  }
+}
+
 class Transaction extends StatefulWidget {
   final bool isDark;
   final VoidCallback onTransactionSaved;
-
   final TransactionData? initialData;
 
   const Transaction({
@@ -32,41 +86,46 @@ class _TransactionState extends State<Transaction> {
   bool isExpense = true;
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
-  String _selectedCategory = '';
+
+  // Sekarang menyimpan nilai 'code' (misal: 'food'), bukan nilai UI ('Makanan')
+  String _selectedCategoryCode = '';
   DateTime _selectedDate = DateTime.now();
 
-  final List<Map<String, dynamic>> expenseCategories = [
-    {'name': 'Makanan', 'icon': Icons.restaurant},
-    {'name': 'Transportasi', 'icon': Icons.directions_car},
-    {'name': 'Hiburan', 'icon': Icons.movie},
-    {'name': 'Belanja', 'icon': Icons.shopping_bag},
-    {'name': 'Tagihan', 'icon': Icons.receipt},
-    {'name': 'Lainnya', 'icon': Icons.more_horiz},
-  ];
-
-  final List<Map<String, dynamic>> incomeCategories = [
-    {'name': 'Gaji', 'icon': Icons.work},
-    {'name': 'Freelance', 'icon': Icons.laptop},
-    {'name': 'Bisnis', 'icon': Icons.store},
-    {'name': 'Hibah', 'icon': Icons.card_giftcard},
-    {'name': 'Investasi', 'icon': Icons.trending_up},
-    {'name': 'Lainnya', 'icon': Icons.more_horiz},
-  ];
+  // Menampung list kategori hasil load dari database
+  List<Map<String, dynamic>> _loadedCategories = [];
 
   @override
   void initState() {
     super.initState();
-    _selectedCategory = '';
-
-    print(widget.initialData);
+    _loadCategoriesFromDB();
 
     if (widget.initialData != null) {
       final formatter = NumberFormat.decimalPattern('id');
-
       _amountController.text = formatter.format(widget.initialData!.amount);
-      isExpense = true;
+      isExpense = true; // Sesuai default awal kode Anda
       _selectedDate = widget.initialData!.date;
     }
+  }
+
+  // Mengambil data kategori dinamis dari SQLite berdasarkan state `isExpense`
+  Future<void> _loadCategoriesFromDB() async {
+    final typeString = isExpense ? 'expense' : 'income';
+
+    // Pastikan Anda memiliki method getCategories di DBHelper Anda
+    // Jika belum ada, jalankan rawQuery/query: db.query('category', where: 'type = ?', whereArgs: [typeString])
+    final List<Map<String, dynamic>> categoriesFromDB =
+        await DBHelper.getCategories(typeString);
+
+    setState(() {
+      _loadedCategories = categoriesFromDB.map((cat) {
+        final code = cat['code'] as String;
+        return {
+          'code': code,
+          'name': CategoryUI.getName(code),
+          'icon': CategoryUI.getIcon(code),
+        };
+      }).toList();
+    });
   }
 
   String _formatIndonesianDate(DateTime date) {
@@ -87,23 +146,24 @@ class _TransactionState extends State<Transaction> {
     return "${date.day}-${months[date.month - 1]}-${date.year}";
   }
 
+  @override
   void didUpdateWidget(covariant Transaction oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.initialData != oldWidget.initialData &&
         widget.initialData != null) {
-          final formatter = NumberFormat.decimalPattern('id');
+      final formatter = NumberFormat.decimalPattern('id');
       _amountController.text = formatter.format(widget.initialData!.amount);
-      _selectedCategory = 'Belanja';
+      _selectedCategoryCode =
+          'shopping'; // Menyimpan dalam bentuk code database
       _noteController.text = widget.initialData!.merchant ?? '';
       _selectedDate = widget.initialData!.date;
 
-      setState(() {});
+      _loadCategoriesFromDB();
     }
   }
 
   void _showCategoryPicker(BuildContext context, dynamic colors) {
-    final categories = isExpense ? expenseCategories : incomeCategories;
     final l10n = AppLocalizations.of(context)!;
 
     showModalBottomSheet(
@@ -138,43 +198,51 @@ class _TransactionState extends State<Transaction> {
               ),
               const SizedBox(height: 8),
               Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    final item = categories[index];
-                    final isSelected = _selectedCategory == item['name'];
-                    return ListTile(
-                      leading: Icon(
-                        item['icon'],
-                        color: isSelected ? colors.blue : colors.textSecondary,
-                      ),
-                      title: Text(
-                        item['name'],
-                        style: TextStyle(
-                          color: isSelected ? colors.blue : colors.textPrimary,
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.normal,
-                          fontFamily: 'Inter',
+                child: _loadedCategories.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
+                        itemCount: _loadedCategories.length,
+                        itemBuilder: (context, index) {
+                          final item = _loadedCategories[index];
+                          final isSelected =
+                              _selectedCategoryCode == item['code'];
+                          return ListTile(
+                            leading: Icon(
+                              item['icon'],
+                              color: isSelected
+                                  ? colors.blue
+                                  : colors.textSecondary,
+                            ),
+                            title: Text(
+                              item['name'],
+                              style: TextStyle(
+                                color: isSelected
+                                    ? colors.blue
+                                    : colors.textPrimary,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? Icon(Icons.check_circle, color: colors.blue)
+                                : null,
+                            onTap: () {
+                              setState(() {
+                                _selectedCategoryCode =
+                                    item['code']; // Simpan code-nya
+                              });
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
                       ),
-                      trailing: isSelected
-                          ? Icon(Icons.check_circle, color: colors.blue)
-                          : null,
-                      onTap: () {
-                        setState(() {
-                          _selectedCategory = item['name'];
-                        });
-                        Navigator.pop(context);
-                      },
-                    );
-                  },
-                ),
               ),
             ],
           ),
@@ -246,7 +314,7 @@ class _TransactionState extends State<Transaction> {
       return;
     }
 
-    if (_selectedCategory.isEmpty) {
+    if (_selectedCategoryCode.isEmpty) {
       Fluttertoast.showToast(
         msg: isExpense ? l10n.kategoriPN : l10n.kategoriPK,
         toastLength: Toast.LENGTH_SHORT,
@@ -257,10 +325,11 @@ class _TransactionState extends State<Transaction> {
       return;
     }
 
+    // Mengirim ke database: Menyesuaikan parameter relasi komposit baru
     await DBHelper.insertTransaction(
       type: isExpense ? 'expense' : 'income',
       amount: amount,
-      category: _selectedCategory,
+      categoryCode: _selectedCategoryCode,
       date: _selectedDate,
       note: _noteController.text.trim().isEmpty
           ? null
@@ -280,7 +349,7 @@ class _TransactionState extends State<Transaction> {
     setState(() {
       _amountController.clear();
       _noteController.clear();
-      _selectedCategory = '';
+      _selectedCategoryCode = '';
       _selectedDate = DateTime.now();
     });
   }
@@ -299,7 +368,7 @@ class _TransactionState extends State<Transaction> {
     final inputBgColor = widget.isDark
         ? const Color(0xFF182030)
         : const Color(0xFFE2E8F0);
-    final textCyan = const Color(0xFF00AED6);
+    const textCyan = Color(0xFF00AED6);
 
     return Scaffold(
       backgroundColor: pageBgColor,
@@ -324,6 +393,7 @@ class _TransactionState extends State<Transaction> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Tab Toggle Income / Expense
             Container(
               height: 52,
               decoration: BoxDecoration(
@@ -365,7 +435,6 @@ class _TransactionState extends State<Transaction> {
                         ),
                       ),
                     ),
-
                     Row(
                       children: [
                         Expanded(
@@ -373,8 +442,9 @@ class _TransactionState extends State<Transaction> {
                             onTap: () {
                               setState(() {
                                 isExpense = false;
-                                _selectedCategory = '';
+                                _selectedCategoryCode = '';
                               });
+                              _loadCategoriesFromDB();
                             },
                             behavior: HitTestBehavior.opaque,
                             child: Center(
@@ -393,14 +463,14 @@ class _TransactionState extends State<Transaction> {
                             ),
                           ),
                         ),
-
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
                                 isExpense = true;
-                                _selectedCategory = '';
+                                _selectedCategoryCode = '';
                               });
+                              _loadCategoriesFromDB();
                             },
                             behavior: HitTestBehavior.opaque,
                             child: Center(
@@ -427,6 +497,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
+            // Input Jumlah Uang
             Text(
               l10n.jumlah,
               style: TextStyle(
@@ -485,6 +556,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
+            // Picker Kategori
             Text(
               l10n.kategori,
               style: TextStyle(
@@ -506,24 +578,20 @@ class _TransactionState extends State<Transaction> {
                 ),
                 child: Row(
                   children: [
-                    if (_selectedCategory.isNotEmpty) ...[
+                    if (_selectedCategoryCode.isNotEmpty) ...[
                       Icon(
-                        (isExpense ? expenseCategories : incomeCategories)
-                                .firstWhere(
-                                  (c) => c['name'] == _selectedCategory,
-                                )['icon']
-                            as IconData,
+                        CategoryUI.getIcon(_selectedCategoryCode),
                         color: colors.blue,
                       ),
                       const SizedBox(width: 12),
                     ],
                     Expanded(
                       child: Text(
-                        _selectedCategory.isEmpty
+                        _selectedCategoryCode.isEmpty
                             ? (isExpense ? l10n.kategoriPN : l10n.kategoriPK)
-                            : _selectedCategory,
+                            : CategoryUI.getName(_selectedCategoryCode),
                         style: TextStyle(
-                          color: _selectedCategory.isEmpty
+                          color: _selectedCategoryCode.isEmpty
                               ? colors.textSecondary.withOpacity(0.7)
                               : colors.textPrimary,
                           fontSize: 15,
@@ -543,6 +611,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
+            // Picker Tanggal
             Text(
               l10n.tanggal,
               style: TextStyle(
@@ -586,6 +655,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
+            // Input Catatan
             Text(
               l10n.catatan,
               style: TextStyle(
@@ -622,6 +692,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 40),
 
+            // Tombol Simpan
             GestureDetector(
               onTap: () => _saveTransaction(colors, l10n),
               child: Container(
