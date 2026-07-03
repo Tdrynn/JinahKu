@@ -10,6 +10,7 @@ class DBHelper {
     return _database!;
   }
 
+  // INIT
   static Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'jinahku.db');
@@ -39,6 +40,8 @@ class DBHelper {
     );
   }
 
+  //=========================================================================================================
+  // CREATE ALL TABLE
   static Future<void> _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE IF NOT EXISTS user_profile (
@@ -60,11 +63,24 @@ class DBHelper {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS expense_source (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT NOT NULL UNIQUE
+      )
+    ''');
+
     await db.insert('income_source', {'code': 'salary'});
     await db.insert('income_source', {'code': 'allowance'});
     await db.insert('income_source', {'code': 'freelance'});
     await db.insert('income_source', {'code': 'business'});
     await db.insert('income_source', {'code': 'other'});
+
+    await db.insert('expense_source', {'code': 'food'});
+    await db.insert('expense_source', {'code': 'transport'});
+    await db.insert('expense_source', {'code': 'bills'});
+    await db.insert('expense_source', {'code': 'entertainment'});
+    await db.insert('expense_source', {'code': 'other'});
   }
 
   static Future<void> _createTransactionTable(Database db) async {
@@ -80,9 +96,10 @@ class DBHelper {
     ''');
   }
 
+  //=========================================================================================================
+
   static Future<List<Map<String, dynamic>>> getIncomeSource() async {
     final db = await database;
-
     return await db.query('income_source');
   }
 
@@ -222,10 +239,6 @@ class DBHelper {
       'balance': totalIncome - totalExpense,
     };
   }
-
-  // =========================================================================
-  // METODE TAMBAHAN UNTUK SETTINGS (EDIT & RESET)
-  // =========================================================================
 
   /// Memperbarui data profil pengguna secara dinamis berdasarkan map key-value.
   /// Digunakan oleh fitur Edit Username, Pemasukan, dan Tanggal Pemasukan.
