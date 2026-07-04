@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: colors.background,
       body: SingleChildScrollView(
         child: Stack(
           children: [

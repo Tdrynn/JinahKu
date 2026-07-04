@@ -1077,7 +1077,9 @@ class _SettingsState extends State<Settings> {
                       blurRadius: 4,
                       offset: const Offset(7, 10),
                     ),
-                    child: Column(
+                  ],
+                ),
+                child: Column(
                       children: [
                         ListTile(
                           leading: const Icon(Icons.person_outline),
@@ -1163,74 +1165,6 @@ class _SettingsState extends State<Settings> {
                         ),
                       ],
                     ),
-                    Divider(height: 2, color: colors.background),
-                    ListTile(
-                      leading: const Icon(
-                        Icons.account_balance_wallet_outlined,
-                      ),
-                      title: Text(l10n.pemasukan),
-                      subtitle: Text(
-                        NumberFormat.currency(
-                          locale: 'id_ID',
-                          symbol: 'Rp ',
-                          decimalDigits: 0,
-                        ).format(income),
-                      ),
-                      trailing: const Icon(Icons.edit),
-                      onTap: () => _showEditIncomeDialog(l10n),
-                    ),
-                    Divider(height: 2, color: colors.background),
-                    ListTile(
-                      leading: const Icon(Icons.calendar_month),
-                      title: Text(l10n.tanggalP),
-                      subtitle: Text("${l10n.stanggal} $incomeDate${l10n.stl}"),
-                      trailing: const Icon(Icons.edit),
-                      onTap: () => _showEditDateDialog(l10n),
-                    ),
-                    Divider(height: 2, color: colors.background),
-                    ListTile(
-                      leading: const Icon(Icons.arrow_upward_rounded),
-                      title: Text(l10n.kpemasukan),
-                      trailing: const Icon(Icons.chevron_right_rounded),
-                      onTap: () {
-                        Navigator.pushNamed(context, '/manage_income_category');
-                      },
-                    ),
-                    Divider(height: 2, color: colors.background),
-                    ListTile(
-                      leading: const Icon(Icons.arrow_downward_rounded),
-                      title: Text(l10n.kpengeluaran),
-                      trailing: const Icon(Icons.chevron_right_rounded),
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/manage_expense_category',
-                        );
-                      },
-                    ),
-                    Divider(height: 2, color: colors.background),
-                    ListTile(
-                      leading: const Icon(Icons.notifications_active),
-                      title: Text(l10n.jam),
-                      subtitle: Text(
-                        "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}",
-                      ),
-                      trailing: const Icon(Icons.edit),
-                      onTap: () async {
-                        final picked = await showTimePicker(
-                          context: context,
-                          initialTime: selectedTime,
-                        );
-                        if (picked != null) {
-                          setState(() {
-                            selectedTime = picked;
-                          });
-                          await saveReminder();
-                        }
-                      },
-                    ),
-                  ],
-                ),
               ),
             ),
             const SizedBox(height: 30),

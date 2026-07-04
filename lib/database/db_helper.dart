@@ -291,6 +291,7 @@ class DBHelper {
     final db = await database;
     await db.delete('transactions');
     await db.delete('user_profile');
+  }
   // Mengambil kategori unik untuk Pemasukan
   static Future<List<Map<String, dynamic>>> getIncomeCategories() async {
     final db = await database;

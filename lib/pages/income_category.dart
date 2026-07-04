@@ -17,7 +17,6 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
     _refreshCategories();
   }
 
-  // Fungsi untuk memuat ulang data pemasukan dari database
   void _refreshCategories() {
     setState(() {
       _incomeCategoriesFuture = DBHelper.getIncomeCategories();
@@ -50,7 +49,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
               TextField(
                 controller: nameController,
                 cursorColor: Colors.red[700],
-                autofocus: true, // Otomatis membuka keyboard saat pop-up muncul
+                autofocus: true,
                 decoration: InputDecoration(
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.red[700]!, width: 2),
