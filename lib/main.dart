@@ -106,7 +106,7 @@ class _MyAppState extends State<MyApp> {
               }
 
               if (snapshot.data!) {
-                return onboardingPage(
+                return OnboardingPage(
                   isDark: isDark,
                   isEnglish: languageCode == 'en',
                   onToggleTheme: toggleTheme,

@@ -77,8 +77,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
               onPressed: () async {
                 final categoryName = nameController.text.trim();
                 if (categoryName.isNotEmpty) {
-                  // Langsung simpan sebagai kategori pemasukan ke database
-                  await DBHelper.insertIncomeCategories(categoryName);
+                  await DBHelper.insertIncomeCategory(categoryName);
                   _refreshCategories(); // Memperbarui list di halaman utama
                   Navigator.pop(context);
                 }
@@ -152,7 +151,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
               onPressed: () async {
                 final newName = nameController.text.trim();
                 if (newName.isNotEmpty) {
-                  await DBHelper.updateIncomeSource(id, newName);
+                  await DBHelper.updateIncomeCategory(id, newName);
                   _refreshCategories();
                   Navigator.pop(context);
                 }
@@ -200,7 +199,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
             ),
             TextButton(
               onPressed: () async {
-                await DBHelper.deleteIncomeSource(id);
+                await DBHelper.deleteIncomeCategory(id);
                 _refreshCategories();
                 Navigator.pop(context);
               },

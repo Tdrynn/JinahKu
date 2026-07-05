@@ -21,7 +21,8 @@ class Page2 extends StatefulWidget {
 class _Page2State extends State<Page2> {
   List<Map<String, dynamic>> sources = [];
 
-  int? selectedId;
+  // Mengubah selectedId (int?) menjadi selectedCode (String?) sesuai dengan kolom 'code' di tabel category
+  String? selectedCode;
   DateTime? selectedDate;
 
   final incomeController = TextEditingController();
@@ -34,11 +35,12 @@ class _Page2State extends State<Page2> {
     incomeController.text = widget.data.income == 0
         ? ''
         : widget.data.income.toStringAsFixed(0);
-    selectedId = widget.data.sourceId;
+    selectedCode = widget.data.sourceCode;
     selectedDate = widget.data.date;
   }
 
   void loadSources() async {
+    // Pastikan metode ini mengambil data dari tabel category dengan klausa WHERE type = 'income'
     final data = await DBHelper.getIncomeCategories();
     setState(() {
       sources = data;
@@ -110,7 +112,7 @@ class _Page2State extends State<Page2> {
                                 ),
                               ),
                               child: Column(
-                                crossAxisAlignment: .start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Jumlah Pemasukan",
@@ -210,7 +212,8 @@ class _Page2State extends State<Page2> {
                                       ),
                                     ),
                                     child: DropdownButtonHideUnderline(
-                                      child: DropdownButtonFormField<int>(
+                                      // Mengubah tipe parameter DropdownButtonFormField menjadi <String>
+                                      child: DropdownButtonFormField<String>(
                                         validator: (value) {
                                           if (value == null) {
                                             return 'Pilih sumber pemasukan';
@@ -218,7 +221,7 @@ class _Page2State extends State<Page2> {
                                           return null;
                                         },
                                         dropdownColor: const Color(0xFF243B55),
-                                        value: selectedId,
+                                        value: selectedCode,
                                         hint: Text(
                                           l10n.pilih,
                                           style: const TextStyle(
@@ -234,17 +237,25 @@ class _Page2State extends State<Page2> {
                                           color: Colors.white,
                                           fontSize: 16,
                                         ),
+                                        // Mengubah DropdownMenuItem value ke String (item['code'])
                                         items: sources.map((item) {
-                                          return DropdownMenuItem<int>(
-                                            value: item['id'] as int,
+                                          return DropdownMenuItem<String>(
+                                            value: item['code'] as String,
                                             child: Text(
-                                              item['name'] ?? item['code'],
+                                              // Kapitalisasi huruf pertama kode kategori untuk tampilan UI (contoh: salary -> Salary)
+                                              (item['code'] as String)
+                                                  .replaceFirstMapped(
+                                                    RegExp(r'^\w'),
+                                                    (match) => match
+                                                        .group(0)!
+                                                        .toUpperCase(),
+                                                  ),
                                             ),
                                           );
                                         }).toList(),
                                         onChanged: (value) {
                                           setState(() {
-                                            selectedId = value;
+                                            selectedCode = value;
                                           });
                                         },
                                       ),
@@ -286,7 +297,9 @@ class _Page2State extends State<Page2> {
                                           Text(
                                             selectedDate == null
                                                 ? " "
-                                                : "${selectedDate!.day}",
+                                                : DateFormat(
+                                                    'dd MMMM yyyy',
+                                                  ).format(selectedDate!),
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 18,
@@ -344,7 +357,8 @@ class _Page2State extends State<Page2> {
                                               ),
                                             ) ??
                                             0;
-                                        widget.data.sourceId = selectedId;
+                                        // Sesuaikan penamaan parameter di bawah ini dengan model OnboardingData Anda
+                                        widget.data.sourceCode = selectedCode;
                                         widget.data.date = selectedDate;
                                         widget.onNext();
                                       },

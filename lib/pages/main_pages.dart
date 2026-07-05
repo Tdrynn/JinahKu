@@ -65,7 +65,9 @@ class _MainPageState extends State<MainPage> {
       importedTransaction = TransactionData(
         amount: result.amount?.toDouble() ?? 0,
         date: result.date ?? DateTime.now(),
-        merchant: result.merchant,
+        type: 'expense',
+        categoryCode: '',
+        note: result.merchant,
       );
 
       selectedIndex = 2;
@@ -80,7 +82,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final pages = [
       HomePage(
         isDark: widget.isDark,
@@ -108,10 +109,7 @@ class _MainPageState extends State<MainPage> {
       backgroundColor: widget.isDark
           ? const Color(0xFF0F172A)
           : const Color(0xFFF8FAFC),
-      body: IndexedStack(
-        index: selectedIndex,
-        children: pages
-      ),
+      body: IndexedStack(index: selectedIndex, children: pages),
 
       bottomNavigationBar: Navbar(
         selectedIndex: selectedIndex,

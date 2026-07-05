@@ -14,36 +14,76 @@ class History extends StatefulWidget {
   State<History> createState() => _HistoryState();
 }
 
+class CategoryUI {
+  static String getName(String code) {
+    switch (code) {
+      case 'salary':
+        return 'Gaji';
+
+      case 'allowance':
+        return 'Tunjangan';
+
+      case 'freelance':
+        return 'Freelance';
+
+      case 'business':
+        return 'Bisnis';
+
+      case 'food':
+        return 'Makanan';
+
+      case 'transport':
+        return 'Transportasi';
+
+      case 'bills':
+        return 'Tagihan';
+
+      case 'entertainment':
+        return 'Hiburan';
+
+      case 'other':
+        return 'Lainnya';
+
+      default:
+        return code;
+    }
+  }
+
+  static IconData getIcon(String code) {
+    switch (code) {
+      case 'salary':
+        return Icons.work;
+
+      case 'allowance':
+        return Icons.account_balance_wallet;
+
+      case 'freelance':
+        return Icons.computer;
+
+      case 'business':
+        return Icons.store;
+
+      case 'food':
+        return Icons.restaurant;
+
+      case 'transport':
+        return Icons.directions_car;
+
+      case 'bills':
+        return Icons.receipt_long;
+
+      case 'entertainment':
+        return Icons.movie;
+
+      default:
+        return Icons.category;
+    }
+  }
+}
+
 class _HistoryState extends State<History> {
   String _selectedFilter = 'all';
   String _sortType = 'date_desc';
-
-  IconData _getCategoryIcon(String category) {
-    switch (category) {
-      case 'Makanan':
-        return Icons.restaurant;
-      case 'Transportasi':
-        return Icons.directions_car;
-      case 'Hiburan':
-        return Icons.movie;
-      case 'Belanja':
-        return Icons.shopping_bag;
-      case 'Tagihan':
-        return Icons.receipt;
-      case 'Gaji':
-        return Icons.work;
-      case 'Freelance':
-        return Icons.laptop;
-      case 'Bisnis':
-        return Icons.store;
-      case 'Hibah':
-        return Icons.card_giftcard;
-      case 'Investasi':
-        return Icons.trending_up;
-      default:
-        return Icons.more_horiz;
-    }
-  }
 
   List<dynamic> _processTransactions(List<Map<String, dynamic>> rawList) {
     List<Map<String, dynamic>> filteredList = rawList.where((tx) {
@@ -53,19 +93,41 @@ class _HistoryState extends State<History> {
     }).toList();
 
     if (_sortType == 'date_desc') {
-      filteredList.sort((a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
+      filteredList.sort(
+        (a, b) =>
+            DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])),
+      );
     } else if (_sortType == 'date_asc') {
-      filteredList.sort((a, b) => DateTime.parse(a['date']).compareTo(DateTime.parse(b['date'])));
+      filteredList.sort(
+        (a, b) =>
+            DateTime.parse(a['date']).compareTo(DateTime.parse(b['date'])),
+      );
     } else if (_sortType == 'amount_desc') {
-      filteredList.sort((a, b) => (b['amount'] as double).compareTo(a['amount'] as double));
+      filteredList.sort(
+        (a, b) =>
+            (b['amount'] as num).toDouble().compareTo(a['amount'] as double),
+      );
     } else if (_sortType == 'amount_asc') {
-      filteredList.sort((a, b) => (a['amount'] as double).compareTo(b['amount'] as double));
+      filteredList.sort(
+        (a, b) =>
+            (a['amount'] as num).toDouble().compareTo(b['amount'] as double),
+      );
     }
 
     Map<String, List<Map<String, dynamic>>> grouped = {};
     const months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
     ];
 
     for (var tx in filteredList) {
@@ -121,64 +183,108 @@ class _HistoryState extends State<History> {
               ),
               const SizedBox(height: 8),
               ListTile(
-                leading: Icon(Icons.calendar_today, color: _sortType == 'date_desc' ? colors.blue : colors.textSecondary),
+                leading: Icon(
+                  Icons.calendar_today,
+                  color: _sortType == 'date_desc'
+                      ? colors.blue
+                      : colors.textSecondary,
+                ),
                 title: Text(
                   l10n.transaksiTb,
                   style: TextStyle(
-                    color: _sortType == 'date_desc' ? colors.blue : colors.textPrimary,
-                    fontWeight: _sortType == 'date_desc' ? FontWeight.w600 : FontWeight.normal,
+                    color: _sortType == 'date_desc'
+                        ? colors.blue
+                        : colors.textPrimary,
+                    fontWeight: _sortType == 'date_desc'
+                        ? FontWeight.w600
+                        : FontWeight.normal,
                     fontFamily: 'Inter',
                   ),
                 ),
-                trailing: _sortType == 'date_desc' ? Icon(Icons.check, color: colors.blue) : null,
+                trailing: _sortType == 'date_desc'
+                    ? Icon(Icons.check, color: colors.blue)
+                    : null,
                 onTap: () {
                   setState(() => _sortType = 'date_desc');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.history, color: _sortType == 'date_asc' ? colors.blue : colors.textSecondary),
+                leading: Icon(
+                  Icons.history,
+                  color: _sortType == 'date_asc'
+                      ? colors.blue
+                      : colors.textSecondary,
+                ),
                 title: Text(
                   l10n.transaksiTl,
                   style: TextStyle(
-                    color: _sortType == 'date_asc' ? colors.blue : colors.textPrimary,
-                    fontWeight: _sortType == 'date_asc' ? FontWeight.w600 : FontWeight.normal,
+                    color: _sortType == 'date_asc'
+                        ? colors.blue
+                        : colors.textPrimary,
+                    fontWeight: _sortType == 'date_asc'
+                        ? FontWeight.w600
+                        : FontWeight.normal,
                     fontFamily: 'Inter',
                   ),
                 ),
-                trailing: _sortType == 'date_asc' ? Icon(Icons.check, color: colors.blue) : null,
+                trailing: _sortType == 'date_asc'
+                    ? Icon(Icons.check, color: colors.blue)
+                    : null,
                 onTap: () {
                   setState(() => _sortType = 'date_asc');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.trending_up, color: _sortType == 'amount_desc' ? colors.blue : colors.textSecondary),
+                leading: Icon(
+                  Icons.trending_up,
+                  color: _sortType == 'amount_desc'
+                      ? colors.blue
+                      : colors.textSecondary,
+                ),
                 title: Text(
                   l10n.nominalTr,
                   style: TextStyle(
-                    color: _sortType == 'amount_desc' ? colors.blue : colors.textPrimary,
-                    fontWeight: _sortType == 'amount_desc' ? FontWeight.w600 : FontWeight.normal,
+                    color: _sortType == 'amount_desc'
+                        ? colors.blue
+                        : colors.textPrimary,
+                    fontWeight: _sortType == 'amount_desc'
+                        ? FontWeight.w600
+                        : FontWeight.normal,
                     fontFamily: 'Inter',
                   ),
                 ),
-                trailing: _sortType == 'amount_desc' ? Icon(Icons.check, color: colors.blue) : null,
+                trailing: _sortType == 'amount_desc'
+                    ? Icon(Icons.check, color: colors.blue)
+                    : null,
                 onTap: () {
                   setState(() => _sortType = 'amount_desc');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.trending_down, color: _sortType == 'amount_asc' ? colors.blue : colors.textSecondary),
+                leading: Icon(
+                  Icons.trending_down,
+                  color: _sortType == 'amount_asc'
+                      ? colors.blue
+                      : colors.textSecondary,
+                ),
                 title: Text(
                   l10n.nominalTh,
                   style: TextStyle(
-                    color: _sortType == 'amount_asc' ? colors.blue : colors.textPrimary,
-                    fontWeight: _sortType == 'amount_asc' ? FontWeight.w600 : FontWeight.normal,
+                    color: _sortType == 'amount_asc'
+                        ? colors.blue
+                        : colors.textPrimary,
+                    fontWeight: _sortType == 'amount_asc'
+                        ? FontWeight.w600
+                        : FontWeight.normal,
                     fontFamily: 'Inter',
                   ),
                 ),
-                trailing: _sortType == 'amount_asc' ? Icon(Icons.check, color: colors.blue) : null,
+                trailing: _sortType == 'amount_asc'
+                    ? Icon(Icons.check, color: colors.blue)
+                    : null,
                 onTap: () {
                   setState(() => _sortType = 'amount_asc');
                   Navigator.pop(context);
@@ -197,14 +303,32 @@ class _HistoryState extends State<History> {
     final colors = widget.isDark ? dark.darkColors : light.lightColors;
     final l10n = AppLocalizations.of(context)!;
 
-    final pageBgColor = widget.isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-    final cardBgColor = widget.isDark ? const Color(0xFF1E293B) : const Color(0xFFFFFFFF);
-    final filterBgColor = widget.isDark ? const Color(0xFF1E2638) : const Color(0xFFE2E8F0);
+    final pageBgColor = widget.isDark
+        ? const Color(0xFF0F172A)
+        : const Color(0xFFF8FAFC);
+    final cardBgColor = widget.isDark
+        ? const Color(0xFF1E293B)
+        : const Color(0xFFFFFFFF);
+    final filterBgColor = widget.isDark
+        ? const Color(0xFF1E2638)
+        : const Color(0xFFE2E8F0);
     final textCyan = const Color(0xFF00AED6);
 
     final numberFormatter = NumberFormat.decimalPattern('id');
     const shortMonths = [
-      'Mei', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+      'Mei',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
     ];
 
     return Scaffold(
@@ -239,9 +363,14 @@ class _HistoryState extends State<History> {
                           onTap: () => setState(() => _selectedFilter = 'all'),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
-                              color: _selectedFilter == 'all' ? textCyan : filterBgColor,
+                              color: _selectedFilter == 'all'
+                                  ? textCyan
+                                  : filterBgColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Row(
@@ -249,13 +378,17 @@ class _HistoryState extends State<History> {
                                 Icon(
                                   Icons.grid_view_rounded,
                                   size: 16,
-                                  color: _selectedFilter == 'all' ? Colors.white : colors.textSecondary,
+                                  color: _selectedFilter == 'all'
+                                      ? Colors.white
+                                      : colors.textSecondary,
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
                                   l10n.semua,
                                   style: TextStyle(
-                                    color: _selectedFilter == 'all' ? Colors.white : colors.textPrimary,
+                                    color: _selectedFilter == 'all'
+                                        ? Colors.white
+                                        : colors.textPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                     fontFamily: 'Inter',
@@ -268,12 +401,18 @@ class _HistoryState extends State<History> {
                         const SizedBox(width: 8),
 
                         GestureDetector(
-                          onTap: () => setState(() => _selectedFilter = 'income'),
+                          onTap: () =>
+                              setState(() => _selectedFilter = 'income'),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
-                              color: _selectedFilter == 'income' ? textCyan : filterBgColor,
+                              color: _selectedFilter == 'income'
+                                  ? textCyan
+                                  : filterBgColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Row(
@@ -289,7 +428,9 @@ class _HistoryState extends State<History> {
                                 Text(
                                   l10n.pemasukan,
                                   style: TextStyle(
-                                    color: _selectedFilter == 'income' ? Colors.white : colors.textPrimary,
+                                    color: _selectedFilter == 'income'
+                                        ? Colors.white
+                                        : colors.textPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                     fontFamily: 'Inter',
@@ -302,12 +443,18 @@ class _HistoryState extends State<History> {
                         const SizedBox(width: 8),
 
                         GestureDetector(
-                          onTap: () => setState(() => _selectedFilter = 'expense'),
+                          onTap: () =>
+                              setState(() => _selectedFilter = 'expense'),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
-                              color: _selectedFilter == 'expense' ? textCyan : filterBgColor,
+                              color: _selectedFilter == 'expense'
+                                  ? textCyan
+                                  : filterBgColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Row(
@@ -323,7 +470,9 @@ class _HistoryState extends State<History> {
                                 Text(
                                   l10n.pengeluaran,
                                   style: TextStyle(
-                                    color: _selectedFilter == 'expense' ? Colors.white : colors.textPrimary,
+                                    color: _selectedFilter == 'expense'
+                                        ? Colors.white
+                                        : colors.textPrimary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                     fontFamily: 'Inter',
@@ -373,7 +522,11 @@ class _HistoryState extends State<History> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.receipt_long_outlined, size: 64, color: colors.textSecondary.withOpacity(0.3)),
+                        Icon(
+                          Icons.receipt_long_outlined,
+                          size: 64,
+                          color: colors.textSecondary.withOpacity(0.3),
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Belum ada riwayat transaksi.',
@@ -412,7 +565,11 @@ class _HistoryState extends State<History> {
 
                     if (item is String) {
                       return Padding(
-                        padding: const EdgeInsets.only(top: 16, bottom: 10, left: 4),
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          bottom: 10,
+                          left: 4,
+                        ),
                         child: Text(
                           item,
                           style: TextStyle(
@@ -424,11 +581,17 @@ class _HistoryState extends State<History> {
                         ),
                       );
                     }
-
                     final tx = item as Map<String, dynamic>;
-                    final isInc = tx['type'] == 'income';
+
+                    final isInc = (tx['type'] ?? '') == 'income';
                     final date = DateTime.parse(tx['date']);
 
+                    final String categoryCode = (tx['category_code'] ?? 'other')
+                        .toString();
+
+                    final String categoryName = tx['category_name'] != null
+                        ? tx['category_name'].toString()
+                        : CategoryUI.getName(categoryCode);
                     return Container(
                       height: 84,
                       margin: const EdgeInsets.only(bottom: 12),
@@ -444,7 +607,9 @@ class _HistoryState extends State<History> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(widget.isDark ? 0.2 : 0.03),
+                            color: Colors.black.withOpacity(
+                              widget.isDark ? 0.2 : 0.03,
+                            ),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
@@ -495,7 +660,7 @@ class _HistoryState extends State<History> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  tx['category'],
+                                  categoryName,
                                   style: TextStyle(
                                     color: colors.textPrimary,
                                     fontSize: 15,
@@ -524,11 +689,12 @@ class _HistoryState extends State<History> {
                               Container(
                                 padding: const EdgeInsets.all(5),
                                 decoration: BoxDecoration(
-                                  color: (isInc ? colors.green : colors.red).withOpacity(0.08),
+                                  color: (isInc ? colors.green : colors.red)
+                                      .withOpacity(0.08),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
-                                  _getCategoryIcon(tx['category']),
+                                  CategoryUI.getIcon(categoryCode),
                                   color: isInc ? colors.green : colors.red,
                                   size: 14,
                                 ),

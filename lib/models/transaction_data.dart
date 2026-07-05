@@ -1,19 +1,25 @@
 class TransactionData {
   final double amount;
   final DateTime date;
-  final String? merchant;
+  final String type;
+  final String categoryCode;
+  final String? note;
 
   TransactionData({
     required this.amount,
     required this.date,
-    required this.merchant,
+    required this.type,
+    required this.categoryCode,
+    this.note,
   });
 
   factory TransactionData.empty() {
     return TransactionData(
-      amount: 0.0,
-      merchant: null,
+      amount: 0,
       date: DateTime.now(),
+      type: 'expense',
+      categoryCode: '',
+      note: null,
     );
   }
 }
