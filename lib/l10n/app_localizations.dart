@@ -467,6 +467,54 @@ abstract class AppLocalizations {
   /// **'Data updated successfully 🎉'**
   String get dsimpan;
 
+  /// No description provided for @buatK.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Category'**
+  String get buatK;
+
+  /// No description provided for @namaK.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Name: '**
+  String get namaK;
+
+  /// No description provided for @editK.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Category'**
+  String get editK;
+
+  /// No description provided for @namaKB.
+  ///
+  /// In en, this message translates to:
+  /// **'New Category Name: '**
+  String get namaKB;
+
+  /// No description provided for @hapusK.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Category'**
+  String get hapusK;
+
+  /// No description provided for @yakinK.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the '**
+  String get yakinK;
+
+  /// No description provided for @ya.
+  ///
+  /// In en, this message translates to:
+  /// **'category?'**
+  String get ya;
+
+  /// No description provided for @hapus.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get hapus;
+
   /// No description provided for @salary.
   ///
   /// In en, this message translates to:

@@ -195,6 +195,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dsimpan => 'Data updated successfully 🎉';
 
   @override
+  String get buatK => 'Create Category';
+
+  @override
+  String get namaK => 'Category Name: ';
+
+  @override
+  String get editK => 'Edit Category';
+
+  @override
+  String get namaKB => 'New Category Name: ';
+
+  @override
+  String get hapusK => 'Delete Category';
+
+  @override
+  String get yakinK => 'Are you sure you want to delete the ';
+
+  @override
+  String get ya => 'category?';
+
+  @override
+  String get hapus => 'Delete';
+
+  @override
   String get salary => 'Salary';
 
   @override

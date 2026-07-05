@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:jinahku/database/db_helper.dart';
+import 'package:jinahku/l10n/app_localizations.dart';
+
+import '../theme/light_colors.dart' as light;
+import '../theme/dark_colors.dart' as dark;
 
 class IncomeCategoryPage extends StatefulWidget {
-  const IncomeCategoryPage({super.key});
+  final bool isDark;
+  final bool isEnglish;
+  const IncomeCategoryPage({
+    super.key,
+    required this.isDark,
+    required this.isEnglish,
+  });
 
   @override
   State<IncomeCategoryPage> createState() => _IncomeCategoryPageState();
@@ -17,6 +27,39 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
     _refreshCategories();
   }
 
+  Widget _glassIconButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    final iconColor = widget.isDark ? Colors.white : Colors.black87;
+    final borderColor = widget.isDark
+        ? Colors.white.withOpacity(0.15)
+        : Colors.black.withOpacity(0.08);
+    final backgroundColor = widget.isDark
+        ? Colors.white.withOpacity(0.08)
+        : Colors.grey.withOpacity(0.3);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(18),
+      child: Material(
+        color: backgroundColor,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: onTap,
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: borderColor),
+            ),
+            child: Icon(icon, color: iconColor, size: 24),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _refreshCategories() {
     setState(() {
       _incomeCategoriesFuture = DBHelper.getIncomeCategories();
@@ -25,34 +68,36 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
 
   void _showCreateCategoryDialog() {
     final TextEditingController nameController = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
+    final colors = widget.isDark ? dark.darkColors : light.lightColors;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: colors.divider,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
+            borderRadius: BorderRadius.circular(18),
           ),
-          title: const Text(
-            "Buat Kategori",
+          title: Text(
+            l10n.buatK,
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
           ),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "Nama Kategori",
-                style: TextStyle(fontSize: 16, color: Colors.black87),
+              Text(
+                l10n.namaK,
+                style: TextStyle(fontSize: 16, color: colors.textSecondary),
               ),
               TextField(
                 controller: nameController,
-                cursorColor: Colors.red[700],
+                cursorColor: colors.blue,
                 autofocus: true,
                 decoration: InputDecoration(
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red[700]!, width: 2),
+                    borderSide: BorderSide(color: colors.blue, width: 2),
                   ),
                   enabledBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.brown, width: 1),
@@ -65,10 +110,9 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                "BATAL",
+                l10n.batal,
                 style: TextStyle(
-                  color: Colors.red[700],
-                  fontWeight: FontWeight.bold,
+                  color: colors.blue
                 ),
               ),
             ),
@@ -76,17 +120,15 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
               onPressed: () async {
                 final categoryName = nameController.text.trim();
                 if (categoryName.isNotEmpty) {
-                  // Langsung simpan sebagai kategori pemasukan ke database
                   await DBHelper.insertIncomeCategories(categoryName);
-                  _refreshCategories(); // Memperbarui list di halaman utama
+                  _refreshCategories();
                   Navigator.pop(context);
                 }
               },
               child: Text(
-                "SIMPAN",
+                l10n.simpan,
                 style: TextStyle(
-                  color: Colors.red[700],
-                  fontWeight: FontWeight.bold,
+                  color: colors.blue
                 ),
               ),
             ),
@@ -100,37 +142,39 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
     final TextEditingController nameController = TextEditingController(
       text: currentName,
     );
+    final l10n = AppLocalizations.of(context)!;
+    final colors = widget.isDark ? dark.darkColors : light.lightColors;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: colors.divider,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
+            borderRadius: BorderRadius.circular(18),
           ),
-          title: const Text(
-            "Ubah Kategori",
+          title: Text(
+            l10n.editK,
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
           ),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "Nama Kategori",
-                style: TextStyle(fontSize: 16, color: Colors.black87),
+              Text(
+                l10n.namaKB,
+                style: TextStyle(fontSize: 16, color: colors.textSecondary),
               ),
               TextField(
                 controller: nameController,
-                cursorColor: Colors.red[700],
+                cursorColor: colors.blue,
                 autofocus: true,
                 decoration: InputDecoration(
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red[700]!, width: 2),
+                    borderSide: BorderSide(color: colors.blue, width: 2),
                   ),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.brown, width: 1),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: colors.blue, width: 1),
                   ),
                 ),
               ),
@@ -140,9 +184,9 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                "BATAL",
+                l10n.batal,
                 style: TextStyle(
-                  color: Colors.red[700],
+                  color: colors.blue,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -157,9 +201,9 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
                 }
               },
               child: Text(
-                "SIMPAN",
+                l10n.simpan,
                 style: TextStyle(
-                  color: Colors.red[700],
+                  color: colors.blue,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -171,28 +215,31 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
   }
 
   void _showDeleteConfirmationDialog(int id, String categoryName) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = widget.isDark ? dark.darkColors : light.lightColors;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: colors.divider,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
+            borderRadius: BorderRadius.circular(18),
           ),
-          title: const Text(
-            "Hapus Kategori",
+          title: Text(
+            l10n.hapusK,
             style: TextStyle(fontWeight: FontWeight.w500),
           ),
           content: Text(
-            "Apakah Anda yakin ingin menghapus kategori \"$categoryName\"?",
+            "${l10n.yakinK}, \"$categoryName\" ${l10n.ya}",
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "BATAL",
+              child: Text(
+                l10n.batal,
                 style: TextStyle(
-                  color: Colors.grey,
+                  color: colors.green,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -204,7 +251,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
                 Navigator.pop(context);
               },
               child: Text(
-                "HAPUS",
+                l10n.hapus,
                 style: TextStyle(
                   color: Colors.red[700],
                   fontWeight: FontWeight.bold,
@@ -219,42 +266,41 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = widget.isDark ? dark.darkColors : light.lightColors;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:
-            Colors.red[700], // Warna merah AppBar tetap dipertahankan
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Kategori Pemasukan",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white, size: 28),
-            onPressed: () {
-              _showCreateCategoryDialog();
-            },
-          ),
-        ],
+        toolbarHeight: 65,
+        backgroundColor: widget.isDark ? const Color(0xFF0F172A) : Colors.white,
         elevation: 0,
+        leadingWidth: 60,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12, top: 8, bottom: 8),
+          child: _glassIconButton(
+            icon: Icons.arrow_back,
+            onTap: () => Navigator.pop(context),
+          ),
+        ),
+        title: Text(
+          l10n.kpemasukan,
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+        ),
       ),
+
+      backgroundColor: colors.background,
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _incomeCategoriesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.red),
-            );
+            return Center(child: CircularProgressIndicator(color: colors.blue));
           } else if (snapshot.hasError) {
             return Center(child: Text("Terjadi kesalahan: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 "Belum ada data kategori pemasukan.",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
+                style: TextStyle(color: colors.textPrimary, fontSize: 16),
               ),
             );
           }
@@ -291,6 +337,16 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
             },
           );
         },
+      ),
+
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 20, right: 5),
+        child: _glassIconButton(
+          icon: Icons.add,
+          onTap: () {
+            _showCreateCategoryDialog();
+          },
+        ),
       ),
     );
   }

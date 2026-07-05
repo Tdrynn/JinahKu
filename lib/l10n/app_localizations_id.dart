@@ -177,7 +177,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get pengaturan => 'Pengaturan';
 
   @override
-  String get simpanp => 'Simpan perubahan';
+  String get simpanp => 'Simpan';
 
   @override
   String get batal => 'Batal';
@@ -193,6 +193,30 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dsimpan => 'Data berhasil diperbarui 🎉.';
+
+  @override
+  String get buatK => 'Buat Kategori';
+
+  @override
+  String get namaK => 'Nama Kategori: ';
+
+  @override
+  String get editK => 'Edit Kategori';
+
+  @override
+  String get namaKB => 'Nama Kategori Baru: ';
+
+  @override
+  String get hapusK => 'Hapus Kategori';
+
+  @override
+  String get yakinK => 'Apakah Anda yakin ingin menghapus kategori ';
+
+  @override
+  String get ya => '?';
+
+  @override
+  String get hapus => 'Hapus';
 
   @override
   String get salary => 'Gaji';

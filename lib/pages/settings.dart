@@ -12,8 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:jinahku/services/notification_service.dart';
 import 'package:jinahku/pages/income_category.dart';
 
 class Settings extends StatefulWidget {
@@ -521,7 +519,7 @@ class _SettingsState extends State<Settings> {
   }
 
   void _showEditDateDialog(AppLocalizations l10n) {
-    int tempSelectedDate = incomeDate ?? 1;
+    int tempSelectedDate = incomeDate;
 
     showModalBottomSheet(
       context: context,
@@ -745,7 +743,7 @@ class _SettingsState extends State<Settings> {
                   'assets/icons/reset.webp',
                   width: 120,
                   fit: BoxFit.cover,
-                  alignment: .center,
+                  alignment: Alignment.center,
                 ),
               ),
               const SizedBox(height: 15),
@@ -854,7 +852,7 @@ class _SettingsState extends State<Settings> {
         : Colors.black.withOpacity(0.08);
     final backgroundColor = widget.isDark
         ? Colors.white.withOpacity(0.08)
-        : Colors.white.withOpacity(0.85);
+        : Colors.grey.withOpacity(0.2);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
@@ -864,8 +862,8 @@ class _SettingsState extends State<Settings> {
           borderRadius: BorderRadius.circular(18),
           onTap: onTap,
           child: Container(
-            width: 46,
-            height: 46,
+            width: 23,
+            height: 23,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: borderColor),
@@ -890,9 +888,6 @@ class _SettingsState extends State<Settings> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       icon: _glassCircleIcon(
         widget.isDark ? Icons.dark_mode : Icons.light_mode,
-        iconColor,
-        borderColor,
-        backgroundColor,
       ),
       onSelected: (value) => widget.onToggleTheme(value == 'dark'),
       itemBuilder: (context) => [
@@ -933,12 +928,7 @@ class _SettingsState extends State<Settings> {
       tooltip: "Language",
       color: widget.isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      icon: _glassCircleIcon(
-        Icons.language,
-        iconColor,
-        borderColor,
-        backgroundColor,
-      ),
+      icon: _glassCircleIcon(Icons.language),
       onSelected: widget.onChangeLanguage,
       itemBuilder: (context) => [
         PopupMenuItem<String>(
@@ -971,10 +961,14 @@ class _SettingsState extends State<Settings> {
 
   Widget _glassCircleIcon(
     IconData icon,
-    Color iconColor,
-    Color borderColor,
-    Color backgroundColor,
   ) {
+    final iconColor = widget.isDark ? Colors.white : Colors.black87;
+    final borderColor = widget.isDark
+        ? Colors.white.withOpacity(0.15)
+        : Colors.black.withOpacity(0.08);
+    final backgroundColor = widget.isDark
+        ? Colors.white.withOpacity(0.08)
+        : Colors.grey.withOpacity(0.2);
     return Container(
       width: 42,
       height: 42,
@@ -1001,10 +995,10 @@ class _SettingsState extends State<Settings> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
+        toolbarHeight: 65,
         backgroundColor: widget.isDark ? const Color(0xFF0F172A) : Colors.white,
         elevation: 0,
-        leadingWidth: 70,
+        leadingWidth: 60,
         leading: Padding(
           padding: const EdgeInsets.only(left: 12, top: 8, bottom: 8),
           child: _glassIconButton(
@@ -1080,91 +1074,88 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
                 child: Column(
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.person_outline),
-                          title: Text(l10n.namaP),
-                          subtitle: Text(username),
-                          trailing: const Icon(Icons.edit),
-                          onTap: () {},
-                        ),
-                        Divider(height: 2, color: colors.background),
-                        ListTile(
-                          leading: const Icon(
-                            Icons.account_balance_wallet_outlined,
-                          ),
-                          title: Text(l10n.pemasukan),
-                          subtitle: Text(
-                            NumberFormat.currency(
-                              locale: 'id_ID',
-                              symbol: 'Rp ',
-                              decimalDigits: 0,
-                            ).format(income),
-                          ),
-                          trailing: const Icon(Icons.edit),
-                          onTap: () {},
-                        ),
-                        Divider(height: 2, color: colors.background),
-                        ListTile(
-                          leading: const Icon(Icons.calendar_month),
-                          title: Text(l10n.tanggalP),
-                          subtitle: Text(
-                            NumberFormat.currency(
-                              locale: 'id_ID',
-                              symbol: 'Rp ',
-                              decimalDigits: 0,
-                            ).format(income),
-                          ),
-                          trailing: const Icon(Icons.edit),
-                          onTap: () {},
-                        ),
-                        Divider(height: 2, color: colors.background),
-                        ListTile(
-                          leading: const Icon(Icons.arrow_upward_rounded),
-                          title: const Text("Kategori Pemasukan"),
-                          trailing: const Icon(Icons.chevron_right_rounded),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const IncomeCategoryPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        Divider(height: 2, color: colors.background),
-                        ListTile(
-                          leading: const Icon(Icons.arrow_downward_rounded),
-                          title: const Text("Kategori Pengeluaran"),
-                          trailing: const Icon(Icons.chevron_right_rounded),
-                          onTap: () {},
-                        ),
-                        Divider(height: 2, color: colors.background),
-                        ListTile(
-                          leading: const Icon(Icons.notifications_active),
-                          title: const Text("Jam Pengingat"),
-                          subtitle: Text(
-                            "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}",
-                          ),
-                          trailing: const Icon(Icons.edit),
-                          onTap: () async {
-                            final picked = await showTimePicker(
-                              context: context,
-                              initialTime: selectedTime,
-                            );
-
-                            if (picked != null) {
-                              setState(() {
-                                selectedTime = picked;
-                              });
-
-                              await saveReminder();
-                            }
-                          },
-                        ),
-                      ],
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.person_outline),
+                      title: Text(l10n.namaP),
+                      subtitle: Text(username),
+                      trailing: const Icon(Icons.edit),
+                      onTap: () => _showEditNameDialog(l10n),
                     ),
+                    Divider(height: 2, color: colors.background),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.account_balance_wallet_outlined,
+                      ),
+                      title: Text(l10n.pemasukan),
+                      subtitle: Text(
+                        NumberFormat.currency(
+                          locale: 'id_ID',
+                          symbol: 'Rp ',
+                          decimalDigits: 0,
+                        ).format(income),
+                      ),
+                      trailing: const Icon(Icons.edit),
+                      onTap: () => _showEditIncomeDialog(l10n),
+                    ),
+                    Divider(height: 2, color: colors.background),
+                    ListTile(
+                      leading: const Icon(Icons.calendar_month),
+                      title: Text(l10n.tanggalP),
+                      subtitle: Text("${l10n.stanggal} $incomeDate${l10n.stl}"),
+                      trailing: const Icon(Icons.edit),
+                      onTap: () => _showEditDateDialog(l10n),
+                    ),
+                    Divider(height: 2, color: colors.background),
+                    ListTile(
+                      leading: const Icon(Icons.arrow_upward_rounded),
+                      title: Text(l10n.kpemasukan),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => IncomeCategoryPage(isDark: widget.isDark, isEnglish: widget.isEnglish,),
+                          ),
+                        );
+                      },
+                    ),
+                    Divider(height: 2, color: colors.background),
+                    ListTile(
+                      leading: const Icon(Icons.arrow_downward_rounded),
+                      title: Text(l10n.kpengeluaran),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/manage_expense_category',
+                        );
+                      },
+                    ),
+                    Divider(height: 2, color: colors.background),
+                    ListTile(
+                      leading: const Icon(Icons.notifications_active),
+                      title: Text(l10n.jam),
+                      subtitle: Text(
+                        "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}",
+                      ),
+                      trailing: const Icon(Icons.edit),
+                      onTap: () async {
+                        final picked = await showTimePicker(
+                          context: context,
+                          initialTime: selectedTime,
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            selectedTime = picked;
+                          });
+                          await saveReminder();
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 30),
