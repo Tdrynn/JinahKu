@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 import 'package:jinahku/pages/income_category.dart';
+import 'package:jinahku/pages/outcome_category.dart';
 
 class Settings extends StatefulWidget {
   final bool isDark;
@@ -1127,9 +1128,11 @@ class _SettingsState extends State<Settings> {
                       title: Text(l10n.kpengeluaran),
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () {
-                        Navigator.pushNamed(
+                        Navigator.push(
                           context,
-                          '/manage_expense_category',
+                          MaterialPageRoute(
+                            builder: (context) => ExpenseCategoryPage(isDark: widget.isDark, isEnglish: widget.isEnglish,),
+                          ),
                         );
                       },
                     ),
