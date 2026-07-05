@@ -4,25 +4,27 @@ import 'package:jinahku/pages/onboarding/page2.dart';
 import 'package:jinahku/pages/onboarding/page3.dart';
 import 'package:jinahku/models/modelUser.dart';
 
-class onboardingPage extends StatefulWidget {
+class OnboardingPage extends StatefulWidget {
   final bool isDark;
   final bool isEnglish;
   final Function(bool) onToggleTheme;
   final Function(String) onChangeLanguage;
+  final VoidCallback finishOnboarding;
 
-  const onboardingPage ({
+  const OnboardingPage({
     super.key,
     required this.isDark,
     required this.isEnglish,
     required this.onToggleTheme,
     required this.onChangeLanguage,
+    required this.finishOnboarding,
   });
 
   @override
-  State<onboardingPage> createState() => _onboardingPageState();
+  State<OnboardingPage> createState() => _OnboardingPageState();
 }
 
-class _onboardingPageState extends State<onboardingPage> {
+class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _controller = PageController();
   final OnboardingData data = OnboardingData();
 
@@ -42,26 +44,25 @@ class _onboardingPageState extends State<onboardingPage> {
       currentIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: PageView(
+        controller: _controller,
+        physics: const NeverScrollableScrollPhysics(),
+        onPageChanged: onPageChanged,
         children: [
-          Expanded(
-            child: PageView(
-              controller: _controller,
-              physics: const NeverScrollableScrollPhysics(),
-              onPageChanged: onPageChanged,
-              children: [
-                Page1(data: data, onNext: nextPage),
-                Page2(data: data, onNext: nextPage),
-                Page3(data: data, isDark: widget.isDark, isEnglish: widget.isEnglish, onToggleTheme: widget.onToggleTheme, onChangeLanguage: widget.onChangeLanguage,
-              ),
-              ],
-            ),
+          Page1(data: data, onNext: nextPage),
+          Page2(data: data, onNext: nextPage),
+          Page3(
+            data: data,
+            isDark: widget.isDark,
+            isEnglish: widget.isEnglish,
+            onToggleTheme: widget.onToggleTheme,
+            onChangeLanguage: widget.onChangeLanguage,
+            finishOnboarding: widget.finishOnboarding,
           ),
-
-          const SizedBox(height: 20),
         ],
       ),
     );

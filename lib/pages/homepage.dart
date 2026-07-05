@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
@@ -10,6 +11,7 @@ import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jinahku/pages/settings.dart';
+
 import 'package:jinahku/pages/add_goal.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,19 +19,21 @@ class HomePage extends StatefulWidget {
   final bool isEnglish;
   final Function(bool) onToggleTheme;
   final Function(String) onChangeLanguage;
+  final VoidCallback restartOnBoarding;
   const HomePage({
     super.key,
     required this.isDark,
     required this.isEnglish,
     required this.onToggleTheme,
     required this.onChangeLanguage,
+    required this.restartOnBoarding,
   });
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   String username = '';
   double income = 0;
   double totalIncome = 0;
@@ -43,23 +47,46 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> expenseData = [];
   double totalExpense = 0;
 
+  StreamSubscription? subscription;
+
   Map<String, dynamic>? latestGoal;
 
   @override
   void initState() {
     super.initState();
 
+    print("1");
+
     loadUser();
+
+    print("2");
+
     loadExpenseChart();
+
+    print("3");
+
     loadFinancialSummary();
+
+    print("4");
+
     loadLatestGoal();
 
+    print("5");
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      print("6");
       checkGoalReminder();
     });
   }
 
-  void loadUser() async {
+  @override
+  void dispose() {
+    subscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> loadUser() async {
+    print("loadUser");
     final user = await DBHelper.getUser();
     if (user != null) {
       setState(() {
@@ -71,6 +98,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> loadExpenseChart() async {
+    print("loadExpenseChart");
     final data = await DBHelper.getExpenseByCategoryMonthly(
       selectedYear,
       selectedMonth,
@@ -87,6 +115,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> loadFinancialSummary() async {
+    print("loadFinancialSummary");
     final summary = await DBHelper.getFinancialSummary();
 
     setState(() {
@@ -97,6 +126,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> checkGoalReminder() async {
+    print("checkGoalReminder");
     final goals = await DBHelper.getReminderGoals();
 
     if (!mounted) return;
@@ -156,6 +186,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> loadLatestGoal() async {
+    print("loadLatestGoal");
     final data = await DBHelper.getLatestGoal();
 
     if (!mounted) return;
@@ -163,6 +194,13 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       latestGoal = data;
     });
+  }
+
+  Future<void> refreshData() async {
+    await loadUser();
+    await loadExpenseChart();
+    await loadFinancialSummary();
+    await loadLatestGoal();
   }
 
   Color getCategoryColor(String category) {
@@ -212,7 +250,7 @@ class _HomePageState extends State<HomePage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: colors.background,
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -281,19 +319,30 @@ class _HomePageState extends State<HomePage> {
                           ),
 
                           IconButton(
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Settings(
                                     isDark: widget.isDark,
+
                                     isEnglish: widget.isEnglish,
+
                                     onToggleTheme: widget.onToggleTheme,
+
                                     onChangeLanguage: widget.onChangeLanguage,
+
+                                    restartOnBoarding: widget.restartOnBoarding,
                                   ),
                                 ),
                               );
+                              if (mounted) {
+                                loadUser();
+                                loadFinancialSummary();
+                                loadExpenseChart();
+                              }
                             },
+
                             iconSize: 34,
                             icon: Icon(
                               Icons.settings,

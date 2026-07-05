@@ -5,20 +5,77 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jinahku/pages/history.dart';
 import 'package:jinahku/pages/main_pages.dart';
 import 'package:jinahku/utils/thousands_separator_input_formatter.dart';
+import 'package:jinahku/models/transaction_data.dart';
 
 import '../database/db_helper.dart';
 import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 import 'package:jinahku/l10n/app_localizations.dart';
 
+// --- HELPER MAPPING UNTUK UI ---
+class CategoryUI {
+  static String getName(String code) {
+    return code
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map((e) => e.isEmpty ? '' : e[0].toUpperCase() + e.substring(1))
+        .join(' ');
+  }
+
+  static IconData getIcon(String code) {
+    switch (code) {
+      case 'salary':
+        return Icons.work;
+
+      case 'allowance':
+        return Icons.account_balance_wallet;
+
+      case 'freelance':
+        return Icons.computer;
+
+      case 'business':
+        return Icons.store;
+
+      case 'food':
+        return Icons.restaurant;
+
+      case 'transport':
+        return Icons.directions_car;
+
+      case 'bills':
+        return Icons.receipt_long;
+
+      case 'entertainment':
+        return Icons.movie;
+
+      case 'shopping':
+        return Icons.shopping_bag;
+
+      case 'health':
+        return Icons.local_hospital;
+
+      case 'education':
+        return Icons.school;
+
+      case 'investment':
+        return Icons.trending_up;
+
+      default:
+        return Icons.category;
+    }
+  }
+}
+
 class Transaction extends StatefulWidget {
   final bool isDark;
   final VoidCallback onTransactionSaved;
+  final TransactionData? initialData;
 
   const Transaction({
     super.key,
     required this.isDark,
     required this.onTransactionSaved,
+    this.initialData,
   });
 
   @override
@@ -29,34 +86,38 @@ class _TransactionState extends State<Transaction> {
   bool isExpense = true;
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
-  String _selectedCategory = '';
+
+  // Sekarang menyimpan nilai 'code' (misal: 'food'), bukan nilai UI ('Makanan')
+  String _selectedCategoryCode = '';
   DateTime _selectedDate = DateTime.now();
 
-  final List<Map<String, dynamic>> expenseCategories = [
-    {'name': 'Makanan', 'icon': Icons.restaurant},
-    {'name': 'Transportasi', 'icon': Icons.directions_car},
-    {'name': 'Hiburan', 'icon': Icons.movie},
-    {'name': 'Belanja', 'icon': Icons.shopping_bag},
-    {'name': 'Tagihan', 'icon': Icons.receipt},
-    {'name': 'Lainnya', 'icon': Icons.more_horiz},
-  ];
-
-  final List<Map<String, dynamic>> incomeCategories = [
-    {'name': 'Gaji', 'icon': Icons.work},
-    {'name': 'Freelance', 'icon': Icons.laptop},
-    {'name': 'Bisnis', 'icon': Icons.store},
-    {'name': 'Hibah', 'icon': Icons.card_giftcard},
-    {'name': 'Investasi', 'icon': Icons.trending_up},
-    {'name': 'Lainnya', 'icon': Icons.more_horiz},
-  ];
+  // Menampung list kategori hasil load dari database
+  List<Map<String, dynamic>> _loadedCategories = [];
 
   @override
   void initState() {
     super.initState();
-    _selectedCategory = '';
+    _loadCategoriesFromDB();
+
+    if (widget.initialData != null) {
+      final formatter = NumberFormat.decimalPattern('id');
+      _amountController.text = formatter.format(widget.initialData!.amount);
+      isExpense = true; // Sesuai default awal kode Anda
+      _selectedDate = widget.initialData!.date;
+    }
   }
 
-  // Indonesian custom date formatting
+  // Mengambil data kategori dinamis dari SQLite berdasarkan state `isExpense`
+  Future<void> _loadCategoriesFromDB() async {
+    final categories = isExpense
+        ? await DBHelper.getExpenseCategories()
+        : await DBHelper.getIncomeCategories();
+
+    setState(() {
+      _loadedCategories = categories;
+    });
+  }
+
   String _formatIndonesianDate(DateTime date) {
     const months = [
       'Januari',
@@ -75,8 +136,24 @@ class _TransactionState extends State<Transaction> {
     return "${date.day}-${months[date.month - 1]}-${date.year}";
   }
 
+  @override
+  void didUpdateWidget(covariant Transaction oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.initialData != oldWidget.initialData &&
+        widget.initialData != null) {
+      final formatter = NumberFormat.decimalPattern('id');
+      _amountController.text = formatter.format(widget.initialData!.amount);
+      _selectedCategoryCode = widget.initialData!.categoryCode;
+      _noteController.text = widget.initialData!.note ?? '';
+      _selectedDate = widget.initialData!.date;
+      isExpense = widget.initialData!.type == 'expense';
+
+      _loadCategoriesFromDB();
+    }
+  }
+
   void _showCategoryPicker(BuildContext context, dynamic colors) {
-    final categories = isExpense ? expenseCategories : incomeCategories;
     final l10n = AppLocalizations.of(context)!;
 
     showModalBottomSheet(
@@ -111,43 +188,51 @@ class _TransactionState extends State<Transaction> {
               ),
               const SizedBox(height: 8),
               Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    final item = categories[index];
-                    final isSelected = _selectedCategory == item['name'];
-                    return ListTile(
-                      leading: Icon(
-                        item['icon'],
-                        color: isSelected ? colors.blue : colors.textSecondary,
-                      ),
-                      title: Text(
-                        item['name'],
-                        style: TextStyle(
-                          color: isSelected ? colors.blue : colors.textPrimary,
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.normal,
-                          fontFamily: 'Inter',
+                child: _loadedCategories.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
+                        itemCount: _loadedCategories.length,
+                        itemBuilder: (context, index) {
+                          final item = _loadedCategories[index];
+                          final isSelected =
+                              _selectedCategoryCode == item['code'];
+                          return ListTile(
+                            leading: Icon(
+                              CategoryUI.getIcon(item['code']),
+                              color: isSelected
+                                  ? colors.blue
+                                  : colors.textSecondary,
+                            ),
+                            title: Text(
+                              CategoryUI.getName(item['code']),
+                              style: TextStyle(
+                                color: isSelected
+                                    ? colors.blue
+                                    : colors.textPrimary,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? Icon(Icons.check_circle, color: colors.blue)
+                                : null,
+                            onTap: () {
+                              setState(() {
+                                _selectedCategoryCode =
+                                    item['code']; // Simpan code-nya
+                              });
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
                       ),
-                      trailing: isSelected
-                          ? Icon(Icons.check_circle, color: colors.blue)
-                          : null,
-                      onTap: () {
-                        setState(() {
-                          _selectedCategory = item['name'];
-                        });
-                        Navigator.pop(context);
-                      },
-                    );
-                  },
-                ),
               ),
             ],
           ),
@@ -219,9 +304,9 @@ class _TransactionState extends State<Transaction> {
       return;
     }
 
-    if (_selectedCategory.isEmpty) {
+    if (_selectedCategoryCode.isEmpty) {
       Fluttertoast.showToast(
-        msg: isExpense ? l10n.kategoriPK : l10n.kategoriPN,
+        msg: isExpense ? l10n.kategoriPN : l10n.kategoriPK,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: colors.red,
@@ -230,10 +315,11 @@ class _TransactionState extends State<Transaction> {
       return;
     }
 
+    // Mengirim ke database: Menyesuaikan parameter relasi komposit baru
     await DBHelper.insertTransaction(
       type: isExpense ? 'expense' : 'income',
       amount: amount,
-      category: _selectedCategory,
+      categoryCode: _selectedCategoryCode,
       date: _selectedDate,
       note: _noteController.text.trim().isEmpty
           ? null
@@ -258,7 +344,7 @@ class _TransactionState extends State<Transaction> {
     setState(() {
       _amountController.clear();
       _noteController.clear();
-      _selectedCategory = '';
+      _selectedCategoryCode = '';
       _selectedDate = DateTime.now();
     });
   }
@@ -277,7 +363,7 @@ class _TransactionState extends State<Transaction> {
     final inputBgColor = widget.isDark
         ? const Color(0xFF182030)
         : const Color(0xFFE2E8F0);
-    final textCyan = const Color(0xFF00AED6);
+    const textCyan = Color(0xFF00AED6);
 
     return Scaffold(
       backgroundColor: pageBgColor,
@@ -302,6 +388,7 @@ class _TransactionState extends State<Transaction> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Tab Toggle Income / Expense
             Container(
               height: 52,
               decoration: BoxDecoration(
@@ -318,7 +405,6 @@ class _TransactionState extends State<Transaction> {
                 borderRadius: BorderRadius.circular(16),
                 child: Stack(
                   children: [
-                    // Smooth Sliding Liquid Glass Active Indicator Pill
                     AnimatedAlign(
                       duration: const Duration(milliseconds: 320),
                       curve: Curves.fastOutSlowIn,
@@ -344,18 +430,16 @@ class _TransactionState extends State<Transaction> {
                         ),
                       ),
                     ),
-
-                    // Label Buttons Layer
                     Row(
                       children: [
-                        // Pemasukan Button
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
                                 isExpense = false;
-                                _selectedCategory = '';
+                                _selectedCategoryCode = '';
                               });
+                              _loadCategoriesFromDB();
                             },
                             behavior: HitTestBehavior.opaque,
                             child: Center(
@@ -374,14 +458,14 @@ class _TransactionState extends State<Transaction> {
                             ),
                           ),
                         ),
-                        // Pengeluaran Button
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
                                 isExpense = true;
-                                _selectedCategory = '';
+                                _selectedCategoryCode = '';
                               });
+                              _loadCategoriesFromDB();
                             },
                             behavior: HitTestBehavior.opaque,
                             child: Center(
@@ -408,7 +492,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
-            // Jumlah (Amount) Label and Styled Input
+            // Input Jumlah Uang
             Text(
               l10n.jumlah,
               style: TextStyle(
@@ -467,7 +551,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
-            // Kategori Dropdown Box
+            // Picker Kategori
             Text(
               l10n.kategori,
               style: TextStyle(
@@ -489,24 +573,20 @@ class _TransactionState extends State<Transaction> {
                 ),
                 child: Row(
                   children: [
-                    if (_selectedCategory.isNotEmpty) ...[
+                    if (_selectedCategoryCode.isNotEmpty) ...[
                       Icon(
-                        (isExpense ? expenseCategories : incomeCategories)
-                                .firstWhere(
-                                  (c) => c['name'] == _selectedCategory,
-                                )['icon']
-                            as IconData,
+                        CategoryUI.getIcon(_selectedCategoryCode),
                         color: colors.blue,
                       ),
                       const SizedBox(width: 12),
                     ],
                     Expanded(
                       child: Text(
-                        _selectedCategory.isEmpty
+                        _selectedCategoryCode.isEmpty
                             ? (isExpense ? l10n.kategoriPN : l10n.kategoriPK)
-                            : _selectedCategory,
+                            : CategoryUI.getName(_selectedCategoryCode),
                         style: TextStyle(
-                          color: _selectedCategory.isEmpty
+                          color: _selectedCategoryCode.isEmpty
                               ? colors.textSecondary.withOpacity(0.7)
                               : colors.textPrimary,
                           fontSize: 15,
@@ -526,7 +606,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
-            // Tanggal Date Picker Box
+            // Picker Tanggal
             Text(
               l10n.tanggal,
               style: TextStyle(
@@ -570,6 +650,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
+            // Input Catatan
             Text(
               l10n.catatan,
               style: TextStyle(
@@ -606,6 +687,7 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 40),
 
+            // Tombol Simpan
             GestureDetector(
               onTap: () => _saveTransaction(colors, l10n),
               child: Container(

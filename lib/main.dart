@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jinahku/pages/main_pages.dart';
 import 'package:jinahku/pages/onboarding/onboardingPage.dart';
 import 'package:jinahku/database/db_helper.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jinahku/services/notification_service.dart';
+import 'package:jinahku/services/share_service.dart';
+import 'package:jinahku/services/ocr_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.initialize();
-  WidgetsFlutterBinding.ensureInitialized();
 
-  final isFirstTime = await DBHelper.isFirstTime();
-
-  runApp(MyApp(isFirstTime: isFirstTime));
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  final bool isFirstTime;
-
-  const MyApp({super.key, required this.isFirstTime});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -28,8 +26,35 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool isDark = false;
   String languageCode = 'id';
+  late Future<bool> _isFirstTime;
 
-  /// TOGGLE THEME
+  @override
+  void initState() {
+    super.initState();
+    _isFirstTime = DBHelper.isFirstTime();
+
+    ShareService.startListening((media) async {
+      final attachments = media.attachments;
+      if (attachments == null || attachments.isEmpty) return;
+      final imagePath = attachments.first?.path;
+      if (imagePath == null) return;
+      final text = await OcrService.readText(imagePath);
+      print(text);
+    });
+  }
+
+  void finishOnboarding() {
+    setState(() {
+      _isFirstTime = DBHelper.isFirstTime();
+    });
+  }
+
+  void restartOnboarding() {
+    setState(() {
+      _isFirstTime = DBHelper.isFirstTime();
+    });
+  }
+
   void toggleTheme(bool value) {
     setState(() {
       isDark = value;
@@ -49,32 +74,56 @@ class _MyAppState extends State<MyApp> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
+        SystemChrome.setSystemUIOverlayStyle(
+          isDark
+              ? const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.light,
+                  statusBarBrightness: Brightness.dark,
+                )
+              : const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.light,
+                ),
+        );
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData.light(),
-
           darkTheme: ThemeData.dark(),
-
           themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
           locale: Locale(languageCode),
-
           supportedLocales: const [Locale('en'), Locale('id')],
-
           localizationsDelegates: AppLocalizations.localizationsDelegates,
 
-          home: widget.isFirstTime
-              ? onboardingPage(
+          home: FutureBuilder<bool>(
+            future: _isFirstTime,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (snapshot.data!) {
+                return OnboardingPage(
                   isDark: isDark,
                   isEnglish: languageCode == 'en',
                   onToggleTheme: toggleTheme,
                   onChangeLanguage: changeLanguage,
-                )
-              : MainPage(
-                  isDark: isDark,
-                  isEnglish: languageCode == 'en',
-                  onToggleTheme: toggleTheme,
-                  onChangeLanguage: changeLanguage,
-                ),
+                  finishOnboarding: finishOnboarding,
+                );
+              }
+
+              return MainPage(
+                isDark: isDark,
+                isEnglish: languageCode == 'en',
+                onToggleTheme: toggleTheme,
+                onChangeLanguage: changeLanguage,
+                restartOnBoarding: restartOnboarding,
+              );
+            },
+          ),
         );
       },
     );

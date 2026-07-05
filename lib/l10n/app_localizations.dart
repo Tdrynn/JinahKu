@@ -116,19 +116,19 @@ abstract class AppLocalizations {
   /// No description provided for @ringkasan.
   ///
   /// In en, this message translates to:
-  /// **'expenditure summary'**
+  /// **'Expenditure summary'**
   String get ringkasan;
 
   /// No description provided for @pemasukan.
   ///
   /// In en, this message translates to:
-  /// **'incoming'**
+  /// **'Incoming'**
   String get pemasukan;
 
   /// No description provided for @pengeluaran.
   ///
   /// In en, this message translates to:
-  /// **'expenditure'**
+  /// **'Expenditure'**
   String get pengeluaran;
 
   /// No description provided for @beranda.
@@ -178,6 +178,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Incoming Date'**
   String get tanggalP;
+
+  /// No description provided for @stanggal.
+  ///
+  /// In en, this message translates to:
+  /// **'On the'**
+  String get stanggal;
+
+  /// No description provided for @stl.
+  ///
+  /// In en, this message translates to:
+  /// **'th of every month.'**
+  String get stl;
 
   /// No description provided for @namaT.
   ///
@@ -376,6 +388,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sort History'**
   String get urutkan;
+
+  /// No description provided for @kpemasukan.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Category'**
+  String get kpemasukan;
+
+  /// No description provided for @kpengeluaran.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Category'**
+  String get kpengeluaran;
+
+  /// No description provided for @jam.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder clock'**
+  String get jam;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Application'**
+  String get reset;
+
+  /// No description provided for @terang.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get terang;
+
+  /// No description provided for @gelap.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get gelap;
+
+  /// No description provided for @pengaturan.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get pengaturan;
+
+  /// No description provided for @simpanp.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get simpanp;
+
+  /// No description provided for @batal.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get batal;
+
+  /// No description provided for @riset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset account'**
+  String get riset;
+
+  /// No description provided for @yakin.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all data?\nThis action cannot be undone.'**
+  String get yakin;
+
+  /// No description provided for @mulai.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over from the beginning?'**
+  String get mulai;
+
+  /// No description provided for @dsimpan.
+  ///
+  /// In en, this message translates to:
+  /// **'Data updated successfully 🎉'**
+  String get dsimpan;
+
+  /// No description provided for @buatK.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Category'**
+  String get buatK;
+
+  /// No description provided for @namaK.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Name: '**
+  String get namaK;
+
+  /// No description provided for @editK.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Category'**
+  String get editK;
+
+  /// No description provided for @namaKB.
+  ///
+  /// In en, this message translates to:
+  /// **'New Category Name: '**
+  String get namaKB;
+
+  /// No description provided for @hapusK.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Category'**
+  String get hapusK;
+
+  /// No description provided for @yakinK.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the '**
+  String get yakinK;
+
+  /// No description provided for @ya.
+  ///
+  /// In en, this message translates to:
+  /// **'category?'**
+  String get ya;
+
+  /// No description provided for @hapus.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get hapus;
 
   /// No description provided for @salary.
   ///

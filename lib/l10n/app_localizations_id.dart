@@ -21,10 +21,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get ringkasan => 'Ringkasan Pengeluaran';
 
   @override
-  String get pemasukan => 'pemasukan';
+  String get pemasukan => 'Pemasukan';
 
   @override
-  String get pengeluaran => 'pengeluaran';
+  String get pengeluaran => 'Pengeluaran';
 
   @override
   String get beranda => 'Beranda';
@@ -49,6 +49,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get tanggalP => 'Tanggal Pemasukan';
+
+  @override
+  String get stanggal => 'Setiap tanggal';
+
+  @override
+  String get stl => ' setiap bulan.';
 
   @override
   String get namaT => 'Nama Transaksi (Opsional)';
@@ -117,7 +123,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get tambahkanT => 'Tambahkan Target';
 
   @override
-  String get kategoriPK => 'Pilih sumber pemmasukan';
+  String get kategoriPK => 'Pilih sumber pemasukan';
 
   @override
   String get kategoriPN => 'Pilih kategori pengeluaran';
@@ -148,6 +154,69 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get urutkan => 'Urutkan Riwayat';
+
+  @override
+  String get kpemasukan => 'Kategori Pemasukan';
+
+  @override
+  String get kpengeluaran => 'Kategori Pengeluaran';
+
+  @override
+  String get jam => 'Jam Pengingat';
+
+  @override
+  String get reset => 'Riset Aplikasi';
+
+  @override
+  String get terang => 'Terang';
+
+  @override
+  String get gelap => 'Gelap';
+
+  @override
+  String get pengaturan => 'Pengaturan';
+
+  @override
+  String get simpanp => 'Simpan';
+
+  @override
+  String get batal => 'Batal';
+
+  @override
+  String get riset => 'Riset akun';
+
+  @override
+  String get yakin => 'Apakah Anda yakin ingin menghapus semua data?\nTindakan ini tidak dapat dibatalkan.';
+
+  @override
+  String get mulai => 'Mulai Reset dari Awal?';
+
+  @override
+  String get dsimpan => 'Data berhasil diperbarui 🎉.';
+
+  @override
+  String get buatK => 'Buat Kategori';
+
+  @override
+  String get namaK => 'Nama Kategori: ';
+
+  @override
+  String get editK => 'Edit Kategori';
+
+  @override
+  String get namaKB => 'Nama Kategori Baru: ';
+
+  @override
+  String get hapusK => 'Hapus Kategori';
+
+  @override
+  String get yakinK => 'Apakah Anda yakin ingin menghapus kategori ';
+
+  @override
+  String get ya => '?';
+
+  @override
+  String get hapus => 'Hapus';
 
   @override
   String get salary => 'Gaji';

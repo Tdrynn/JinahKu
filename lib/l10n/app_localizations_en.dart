@@ -18,13 +18,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saldo => 'Current balance';
 
   @override
-  String get ringkasan => 'expenditure summary';
+  String get ringkasan => 'Expenditure summary';
 
   @override
-  String get pemasukan => 'incoming';
+  String get pemasukan => 'Incoming';
 
   @override
-  String get pengeluaran => 'expenditure';
+  String get pengeluaran => 'Expenditure';
 
   @override
   String get beranda => 'Home';
@@ -49,6 +49,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tanggalP => 'Incoming Date';
+
+  @override
+  String get stanggal => 'On the';
+
+  @override
+  String get stl => 'th of every month.';
 
   @override
   String get namaT => 'Transaction Name (Optional)';
@@ -148,6 +154,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get urutkan => 'Sort History';
+
+  @override
+  String get kpemasukan => 'Income Category';
+
+  @override
+  String get kpengeluaran => 'Expense Category';
+
+  @override
+  String get jam => 'Reminder clock';
+
+  @override
+  String get reset => 'Reset Application';
+
+  @override
+  String get terang => 'Light';
+
+  @override
+  String get gelap => 'Dark';
+
+  @override
+  String get pengaturan => 'Settings';
+
+  @override
+  String get simpanp => 'Save changes';
+
+  @override
+  String get batal => 'Cancel';
+
+  @override
+  String get riset => 'Reset account';
+
+  @override
+  String get yakin => 'Are you sure you want to delete all data?\nThis action cannot be undone.';
+
+  @override
+  String get mulai => 'Start over from the beginning?';
+
+  @override
+  String get dsimpan => 'Data updated successfully 🎉';
+
+  @override
+  String get buatK => 'Create Category';
+
+  @override
+  String get namaK => 'Category Name: ';
+
+  @override
+  String get editK => 'Edit Category';
+
+  @override
+  String get namaKB => 'New Category Name: ';
+
+  @override
+  String get hapusK => 'Delete Category';
+
+  @override
+  String get yakinK => 'Are you sure you want to delete the ';
+
+  @override
+  String get ya => 'category?';
+
+  @override
+  String get hapus => 'Delete';
 
   @override
   String get salary => 'Salary';
