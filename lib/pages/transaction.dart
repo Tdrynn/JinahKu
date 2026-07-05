@@ -14,54 +14,53 @@ import 'package:jinahku/l10n/app_localizations.dart';
 // --- HELPER MAPPING UNTUK UI ---
 class CategoryUI {
   static String getName(String code) {
-    switch (code) {
-      // Income
-      case 'salary':
-        return 'Gaji';
-      case 'allowance':
-        return 'Uang Saku / Tunjangan';
-      case 'freelance':
-        return 'Freelance';
-      case 'business':
-        return 'Bisnis';
-      case 'other':
-        return 'Lainnya';
-      // Expense
-      case 'food':
-        return 'Makanan';
-      case 'transport':
-        return 'Transportasi';
-      case 'entertainment':
-        return 'Hiburan';
-      case 'bills':
-        return 'Tagihan';
-      default:
-        return 'Lainnya';
-    }
+    return code
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map((e) => e.isEmpty ? '' : e[0].toUpperCase() + e.substring(1))
+        .join(' ');
   }
 
   static IconData getIcon(String code) {
     switch (code) {
-      // Income
       case 'salary':
         return Icons.work;
+
       case 'allowance':
-        return Icons.wallet;
+        return Icons.account_balance_wallet;
+
       case 'freelance':
-        return Icons.laptop;
+        return Icons.computer;
+
       case 'business':
         return Icons.store;
-      // Expense
+
       case 'food':
         return Icons.restaurant;
+
       case 'transport':
         return Icons.directions_car;
+
+      case 'bills':
+        return Icons.receipt_long;
+
       case 'entertainment':
         return Icons.movie;
-      case 'bills':
-        return Icons.receipt;
+
+      case 'shopping':
+        return Icons.shopping_bag;
+
+      case 'health':
+        return Icons.local_hospital;
+
+      case 'education':
+        return Icons.school;
+
+      case 'investment':
+        return Icons.trending_up;
+
       default:
-        return Icons.more_horiz;
+        return Icons.category;
     }
   }
 }
@@ -109,22 +108,12 @@ class _TransactionState extends State<Transaction> {
 
   // Mengambil data kategori dinamis dari SQLite berdasarkan state `isExpense`
   Future<void> _loadCategoriesFromDB() async {
-    final typeString = isExpense ? 'expense' : 'income';
-
-    // Pastikan Anda memiliki method getCategories di DBHelper Anda
-    // Jika belum ada, jalankan rawQuery/query: db.query('category', where: 'type = ?', whereArgs: [typeString])
-    final List<Map<String, dynamic>> categoriesFromDB =
-        await DBHelper.getCategories(typeString);
+    final categories = await DBHelper.getCategories(
+      isExpense ? 'expense' : 'income',
+    );
 
     setState(() {
-      _loadedCategories = categoriesFromDB.map((cat) {
-        final code = cat['code'] as String;
-        return {
-          'code': code,
-          'name': CategoryUI.getName(code),
-          'icon': CategoryUI.getIcon(code),
-        };
-      }).toList();
+      _loadedCategories = categories;
     });
   }
 
@@ -154,10 +143,10 @@ class _TransactionState extends State<Transaction> {
         widget.initialData != null) {
       final formatter = NumberFormat.decimalPattern('id');
       _amountController.text = formatter.format(widget.initialData!.amount);
-      _selectedCategoryCode =
-          'shopping'; // Menyimpan dalam bentuk code database
-      _noteController.text = widget.initialData!.merchant ?? '';
+      _selectedCategoryCode = widget.initialData!.categoryCode;
+      _noteController.text = widget.initialData!.note ?? '';
       _selectedDate = widget.initialData!.date;
+      isExpense = widget.initialData!.type == 'expense';
 
       _loadCategoriesFromDB();
     }
@@ -213,13 +202,13 @@ class _TransactionState extends State<Transaction> {
                               _selectedCategoryCode == item['code'];
                           return ListTile(
                             leading: Icon(
-                              item['icon'],
+                              CategoryUI.getIcon(item['code']),
                               color: isSelected
                                   ? colors.blue
                                   : colors.textSecondary,
                             ),
                             title: Text(
-                              item['name'],
+                              CategoryUI.getName(item['code']),
                               style: TextStyle(
                                 color: isSelected
                                     ? colors.blue
