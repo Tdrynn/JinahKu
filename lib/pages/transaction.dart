@@ -10,6 +10,7 @@ import '../database/db_helper.dart';
 import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 import 'package:jinahku/l10n/app_localizations.dart';
+import 'category_icons.dart';
 
 // --- HELPER MAPPING UNTUK UI ---
 class CategoryUI {
@@ -86,11 +87,10 @@ class _TransactionState extends State<Transaction> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
-  // Sekarang menyimpan nilai 'code' (misal: 'food'), bukan nilai UI ('Makanan')
   String _selectedCategoryCode = '';
+  String _selectedCategoryIcon = 'category';
   DateTime _selectedDate = DateTime.now();
 
-  // Menampung list kategori hasil load dari database
   List<Map<String, dynamic>> _loadedCategories = [];
 
   @override
@@ -101,12 +101,11 @@ class _TransactionState extends State<Transaction> {
     if (widget.initialData != null) {
       final formatter = NumberFormat.decimalPattern('id');
       _amountController.text = formatter.format(widget.initialData!.amount);
-      isExpense = true; // Sesuai default awal kode Anda
+      isExpense = true;
       _selectedDate = widget.initialData!.date;
     }
   }
 
-  // Mengambil data kategori dinamis dari SQLite berdasarkan state `isExpense`
   Future<void> _loadCategoriesFromDB() async {
     final categories = await DBHelper.getCategories(
       isExpense ? 'expense' : 'income',
@@ -143,7 +142,10 @@ class _TransactionState extends State<Transaction> {
         widget.initialData != null) {
       final formatter = NumberFormat.decimalPattern('id');
       _amountController.text = formatter.format(widget.initialData!.amount);
-      _selectedCategoryCode = widget.initialData!.categoryCode;
+      // NOTE: masih hardcode ke "shopping" seperti sebelumnya (bug lama yang
+      // sudah pernah saya tandai) -- ikon disamakan supaya minimal tidak mismatch.
+      _selectedCategoryCode = "shopping";
+      _selectedCategoryIcon = "shopping_bag";
       _noteController.text = widget.initialData!.note ?? '';
       _selectedDate = widget.initialData!.date;
       isExpense = widget.initialData!.type == 'expense';
@@ -202,7 +204,7 @@ class _TransactionState extends State<Transaction> {
                               _selectedCategoryCode == item['code'];
                           return ListTile(
                             leading: Icon(
-                              CategoryUI.getIcon(item['code']),
+                              CategoryIcons.resolve(item['icon'] as String?),
                               color: isSelected
                                   ? colors.blue
                                   : colors.textSecondary,
@@ -224,8 +226,9 @@ class _TransactionState extends State<Transaction> {
                                 : null,
                             onTap: () {
                               setState(() {
-                                _selectedCategoryCode =
-                                    item['code']; // Simpan code-nya
+                                _selectedCategoryCode = item['code']; // Simpan code-nya
+                                _selectedCategoryIcon =
+                                    item['icon'] as String? ?? 'category';
                               });
                               Navigator.pop(context);
                             },
@@ -339,6 +342,7 @@ class _TransactionState extends State<Transaction> {
       _amountController.clear();
       _noteController.clear();
       _selectedCategoryCode = '';
+      _selectedCategoryIcon = 'category';
       _selectedDate = DateTime.now();
     });
   }
@@ -382,7 +386,6 @@ class _TransactionState extends State<Transaction> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Tab Toggle Income / Expense
             Container(
               height: 52,
               decoration: BoxDecoration(
@@ -432,6 +435,7 @@ class _TransactionState extends State<Transaction> {
                               setState(() {
                                 isExpense = false;
                                 _selectedCategoryCode = '';
+                                _selectedCategoryIcon = 'category';
                               });
                               _loadCategoriesFromDB();
                             },
@@ -458,6 +462,7 @@ class _TransactionState extends State<Transaction> {
                               setState(() {
                                 isExpense = true;
                                 _selectedCategoryCode = '';
+                                _selectedCategoryIcon = 'category';
                               });
                               _loadCategoriesFromDB();
                             },
@@ -569,7 +574,7 @@ class _TransactionState extends State<Transaction> {
                   children: [
                     if (_selectedCategoryCode.isNotEmpty) ...[
                       Icon(
-                        CategoryUI.getIcon(_selectedCategoryCode),
+                        CategoryIcons.resolve(_selectedCategoryIcon),
                         color: colors.blue,
                       ),
                       const SizedBox(width: 12),

@@ -20,7 +20,7 @@ class DBHelper {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
@@ -38,6 +38,13 @@ class DBHelper {
 
           await _createDB(db);
           await _createTransactionTable(db);
+          return;
+        }
+
+        if (oldVersion < 4) {
+          await db.execute(
+            "ALTER TABLE category ADD COLUMN icon TEXT NOT NULL DEFAULT 'category'",
+          );
         }
       },
 
@@ -57,31 +64,78 @@ class DBHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         type TEXT NOT NULL,
         code TEXT NOT NULL,
+        icon TEXT NOT NULL DEFAULT 'category',
         UNIQUE(type, code)
       )
     ''');
 
     // Income Categories
-    await db.insert('category', {'type': 'income', 'code': 'salary'});
+    await db.insert('category', {
+      'type': 'income',
+      'code': 'salary',
+      'icon': 'work',
+    });
 
-    await db.insert('category', {'type': 'income', 'code': 'allowance'});
+    await db.insert('category', {
+      'type': 'income',
+      'code': 'allowance',
+      'icon': 'wallet',
+    });
 
-    await db.insert('category', {'type': 'income', 'code': 'freelance'});
+    await db.insert('category', {
+      'type': 'income',
+      'code': 'freelance',
+      'icon': 'laptop',
+    });
 
-    await db.insert('category', {'type': 'income', 'code': 'business'});
+    await db.insert('category', {
+      'type': 'income',
+      'code': 'business',
+      'icon': 'store',
+    });
 
-    await db.insert('category', {'type': 'income', 'code': 'other'});
+    await db.insert('category', {
+      'type': 'income',
+      'code': 'other',
+      'icon': 'category',
+    });
 
     // Expense Categories
-    await db.insert('category', {'type': 'expense', 'code': 'food'});
+    await db.insert('category', {
+      'type': 'expense',
+      'code': 'food',
+      'icon': 'restaurant',
+    });
 
-    await db.insert('category', {'type': 'expense', 'code': 'transport'});
+    await db.insert('category', {
+      'type': 'expense',
+      'code': 'transport',
+      'icon': 'car',
+    });
 
-    await db.insert('category', {'type': 'expense', 'code': 'bills'});
+    await db.insert('category', {
+      'type': 'expense',
+      'code': 'shopping',
+      'icon': 'shopping_bag',
+    });
 
-    await db.insert('category', {'type': 'expense', 'code': 'entertainment'});
+    await db.insert('category', {
+      'type': 'expense',
+      'code': 'bills',
+      'icon': 'receipt',
+    });
 
-    await db.insert('category', {'type': 'expense', 'code': 'other'});
+    await db.insert('category', {
+      'type': 'expense',
+      'code': 'entertainment',
+      'icon': 'movie',
+    });
+
+    await db.insert('category', {
+      'type': 'expense',
+      'code': 'other',
+      'icon': 'category',
+    });
 
     await db.execute('''
       CREATE TABLE user_profile (
@@ -374,43 +428,139 @@ class DBHelper {
   // CATEGORY CRUD
   // ==========================================================================
 
+  // Alias -- identik dengan getIncomeCategories/getExpenseCategories di atas.
   static Future<List<Map<String, dynamic>>>
-  getIncomeCategoriesFromTable() async {
+  getIncomeCategoriesFromTable() => getIncomeCategories();
+
+  static Future<List<Map<String, dynamic>>>
+  getExpenseCategoriesFromTable() => getExpenseCategories();
+
+  static Future<int> insertIncomeCategory(
+    String code, {
+    String icon = 'category',
+  }) async {
     final db = await database;
 
-    return await db.query(
-      'category',
-      where: 'type=?',
-      whereArgs: ['income'],
-      orderBy: 'code ASC',
-    );
+    try {
+      return await db.insert('category', {
+        'type': 'income',
+        'code': code,
+        'icon': icon,
+      });
+    } on DatabaseException catch (e) {
+      if (e.isUniqueConstraintError()) {
+        throw Exception('Kategori "$code" sudah ada.');
+      }
+      rethrow;
+    }
   }
 
-  static Future<int> insertIncomeCategory(String code) async {
+  static Future<int> insertExpenseCategory(
+    String code, {
+    String icon = 'category',
+  }) async {
     final db = await database;
 
-    return await db.insert('category', {'type': 'income', 'code': code});
+    try {
+      return await db.insert('category', {
+        'type': 'expense',
+        'code': code,
+        'icon': icon,
+      });
+    } on DatabaseException catch (e) {
+      if (e.isUniqueConstraintError()) {
+        throw Exception('Kategori "$code" sudah ada.');
+      }
+      rethrow;
+    }
   }
 
-  static Future<int> updateIncomeCategory(int id, String newCode) async {
+  static Future<int> updateIncomeCategory(
+    int id,
+    String newCode, {
+    String? icon,
+  }) async {
     final db = await database;
 
-    return await db.update(
-      'category',
-      {'code': newCode},
-      where: 'id=? AND type=?',
-      whereArgs: [id, 'income'],
-    );
+    final data = <String, dynamic>{'code': newCode};
+    if (icon != null) data['icon'] = icon;
+
+    try {
+      return await db.update(
+        'category',
+        data,
+        where: 'id=? AND type=?',
+        whereArgs: [id, 'income'],
+      );
+    } on DatabaseException catch (e) {
+      if (e.isUniqueConstraintError()) {
+        throw Exception('Kategori "$newCode" sudah ada.');
+      }
+      rethrow;
+    }
+  }
+
+  static Future<int> updateExpenseCategory(
+    int id,
+    String newCode, {
+    String? icon,
+  }) async {
+    final db = await database;
+
+    final data = <String, dynamic>{'code': newCode};
+    if (icon != null) data['icon'] = icon;
+
+    try {
+      return await db.update(
+        'category',
+        data,
+        where: 'id=? AND type=?',
+        whereArgs: [id, 'expense'],
+      );
+    } on DatabaseException catch (e) {
+      if (e.isUniqueConstraintError()) {
+        throw Exception('Kategori "$newCode" sudah ada.');
+      }
+      rethrow;
+    }
   }
 
   static Future<int> deleteIncomeCategory(int id) async {
     final db = await database;
 
-    return await db.delete(
-      'category',
-      where: 'id=? AND type=?',
-      whereArgs: [id, 'income'],
-    );
+    try {
+      return await db.delete(
+        'category',
+        where: 'id=? AND type=?',
+        whereArgs: [id, 'income'],
+      );
+    } on DatabaseException catch (e) {
+      if (e.isUniqueConstraintError()) {
+        throw Exception(
+          'Kategori ini masih digunakan pada transaksi atau profil, tidak bisa dihapus.',
+        );
+      }
+      rethrow;
+    }
+  }
+
+  static Future<int> deleteExpenseCategory(int id) async {
+    final db = await database;
+
+    try {
+      return await db.delete(
+        'category',
+        where: 'id=? AND type=?',
+        whereArgs: [id, 'expense'],
+      );
+    } on DatabaseException catch (e) {
+      if (e.isUniqueConstraintError()) {
+        throw Exception(
+          'Kategori ini masih digunakan pada transaksi atau profil, tidak bisa dihapus.',
+        );
+      }
+      rethrow;
+    }
   }
 
   // ==========================================================================
