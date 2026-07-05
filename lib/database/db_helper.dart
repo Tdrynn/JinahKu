@@ -443,15 +443,4 @@ class DBHelper {
     await db.delete('transactions');
     await db.delete('user_profile');
   }
-
-  // CLEAR DATA
-  // ==========================================================================
-
-  static Future<void> clearAllData() async {
-    final db = await database;
-
-    await db.delete('transactions');
-    await db.delete('user_profile');
-  }
-
 }
