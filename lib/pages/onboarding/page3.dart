@@ -31,6 +31,29 @@ class Page3 extends StatefulWidget {
 }
 
 class _Page3State extends State<Page3> {
+  // Fungsi helper untuk menerjemahkan sourceCode ke teks yang user-friendly
+  String _getSourceName(String? sourceCode) {
+    switch (sourceCode) {
+      case 'salary':
+        return 'Gaji';
+
+      case 'allowance':
+        return 'Tunjangan';
+
+      case 'freelance':
+        return 'Freelance';
+
+      case 'business':
+        return 'Bisnis';
+
+      case 'other':
+        return 'Lainnya';
+
+      default:
+        return '-';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -66,7 +89,6 @@ class _Page3State extends State<Page3> {
                               alignment: Alignment.topCenter,
                             ),
                           ),
-                          
                           if (widget.onBack != null)
                             Positioned(
                               top: paddingTop + 10,
@@ -75,7 +97,11 @@ class _Page3State extends State<Page3> {
                                 child: Material(
                                   color: Colors.black26,
                                   child: IconButton(
-                                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                                    icon: const Icon(
+                                      Icons.arrow_back_ios_new,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                     onPressed: widget.onBack,
                                   ),
                                 ),
@@ -83,7 +109,6 @@ class _Page3State extends State<Page3> {
                             ),
                         ],
                       ),
-
                       Expanded(
                         child: Transform.translate(
                           offset: const Offset(0, -15),
@@ -102,7 +127,10 @@ class _Page3State extends State<Page3> {
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.person, color: Colors.white),
+                                    const Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                    ),
                                     const SizedBox(width: 10),
                                     Text(
                                       "Informasi Pengguna",
@@ -120,28 +148,46 @@ class _Page3State extends State<Page3> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF243B55),
                                     borderRadius: BorderRadius.circular(18),
-                                    border: Border.all(color: Colors.blue.shade400),
+                                    border: Border.all(
+                                      color: Colors.blue.shade400,
+                                    ),
                                   ),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             l10n.namaP,
-                                            style: TextStyle(color: Colors.white70, fontSize: 14.sp),
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 14.sp,
+                                            ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            widget.data.username,
-                                            style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.bold),
+                                            widget.data.username.isEmpty
+                                                ? "-"
+                                                : widget.data.username,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 22.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ],
                                       ),
                                       CircleAvatar(
                                         radius: 28,
-                                        backgroundImage: AssetImage(widget.data.avatar),
+                                        backgroundImage:
+                                            widget.data.avatar.isNotEmpty
+                                            ? AssetImage(widget.data.avatar)
+                                            : const AssetImage(
+                                                'assets/images/default_avatar.png',
+                                              ), // Fallback jika avatar kosong
                                       ),
                                     ],
                                   ),
@@ -149,11 +195,18 @@ class _Page3State extends State<Page3> {
                                 const SizedBox(height: 18),
                                 Row(
                                   children: [
-                                    const Icon(Icons.arrow_circle_up, color: Colors.white),
+                                    const Icon(
+                                      Icons.arrow_circle_up,
+                                      color: Colors.white,
+                                    ),
                                     const SizedBox(width: 10),
                                     Text(
                                       "Detail Pendapatan",
-                                      style: TextStyle(color: Colors.white, fontSize: 22.sp, fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -163,7 +216,9 @@ class _Page3State extends State<Page3> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF243B55),
                                     borderRadius: BorderRadius.circular(18),
-                                    border: Border.all(color: Colors.blue.shade400),
+                                    border: Border.all(
+                                      color: Colors.blue.shade400,
+                                    ),
                                   ),
                                   child: Column(
                                     children: [
@@ -179,20 +234,27 @@ class _Page3State extends State<Page3> {
                                       const SizedBox(height: 14),
                                       buildRow(
                                         "Sumber Pemasukan",
-                                        widget.data.sourceId == 1 ? "Gaji Bulanan" : "Lainnya",
+                                        _getSourceName(
+                                          widget.data.sourceCode,
+                                        ), // Menggunakan helper String sourceCode
                                       ),
                                       const SizedBox(height: 14),
                                       buildRow(
-                                        "Tanggal",
-                                        widget.data.date == null ? "-" : "${widget.data.date!.day}",
+                                        "Tanggal Terpilih",
+                                        widget.data.date == null
+                                            ? "-"
+                                            : DateFormat(
+                                                'dd MMMM yyyy',
+                                                'id',
+                                              ).format(
+                                                widget.data.date!,
+                                              ), // Format tanggal lebih rapi
                                       ),
                                     ],
                                   ),
                                 ),
-                                
                                 const Spacer(),
                                 const SizedBox(height: 32),
-                                
                                 SizedBox(
                                   width: double.infinity,
                                   height: 50.h,
@@ -208,18 +270,41 @@ class _Page3State extends State<Page3> {
                                         await DBHelper.insertUser(
                                           username: widget.data.username,
                                           monthlyIncome: widget.data.income,
-                                          incomeDate: widget.data.date!,
+                                          incomeDate:
+                                              widget.data.date ??
+                                              DateTime.now(),
                                           avatar: widget.data.avatar,
-                                          incomeSourceId: widget.data.sourceId!,
+                                          incomeCategoryCode:
+                                              widget.data.sourceCode ??
+                                              'salary',
                                         );
+
                                         widget.finishOnboarding();
                                       } catch (e) {
-                                        debugPrint(e.toString());
+                                        debugPrint(
+                                          "Gagal menyimpan data user: ${e.toString()}",
+                                        );
+
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "Gagal menyimpan data: $e",
+                                              ),
+                                            ),
+                                          );
+                                        }
                                       }
                                     },
                                     child: Text(
                                       l10n.simpan,
-                                      style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -252,13 +337,20 @@ class _Page3State extends State<Page3> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(color: Colors.white70, fontSize: 16)),
         Text(
-          value,
-          style: TextStyle(
-            color: isGreen ? Colors.greenAccent : Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+          title,
+          style: const TextStyle(color: Colors.white70, fontSize: 16),
+        ),
+        Flexible(
+          // Menghindari overflow jika teks value terlalu panjang
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              color: isGreen ? Colors.greenAccent : Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ],
@@ -276,4 +368,4 @@ class _Page3State extends State<Page3> {
       ),
     );
   }
-} 
+}
