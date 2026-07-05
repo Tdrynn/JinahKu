@@ -163,4 +163,145 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get other => 'Other';
+
+  @override
+  String get goals => 'Goals';
+
+  @override
+  String get goalsDescription => 'Set a target, track your progress, and achieve your dreams.';
+
+  @override
+  String get createGoals => 'Create Goals';
+
+  @override
+  String get createNewGoal => 'Create New Goal';
+
+  @override
+  String get target => 'Target';
+
+  @override
+  String get goalNameRequired => 'Goal name is required';
+
+  @override
+  String get targetAmountRequired => 'Target amount is required';
+
+  @override
+  String get editGoals => 'Edit Goals';
+
+  @override
+  String get changePhoto => 'Change Photo';
+
+  @override
+  String get goalPhotoHint => 'Use a photo of the item you want to buy (optional)';
+
+  @override
+  String get goalName => 'Goal Name';
+
+  @override
+  String get goalNameHint => 'Example: Laptop Savings';
+
+  @override
+  String get targetAmount => 'Target Amount';
+
+  @override
+  String get targetAmountHint => 'Enter the target amount you want to achieve';
+
+  @override
+  String get targetDate => 'Target Date';
+
+  @override
+  String get goalNote => 'Notes (Optional)';
+
+  @override
+  String get goalNoteHint => 'Write a note or motivation for this goal...';
+
+  @override
+  String get enableGoalReminder => 'Enable goal reminders';
+
+  @override
+  String get goalReminderDescription => 'You\'ll receive reminders based on your schedule';
+
+  @override
+  String get minimumTarget => 'Minimum target is Rp1,000.';
+
+  @override
+  String get maximumTarget => 'Maximum target is Rp999,999,999.';
+
+  @override
+  String get goalUpdated => 'Goals updated successfully';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get saveGoals => 'Save Goals';
+
+  @override
+  String get goalDetail => 'Goal Details';
+
+  @override
+  String get completedGoalCannotBeEdited => 'Completed goals cannot be edited';
+
+  @override
+  String get goalOverdue => '⚠️ Goal is overdue.';
+
+  @override
+  String get savingProgress => 'Saving Progress';
+
+  @override
+  String get collected => 'Collected';
+
+  @override
+  String get remainingTarget => 'Remaining Target';
+
+  @override
+  String get note => 'Notes';
+
+  @override
+  String get savingHistory => 'Saving History';
+
+  @override
+  String get noSavingHistory => 'No saving history yet';
+
+  @override
+  String get addMoney => 'Add Money';
+
+  @override
+  String get showLatestTransactions => 'Showing the latest 3 transactions';
+
+  @override
+  String get deleteGoals => 'Delete Goals';
+
+  @override
+  String get currentSavedMoney => 'Current Saved Amount';
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get addMoneyDescription => 'Add money to this goal';
+
+  @override
+  String get enterAmountFirst => 'Please enter an amount first';
+
+  @override
+  String get moneyAdded => 'Money added successfully';
+
+  @override
+  String get deleteGoalTitle => 'Delete Goal';
+
+  @override
+  String get deleteGoalConfirmation => 'Are you sure you want to delete this goal?\n\nAll saving history will also be deleted.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get goalDeleted => 'Goal deleted successfully';
 }

@@ -163,4 +163,145 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get other => 'Lainnya';
+
+  @override
+  String get goals => 'Goals';
+
+  @override
+  String get goalsDescription => 'Buat target, pantau progres, dan capai impianmu.';
+
+  @override
+  String get createGoals => 'Buat Goals';
+
+  @override
+  String get createNewGoal => 'Buat Goals Baru';
+
+  @override
+  String get target => 'Target';
+
+  @override
+  String get goalNameRequired => 'Nama Goals wajib diisi';
+
+  @override
+  String get targetAmountRequired => 'Target nominal wajib diisi';
+
+  @override
+  String get editGoals => 'Edit Goals';
+
+  @override
+  String get changePhoto => 'Ubah Foto';
+
+  @override
+  String get goalPhotoHint => 'Gunakan foto barang yang ingin kamu beli (opsional)';
+
+  @override
+  String get goalName => 'Nama Goals';
+
+  @override
+  String get goalNameHint => 'Contoh: Tabungan Laptop';
+
+  @override
+  String get targetAmount => 'Target Nominal';
+
+  @override
+  String get targetAmountHint => 'Masukkan jumlah target yang ingin kamu capai';
+
+  @override
+  String get targetDate => 'Target Tanggal';
+
+  @override
+  String get goalNote => 'Catatan (Opsional)';
+
+  @override
+  String get goalNoteHint => 'Tulis catatan atau motivasi untuk goal ini...';
+
+  @override
+  String get enableGoalReminder => 'Aktifkan pengingat goals';
+
+  @override
+  String get goalReminderDescription => 'Kamu akan diingatkan sesuai jadwal';
+
+  @override
+  String get minimumTarget => 'Target minimal adalah Rp1.000.';
+
+  @override
+  String get maximumTarget => 'Target maksimal adalah Rp999.999.999.';
+
+  @override
+  String get goalUpdated => 'Goals berhasil diperbarui';
+
+  @override
+  String get saveChanges => 'Simpan Perubahan';
+
+  @override
+  String get saveGoals => 'Simpan Goals';
+
+  @override
+  String get goalDetail => 'Detail Goals';
+
+  @override
+  String get completedGoalCannotBeEdited => 'Goals yang sudah selesai tidak dapat diedit';
+
+  @override
+  String get goalOverdue => '⚠️ Goal is overdue.';
+
+  @override
+  String get savingProgress => 'Progress Tabungan';
+
+  @override
+  String get collected => 'Terkumpul';
+
+  @override
+  String get remainingTarget => 'Sisa Target';
+
+  @override
+  String get note => 'Catatan';
+
+  @override
+  String get savingHistory => 'Riwayat Tabungan';
+
+  @override
+  String get noSavingHistory => 'Belum ada riwayat tabungan';
+
+  @override
+  String get addMoney => 'Tambah Dana';
+
+  @override
+  String get showLatestTransactions => 'Menampilkan 3 transaksi terbaru';
+
+  @override
+  String get deleteGoals => 'Hapus Goals';
+
+  @override
+  String get currentSavedMoney => 'Dana Tersimpan Saat Ini';
+
+  @override
+  String get amount => 'Nominal';
+
+  @override
+  String get date => 'Tanggal';
+
+  @override
+  String get addMoneyDescription => 'Tambah dana ke tabungan ini';
+
+  @override
+  String get enterAmountFirst => 'Masukkan nominal terlebih dahulu';
+
+  @override
+  String get moneyAdded => 'Dana berhasil ditambahkan';
+
+  @override
+  String get deleteGoalTitle => 'Hapus Goal';
+
+  @override
+  String get deleteGoalConfirmation => 'Apakah kamu yakin ingin menghapus goal ini?\n\nSemua riwayat tabungan juga akan ikut terhapus.';
+
+  @override
+  String get cancel => 'Batal';
+
+  @override
+  String get delete => 'Hapus';
+
+  @override
+  String get goalDeleted => 'Goal berhasil dihapus';
 }

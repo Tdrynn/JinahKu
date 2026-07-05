@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jinahku/pages/history.dart';
 import 'package:jinahku/pages/main_pages.dart';
+import 'package:jinahku/utils/thousands_separator_input_formatter.dart';
 
 import '../database/db_helper.dart';
 import '../theme/light_colors.dart' as light;
@@ -17,7 +18,7 @@ class Transaction extends StatefulWidget {
   const Transaction({
     super.key,
     required this.isDark,
-    required this.onTransactionSaved
+    required this.onTransactionSaved,
   });
 
   @override
@@ -220,9 +221,7 @@ class _TransactionState extends State<Transaction> {
 
     if (_selectedCategory.isEmpty) {
       Fluttertoast.showToast(
-        msg: isExpense
-            ? l10n.kategoriPK
-            : l10n.kategoriPN,
+        msg: isExpense ? l10n.kategoriPK : l10n.kategoriPN,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: colors.red,
@@ -240,6 +239,11 @@ class _TransactionState extends State<Transaction> {
           ? null
           : _noteController.text.trim(),
     );
+
+    // Sinkronkan Goals dengan saldo Home
+    if (isExpense) {
+      await DBHelper.syncGoalWithBalance();
+    }
 
     Fluttertoast.showToast(
       msg: l10n.disimpan,
@@ -499,9 +503,7 @@ class _TransactionState extends State<Transaction> {
                     Expanded(
                       child: Text(
                         _selectedCategory.isEmpty
-                            ? (isExpense
-                                  ? l10n.kategoriPN
-                                  : l10n.kategoriPK)
+                            ? (isExpense ? l10n.kategoriPN : l10n.kategoriPK)
                             : _selectedCategory,
                         style: TextStyle(
                           color: _selectedCategory.isEmpty
@@ -639,35 +641,6 @@ class _TransactionState extends State<Transaction> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class ThousandsSeparatorInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    if (newValue.selection.baseOffset == 0) {
-      return newValue;
-    }
-
-    final cleanString = newValue.text.replaceAll(RegExp(r'\D'), '');
-
-    if (cleanString.isEmpty) {
-      return const TextEditingValue(
-        text: '',
-        selection: TextSelection.collapsed(offset: 0),
-      );
-    }
-
-    final formatter = NumberFormat.decimalPattern('id');
-    final newText = formatter.format(int.parse(cleanString));
-
-    return newValue.copyWith(
-      text: newText,
-      selection: TextSelection.collapsed(offset: newText.length),
     );
   }
 }

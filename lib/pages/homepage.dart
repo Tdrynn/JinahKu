@@ -3,10 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'package:jinahku/database/db_helper.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:jinahku/pages/goal_detail.dart';
+import 'dart:io';
+import 'package:jinahku/services/notification_service.dart';
 import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jinahku/pages/settings.dart';
+import 'package:jinahku/pages/add_goal.dart';
 
 class HomePage extends StatefulWidget {
   final bool isDark;
@@ -39,12 +43,20 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> expenseData = [];
   double totalExpense = 0;
 
+  Map<String, dynamic>? latestGoal;
+
   @override
   void initState() {
     super.initState();
+
     loadUser();
     loadExpenseChart();
     loadFinancialSummary();
+    loadLatestGoal();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkGoalReminder();
+    });
   }
 
   void loadUser() async {
@@ -81,6 +93,75 @@ class _HomePageState extends State<HomePage> {
       totalIncome = summary['income']!;
       totalExpenseValue = summary['expense']!;
       currentBalance = summary['balance']!;
+    });
+  }
+
+  Future<void> checkGoalReminder() async {
+    final goals = await DBHelper.getReminderGoals();
+
+    if (!mounted) return;
+
+    if (goals.isEmpty) return;
+
+    final today = DateTime.now();
+
+    final todayOnly = DateTime(today.year, today.month, today.day);
+
+    for (final goal in goals) {
+      final targetDate = DateTime.parse(goal['target_date']);
+
+      final difference = targetDate.difference(todayOnly).inDays;
+
+      String? reminderType;
+      String? message;
+
+      if (difference == 7) {
+        reminderType = "H7";
+        message = "Target tinggal 7 hari lagi.";
+      } else if (difference == 3) {
+        reminderType = "H3";
+        message = "Target tinggal 3 hari lagi.";
+      } else if (difference == 1) {
+        reminderType = "H1";
+        message = "Besok adalah batas waktu Goal.";
+      } else if (difference == 0) {
+        reminderType = "TODAY";
+        message = "Hari ini adalah batas waktu Goal.";
+      } else if (difference < 0) {
+        reminderType = "OVERDUE";
+        message = "Goal telah melewati target.";
+      }
+
+      if (reminderType == null || message == null) {
+        continue;
+      }
+
+      // Jangan tampilkan reminder yang sama dua kali
+      if (goal['last_reminder'] == reminderType) {
+        continue;
+      }
+
+      print("Kirim notif");
+      print(message);
+
+      await NotificationService.showNotification(
+        title: "🎯 Goal Reminder",
+        body: "\"${goal['goal_name']}\"\n\n$message",
+      );
+
+      await DBHelper.updateLastReminder(goal['id'], reminderType);
+
+      break;
+    }
+  }
+
+  Future<void> loadLatestGoal() async {
+    final data = await DBHelper.getLatestGoal();
+
+    if (!mounted) return;
+
+    setState(() {
+      latestGoal = data;
     });
   }
 
@@ -204,7 +285,12 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Settings(isDark: widget.isDark, isEnglish: widget.isEnglish, onToggleTheme: widget.onToggleTheme, onChangeLanguage: widget.onChangeLanguage),
+                                  builder: (context) => Settings(
+                                    isDark: widget.isDark,
+                                    isEnglish: widget.isEnglish,
+                                    onToggleTheme: widget.onToggleTheme,
+                                    onChangeLanguage: widget.onChangeLanguage,
+                                  ),
                                 ),
                               );
                             },
@@ -536,65 +622,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
 
-                  const SizedBox(height: 25),
-
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: colors.divider,
-                      borderRadius: .circular(20),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.targerT,
-                          style: TextStyle(
-                            color: colors.textPrimary,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const SizedBox(height: 15),
-
-                        GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            height: 56,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  colors.blue,
-                                  colors.blue.withOpacity(0.85),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: .circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: colors.blue.withOpacity(0.3),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 8),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                l10n.tambahkanT,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: .bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  latestGoal == null
+                      ? _buildEmptyGoalCard(colors)
+                      : _buildGoalCard(colors),
 
                   const SizedBox(height: 70),
                 ],
@@ -602,6 +632,349 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyGoalCard(dynamic colors) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+      decoration: BoxDecoration(
+        color: colors.divider,
+        borderRadius: BorderRadius.circular(18),
+      ),
+
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.asset(
+            'assets/images/goals.webp',
+            width: 150,
+            height: 150,
+            fit: BoxFit.contain,
+          ),
+
+          const SizedBox(width: 16),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Goals ✨",
+                  style: TextStyle(
+                    color: colors.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 6),
+
+                Text(
+                  l10n.goalsDescription,
+                  style: TextStyle(
+                    color: colors.textSecondary,
+                    fontSize: 14,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 42,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddGoalPage(isDark: widget.isDark),
+                        ),
+                      );
+
+                      loadLatestGoal();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colors.blue,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      l10n.createGoals,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGoalCard(dynamic colors) {
+    final l10n = AppLocalizations.of(context)!;
+    final saved = (latestGoal!['saved_amount'] as num).toDouble();
+    final target = (latestGoal!['target_amount'] as num).toDouble();
+    final progress = target == 0 ? 0.0 : saved / target;
+
+    final isCompleted = latestGoal!['status'] == 'completed';
+
+    final today = DateTime.now();
+
+    final todayOnly = DateTime(today.year, today.month, today.day);
+
+    final targetDate = DateTime.parse(latestGoal!['target_date']);
+
+    final targetOnly = DateTime(
+      targetDate.year,
+      targetDate.month,
+      targetDate.day,
+    );
+
+    final isOverdue = !isCompleted && targetOnly.isBefore(todayOnly);
+
+    return Container(
+      margin: const EdgeInsets.only(top: 18, bottom: 20),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: colors.divider,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// ====== JUDUL ======
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  latestGoal!['goal_name'],
+                  style: TextStyle(
+                    color: colors.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                splashRadius: 20,
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 18,
+                  color: colors.textSecondary,
+                ),
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => GoalDetailPage(
+                        isDark: widget.isDark,
+                        goalId: latestGoal!['id'],
+                      ),
+                    ),
+                  );
+
+                  await loadFinancialSummary();
+                  await loadLatestGoal();
+                  await checkGoalReminder(); // <-- tambahkan ini
+                },
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 4),
+
+          /// ====== FOTO + INFO ======
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              latestGoal!['image_path'] != null &&
+                      File(latestGoal!['image_path']).existsSync()
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Image.file(
+                          File(latestGoal!['image_path']),
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Image.asset(
+                        'assets/images/goals.webp',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+
+              const SizedBox(width: 16),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${currencyFormatter.format(saved)} / ${currencyFormatter.format(target)}",
+                      style: TextStyle(
+                        color: colors.textSecondary,
+                        fontSize: 15,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    if (!isCompleted) ...[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          minHeight: 8,
+                          backgroundColor: Colors.grey.shade300,
+                          color: isOverdue ? Colors.orange : colors.blue,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Text(
+                        "${(progress * 100).toStringAsFixed(0)}%",
+                        style: TextStyle(
+                          color: isOverdue ? Colors.orange : colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ] else ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(.15),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text(
+                          "🎉 COMPLETED",
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 8),
+
+                    if (!isCompleted) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isOverdue
+                              ? Colors.orange.withOpacity(.15)
+                              : colors.blue.withOpacity(.15),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          isOverdue ? "Overdue" : "Active",
+                          style: TextStyle(
+                            color: isOverdue ? Colors.orange : colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      if (isOverdue)
+                        const Text(
+                          "⚠️ Goal is overdue.",
+                          style: TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                    ],
+
+                    const SizedBox(height: 12),
+
+                    if (isCompleted)
+                      Row(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              final newGoalId = await Navigator.push<int>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AddGoalPage(
+                                    isDark: widget.isDark,
+                                    oldGoalId: latestGoal!['id'],
+                                  ),
+                                ),
+                              );
+
+                              await loadFinancialSummary();
+                              await loadLatestGoal();
+
+                              if (newGoalId != null && mounted) {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => GoalDetailPage(
+                                      isDark: widget.isDark,
+                                      goalId: newGoalId,
+                                    ),
+                                  ),
+                                );
+
+                                await loadFinancialSummary();
+                                await loadLatestGoal();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colors.blue,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text(l10n.createNewGoal),
+                          ),
+                        ],
+                      )
+                    else
+                      Text(
+                        "${l10n.target}: ${DateFormat('d MMMM yyyy', 'id_ID').format(DateTime.parse(latestGoal!['target_date']))}",
+                        style: TextStyle(
+                          color: colors.textSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -66,4 +66,23 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
+
+  static Future<void> showNotification({
+    required String title,
+    required String body,
+  }) async {
+    await notifications.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          "goal_channel",
+          "Goal Reminder",
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+    );
+  }
 }

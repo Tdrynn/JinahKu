@@ -406,6 +406,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get other;
+
+  /// No description provided for @goals.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get goals;
+
+  /// No description provided for @goalsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a target, track your progress, and achieve your dreams.'**
+  String get goalsDescription;
+
+  /// No description provided for @createGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Goals'**
+  String get createGoals;
+
+  /// No description provided for @createNewGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Goal'**
+  String get createNewGoal;
+
+  /// No description provided for @target.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get target;
+
+  /// No description provided for @goalNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal name is required'**
+  String get goalNameRequired;
+
+  /// No description provided for @targetAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Target amount is required'**
+  String get targetAmountRequired;
+
+  /// No description provided for @editGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Goals'**
+  String get editGoals;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Photo'**
+  String get changePhoto;
+
+  /// No description provided for @goalPhotoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a photo of the item you want to buy (optional)'**
+  String get goalPhotoHint;
+
+  /// No description provided for @goalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal Name'**
+  String get goalName;
+
+  /// No description provided for @goalNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Laptop Savings'**
+  String get goalNameHint;
+
+  /// No description provided for @targetAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Amount'**
+  String get targetAmount;
+
+  /// No description provided for @targetAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the target amount you want to achieve'**
+  String get targetAmountHint;
+
+  /// No description provided for @targetDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Date'**
+  String get targetDate;
+
+  /// No description provided for @goalNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (Optional)'**
+  String get goalNote;
+
+  /// No description provided for @goalNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a note or motivation for this goal...'**
+  String get goalNoteHint;
+
+  /// No description provided for @enableGoalReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable goal reminders'**
+  String get enableGoalReminder;
+
+  /// No description provided for @goalReminderDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll receive reminders based on your schedule'**
+  String get goalReminderDescription;
+
+  /// No description provided for @minimumTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum target is Rp1,000.'**
+  String get minimumTarget;
+
+  /// No description provided for @maximumTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum target is Rp999,999,999.'**
+  String get maximumTarget;
+
+  /// No description provided for @goalUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals updated successfully'**
+  String get goalUpdated;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @saveGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Goals'**
+  String get saveGoals;
+
+  /// No description provided for @goalDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal Details'**
+  String get goalDetail;
+
+  /// No description provided for @completedGoalCannotBeEdited.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed goals cannot be edited'**
+  String get completedGoalCannotBeEdited;
+
+  /// No description provided for @goalOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Goal is overdue.'**
+  String get goalOverdue;
+
+  /// No description provided for @savingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving Progress'**
+  String get savingProgress;
+
+  /// No description provided for @collected.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected'**
+  String get collected;
+
+  /// No description provided for @remainingTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining Target'**
+  String get remainingTarget;
+
+  /// No description provided for @note.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get note;
+
+  /// No description provided for @savingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving History'**
+  String get savingHistory;
+
+  /// No description provided for @noSavingHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No saving history yet'**
+  String get noSavingHistory;
+
+  /// No description provided for @addMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Money'**
+  String get addMoney;
+
+  /// No description provided for @showLatestTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the latest 3 transactions'**
+  String get showLatestTransactions;
+
+  /// No description provided for @deleteGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Goals'**
+  String get deleteGoals;
+
+  /// No description provided for @currentSavedMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Saved Amount'**
+  String get currentSavedMoney;
+
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @addMoneyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add money to this goal'**
+  String get addMoneyDescription;
+
+  /// No description provided for @enterAmountFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an amount first'**
+  String get enterAmountFirst;
+
+  /// No description provided for @moneyAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Money added successfully'**
+  String get moneyAdded;
+
+  /// No description provided for @deleteGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Goal'**
+  String get deleteGoalTitle;
+
+  /// No description provided for @deleteGoalConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this goal?\n\nAll saving history will also be deleted.'**
+  String get deleteGoalConfirmation;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @goalDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal deleted successfully'**
+  String get goalDeleted;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
