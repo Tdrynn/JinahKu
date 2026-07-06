@@ -14,54 +14,30 @@ import 'package:jinahku/l10n/app_localizations.dart';
 import 'category_icons.dart';
 
 class CategoryUI {
-  static String getName(String code) {
-    return code
+  static const defaultCodes = {
+    'salary', 'allowance', 'freelance', 'business',
+    'food', 'transport', 'shopping', 'bills', 'entertainment', 'other',
+  };
+
+  static String getName(AppLocalizations l10n, String code) {
+    switch (code) {
+      case 'salary': return l10n.salary;
+      case 'allowance': return l10n.allowance;
+      case 'freelance': return l10n.freelance;
+      case 'business': return l10n.business;
+      case 'food': return l10n.food;
+      case 'transport': return l10n.transport;
+      case 'shopping': return l10n.shopping;
+      case 'bills': return l10n.bills;
+      case 'entertainment': return l10n.entertainment;
+      case 'other': return l10n.other;
+
+      default:
+        return code
         .replaceAll('_', ' ')
         .split(' ')
         .map((e) => e.isEmpty ? '' : e[0].toUpperCase() + e.substring(1))
         .join(' ');
-  }
-
-  static IconData getIcon(String code) {
-    switch (code) {
-      case 'salary':
-        return Icons.work;
-
-      case 'allowance':
-        return Icons.account_balance_wallet;
-
-      case 'freelance':
-        return Icons.computer;
-
-      case 'business':
-        return Icons.store;
-
-      case 'food':
-        return Icons.restaurant;
-
-      case 'transport':
-        return Icons.directions_car;
-
-      case 'bills':
-        return Icons.receipt_long;
-
-      case 'entertainment':
-        return Icons.movie;
-
-      case 'shopping':
-        return Icons.shopping_bag;
-
-      case 'health':
-        return Icons.local_hospital;
-
-      case 'education':
-        return Icons.school;
-
-      case 'investment':
-        return Icons.trending_up;
-
-      default:
-        return Icons.category;
     }
   }
 }
@@ -116,22 +92,13 @@ class _TransactionState extends State<Transaction> {
     });
   }
 
-  String _formatIndonesianDate(DateTime date) {
-    const months = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember',
-    ];
-    return "${date.day}-${months[date.month - 1]}-${date.year}";
+  String _formatDate(DateTime date, BuildContext context) {
+    final locale = Localizations.localeOf(context).toString();
+
+    return DateFormat(
+      'd MMMM yyyy',
+      locale,
+    ).format(date);
   }
 
   @override
@@ -208,7 +175,7 @@ class _TransactionState extends State<Transaction> {
                                   : colors.textSecondary,
                             ),
                             title: Text(
-                              CategoryUI.getName(item['code']),
+                              CategoryUI.getName(l10n, item['code']),
                               style: TextStyle(
                                 color: isSelected
                                     ? colors.blue
@@ -583,7 +550,7 @@ class _TransactionState extends State<Transaction> {
                       child: Text(
                         _selectedCategoryCode.isEmpty
                             ? (isExpense ? l10n.kategoriPN : l10n.kategoriPK)
-                            : CategoryUI.getName(_selectedCategoryCode),
+                            : CategoryUI.getName(l10n, _selectedCategoryCode),
                         style: TextStyle(
                           color: _selectedCategoryCode.isEmpty
                               ? colors.textSecondary.withOpacity(0.7)
@@ -629,7 +596,10 @@ class _TransactionState extends State<Transaction> {
                   children: [
                     Expanded(
                       child: Text(
-                        _formatIndonesianDate(_selectedDate),
+                        _formatDate(
+                          _selectedDate,
+                          context
+                        ),
                         style: TextStyle(
                           color: colors.textPrimary,
                           fontSize: 15,

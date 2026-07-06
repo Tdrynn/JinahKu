@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jinahku/database/db_helper.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
+import 'package:jinahku/pages/transaction.dart';
 
 import '../theme/light_colors.dart' as light;
 import '../theme/dark_colors.dart' as dark;
@@ -199,11 +200,16 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
     );
   }
 
-  void _showEditCategoryDialog(int id, String currentName, String currentIcon) {
-    final TextEditingController nameController = TextEditingController(
-      text: currentName,
-    );
+  void _showEditCategoryDialog(
+    int id,
+    String code,
+    String currentIcon
+  ) {
     final l10n = AppLocalizations.of(context)!;
+    final displayName = CategoryUI.getName(l10n, code);
+    final TextEditingController nameController = TextEditingController(
+      text: displayName,
+    );
     final colors = widget.isDark ? dark.darkColors : light.lightColors;
     String selectedIcon = currentIcon;
 
@@ -453,9 +459,11 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
             separatorBuilder: (context, index) => const SizedBox(height: 0),
             itemBuilder: (context, index) {
               final id = categories[index]['id'] as int;
-              final name = categories[index]['code'] as String;
+              final code = categories[index]['code'] as String;
               final iconKey =
                   categories[index]['icon'] as String? ?? 'category';
+              final isDefault = CategoryUI.defaultCodes.contains(code);
+              final displayName = CategoryUI.getName(l10n, code);
 
               return Card(
                 elevation: 0,
@@ -479,7 +487,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
                     ),
                   ),
                   title: Text(
-                    name,
+                    displayName,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -499,7 +507,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
                         ),
                         icon: Icon(Icons.edit, color: colors.blue),
                         onPressed: () =>
-                            _showEditCategoryDialog(id, name, iconKey),
+                            _showEditCategoryDialog(id, code, iconKey),
                       ),
                       const SizedBox(width: 8),
                       IconButton(
@@ -511,7 +519,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
                           color: Colors.red,
                         ),
                         onPressed: () =>
-                            _showDeleteConfirmationDialog(id, name),
+                            _showDeleteConfirmationDialog(id, code),
                       ),
                     ],
                   ),

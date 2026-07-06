@@ -15,37 +15,26 @@ class History extends StatefulWidget {
 }
 
 class CategoryUI {
-  static String getName(String code) {
+
+  static String getName(AppLocalizations l10n, String code) {
     switch (code) {
-      case 'salary':
-        return 'Gaji';
-
-      case 'allowance':
-        return 'Tunjangan';
-
-      case 'freelance':
-        return 'Freelance';
-
-      case 'business':
-        return 'Bisnis';
-
-      case 'food':
-        return 'Makanan';
-
-      case 'transport':
-        return 'Transportasi';
-
-      case 'bills':
-        return 'Tagihan';
-
-      case 'entertainment':
-        return 'Hiburan';
-
-      case 'other':
-        return 'Lainnya';
+      case 'salary': return l10n.salary;
+      case 'allowance': return l10n.allowance;
+      case 'freelance': return l10n.freelance;
+      case 'business': return l10n.business;
+      case 'food': return l10n.food;
+      case 'transport': return l10n.transport;
+      case 'shopping': return l10n.shopping;
+      case 'bills': return l10n.bills;
+      case 'entertainment': return l10n.entertainment;
+      case 'other': return l10n.other;
 
       default:
-        return code;
+        return code
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map((e) => e.isEmpty ? '' : e[0].toUpperCase() + e.substring(1))
+        .join(' ');
     }
   }
 
@@ -85,7 +74,7 @@ class _HistoryState extends State<History> {
   String _selectedFilter = 'all';
   String _sortType = 'date_desc';
 
-  List<dynamic> _processTransactions(List<Map<String, dynamic>> rawList) {
+  List<dynamic> _processTransactions(List<Map<String, dynamic>> rawList, String locale) {
     List<Map<String, dynamic>> filteredList = rawList.where((tx) {
       if (_selectedFilter == 'income') return tx['type'] == 'income';
       if (_selectedFilter == 'expense') return tx['type'] == 'expense';
@@ -115,24 +104,14 @@ class _HistoryState extends State<History> {
     }
 
     Map<String, List<Map<String, dynamic>>> grouped = {};
-    const months = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember',
-    ];
-
     for (var tx in filteredList) {
       final date = DateTime.parse(tx['date']);
-      final key = "${months[date.month - 1]} ${date.year}";
+      final locale = Localizations.localeOf(context).toString();
+
+      final key = DateFormat(
+        'MMMM yyyy',
+        locale,
+      ).format(date);
       if (!grouped.containsKey(key)) {
         grouped[key] = [];
       }
@@ -302,6 +281,7 @@ class _HistoryState extends State<History> {
   Widget build(BuildContext context) {
     final colors = widget.isDark ? dark.darkColors : light.lightColors;
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
 
     final pageBgColor = widget.isDark
         ? const Color(0xFF0F172A)
@@ -315,21 +295,6 @@ class _HistoryState extends State<History> {
     final textCyan = const Color(0xFF00AED6);
 
     final numberFormatter = NumberFormat.decimalPattern('id');
-    const shortMonths = [
-      'Mei',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'Mei',
-      'Jun',
-      'Jul',
-      'Agu',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Des',
-    ];
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -542,7 +507,7 @@ class _HistoryState extends State<History> {
                   );
                 }
 
-                final flatList = _processTransactions(snapshot.data!);
+                final flatList = _processTransactions(snapshot.data!, locale);
 
                 if (flatList.isEmpty) {
                   return Center(
@@ -591,7 +556,7 @@ class _HistoryState extends State<History> {
 
                     final String categoryName = tx['category_name'] != null
                         ? tx['category_name'].toString()
-                        : CategoryUI.getName(categoryCode);
+                        : CategoryUI.getName(l10n, categoryCode);
                     return Container(
                       height: 84,
                       margin: const EdgeInsets.only(bottom: 12),
@@ -633,7 +598,10 @@ class _HistoryState extends State<History> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  "${shortMonths[date.month]} ${date.year}",
+                                  DateFormat(
+                                    'MMM',
+                                    locale,
+                                  ).format(date),
                                   style: TextStyle(
                                     color: colors.textSecondary,
                                     fontSize: 10,

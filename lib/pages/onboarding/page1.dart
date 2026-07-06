@@ -90,7 +90,7 @@ class _Page1State extends State<Page1> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Nama Pengguna",
+                                    l10n.namaP,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 24.sp,
@@ -98,7 +98,7 @@ class _Page1State extends State<Page1> {
                                     ),
                                   ),
                                   Text(
-                                    "Nama ini akan digunakan di aplikasi",
+                                    l10n.namaI,
                                     style: TextStyle(
                                       color: Colors.white70,
                                       fontSize: 14.sp,
@@ -109,7 +109,7 @@ class _Page1State extends State<Page1> {
                                     controller: controller,
                                     validator: (value) {
                                       if (value == null || value.trim().isEmpty) {
-                                        return 'Nama wajib diisi';
+                                        return l10n.namaWajib;
                                       }
                                       return null;
                                     },
@@ -151,7 +151,7 @@ class _Page1State extends State<Page1> {
                                   ),
                                   const SizedBox(height: 18),
                                   Text(
-                                    "Pilih Avatar",
+                                    l10n.pilihA,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18.sp,

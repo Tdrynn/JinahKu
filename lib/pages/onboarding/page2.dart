@@ -8,6 +8,9 @@ import 'package:jinahku/pages/onboarding/page3.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../category_icons.dart';
+import '../transaction.dart';
+
 class Page2 extends StatefulWidget {
   final OnboardingData data;
   final VoidCallback onNext;
@@ -59,10 +62,88 @@ class _Page2State extends State<Page2> {
     }
   }
 
+  void _showCategoryPicker(BuildContext context, FormFieldState<String> fieldState) {
+    final l10n = AppLocalizations.of(context)!;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF1B263B),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.pilihs,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: sources.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        itemCount: sources.length,
+                        itemBuilder: (context, index) {
+                          final item = sources[index];
+                          final isSelected = selectedCode == item['code'];
+                          return ListTile(
+                            leading: Icon(
+                              CategoryIcons.resolve(item['icon'] as String?),
+                              color: isSelected ? Colors.blue : Colors.white70,
+                            ),
+                            title: Text(
+                              CategoryUI.getName(l10n, item['code'] as String),
+                              style: TextStyle(
+                                color: isSelected ? Colors.blue : Colors.white,
+                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? const Icon(Icons.check_circle, color: Colors.blue)
+                                : null,
+                            onTap: () {
+                              setState(() {
+                                selectedCode = item['code'] as String;
+                              });
+                              fieldState.didChange(item['code'] as String);
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final paddingTop = MediaQuery.of(context).padding.top;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -89,18 +170,12 @@ class _Page2State extends State<Page2> {
                             fit: BoxFit.cover,
                           ),
                         ),
-
                         Expanded(
                           child: Transform.translate(
                             offset: const Offset(0, -19),
                             child: Container(
                               width: double.infinity,
-                              padding: const EdgeInsets.fromLTRB(
-                                24,
-                                24,
-                                24,
-                                32,
-                              ),
+                              padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
                               decoration: const BoxDecoration(
                                 color: Color(0xFF1B263B),
                                 borderRadius: BorderRadius.only(
@@ -112,24 +187,21 @@ class _Page2State extends State<Page2> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Jumlah Pemasukan",
+                                    l10n.jumlah,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 24.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-
                                   Text(
-                                    "Angka ini akan digunakan sebagai pendapatan bulanan",
+                                    l10n.angkaI,
                                     style: TextStyle(
                                       color: Colors.white70,
                                       fontSize: 12.sp,
                                     ),
                                   ),
-
                                   const SizedBox(height: 10),
-
                                   TextFormField(
                                     controller: incomeController,
                                     inputFormatters: <TextInputFormatter>[
@@ -137,15 +209,11 @@ class _Page2State extends State<Page2> {
                                       ThousandsSeparatorInputFormatter(),
                                     ],
                                     validator: (value) {
-                                      if (value == null ||
-                                          value.trim().isEmpty) {
-                                        return 'Jumlah pemasukan wajib diisi';
+                                      if (value == null || value.trim().isEmpty) {
+                                        return l10n.pemasukanWajib;
                                       }
-                                      if (double.tryParse(
-                                            value.replaceAll('.', ''),
-                                          ) ==
-                                          null) {
-                                        return 'Masukkan angka yang valid';
+                                      if (double.tryParse(value.replaceAll('.', '')) == null) {
+                                        return l10n.jumlahT;
                                       }
                                       return null;
                                     },
@@ -163,143 +231,136 @@ class _Page2State extends State<Page2> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                       hintText: "0",
-                                      hintStyle: const TextStyle(
-                                        color: Colors.white70,
-                                      ),
+                                      hintStyle: const TextStyle(color: Colors.white70),
                                       filled: true,
                                       fillColor: const Color(0xFF243B55),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(14),
-                                        borderSide: BorderSide(
-                                          color: Colors.blue.shade400,
-                                        ),
+                                        borderSide: BorderSide(color: Colors.blue.shade400),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(14),
-                                        borderSide: const BorderSide(
-                                          color: Colors.blue,
-                                          width: 2,
-                                        ),
+                                        borderSide: const BorderSide(color: Colors.blue, width: 2),
                                       ),
                                     ),
                                   ),
-
                                   const SizedBox(height: 18),
-
                                   Text(
-                                    "Sumber pemasukan",
+                                    l10n.sumber,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-
                                   const SizedBox(height: 10),
 
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF243B55),
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: Colors.blue.shade400,
-                                      ),
-                                    ),
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButtonFormField<String>(
-                                        validator: (value) {
-                                          if (value == null) {
-                                            return 'Pilih sumber pemasukan';
-                                          }
-                                          return null;
-                                        },
-                                        dropdownColor: const Color(0xFF243B55),
-                                        value: selectedCode,
-                                        hint: Text(
-                                          l10n.pilih,
-                                          style: const TextStyle(
-                                            color: Colors.white54,
-                                          ),
-                                        ),
-                                        icon: const Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Colors.white,
-                                        ),
-                                        isExpanded: true,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        items: sources.map((item) {
-                                          return DropdownMenuItem<String>(
-                                            value: item['code'] as String,
-                                            child: Text(
-                                              (item['code'] as String)
-                                                  .replaceFirstMapped(
-                                                    RegExp(r'^\w'),
-                                                    (match) => match
-                                                        .group(0)!
-                                                        .toUpperCase(),
+                                  FormField<String>(
+                                    initialValue: selectedCode,
+                                    validator: (value) {
+                                      if (selectedCode == null) {
+                                        return l10n.pilih;
+                                      }
+                                      return null;
+                                    },
+                                    builder: (FormFieldState<String> state) {
+                                      final selectedItem = sources.firstWhere(
+                                        (element) => element['code'] == selectedCode,
+                                        orElse: () => {},
+                                      );
+                                      final hasIcon = selectedItem.containsKey('icon') && selectedItem['icon'] != null;
+
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () => _showCategoryPicker(context, state),
+                                            child: Container(
+                                              height: 58,
+                                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFF243B55),
+                                                borderRadius: BorderRadius.circular(14),
+                                                border: Border.all(
+                                                  color: state.hasError ? Colors.red.shade400 : Colors.blue.shade400,
+                                                  width: state.hasError ? 2 : 1,
+                                                ),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  if (selectedCode != null && hasIcon) ...[
+                                                    Icon(
+                                                      CategoryIcons.resolve(selectedItem['icon'] as String?),
+                                                      color: Colors.blue,
+                                                    ),
+                                                    const SizedBox(width: 12),
+                                                  ],
+                                                  Expanded(
+                                                    child: Text(
+                                                      selectedCode == null
+                                                          ? l10n.pilih
+                                                          : CategoryUI.getName(l10n, selectedCode!),
+                                                      style: TextStyle(
+                                                        color: selectedCode == null ? Colors.white54 : Colors.white,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
                                                   ),
+                                                  const Icon(
+                                                    Icons.keyboard_arrow_down_rounded,
+                                                    color: Colors.white,
+                                                    size: 24,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          );
-                                        }).toList(),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            selectedCode = value;
-                                          });
-                                        },
-                                      ),
-                                    ),
+                                          ),
+                                          if (state.hasError)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 8, left: 12),
+                                              child: Text(
+                                                state.errorText ?? '',
+                                                style: TextStyle(color: Colors.red.shade400, fontSize: 12),
+                                              ),
+                                            ),
+                                        ],
+                                      );
+                                    },
                                   ),
 
                                   const SizedBox(height: 18),
-
                                   Text(
-                                    "Tanggal",
+                                    l10n.date,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-
                                   const SizedBox(height: 10),
-
                                   GestureDetector(
                                     onTap: pickDate,
                                     child: Container(
                                       width: double.infinity,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 18,
-                                        vertical: 18,
-                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
                                       decoration: BoxDecoration(
                                         color: const Color(0xFF243B55),
                                         borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(
-                                          color: Colors.blue.shade400,
-                                        ),
+                                        border: Border.all(color: Colors.blue.shade400),
                                       ),
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             selectedDate == null
                                                 ? " "
-                                                : DateFormat(
-                                                    'dd MMMM yyyy',
-                                                  ).format(selectedDate!),
+                                                : DateFormat('dd').format(selectedDate!),
                                             style: const TextStyle(
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 16,
                                             ),
                                           ),
-
                                           const Icon(
                                             Icons.calendar_month,
                                             color: Colors.white,
@@ -308,54 +369,34 @@ class _Page2State extends State<Page2> {
                                       ),
                                     ),
                                   ),
-
                                   const SizedBox(height: 32),
-
                                   SizedBox(
                                     width: double.infinity,
                                     height: 50.h,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF2F6BFF,
-                                        ),
+                                        backgroundColor: const Color(0xFF2F6BFF),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
+                                          borderRadius: BorderRadius.circular(16),
                                         ),
                                       ),
                                       onPressed: () {
-                                        if (!_formKey.currentState!
-                                            .validate()) {
+                                        if (!_formKey.currentState!.validate()) {
                                           return;
                                         }
-
                                         if (selectedDate == null) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                "Tanggal wajib dipilih",
-                                              ),
-                                            ),
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text(l10n.tanggalWajib)),
                                           );
                                           return;
                                         }
-                                        widget.data.income =
-                                            double.tryParse(
-                                              incomeController.text.replaceAll(
-                                                '.',
-                                                '',
-                                              ),
-                                            ) ??
-                                            0;
+                                        widget.data.income = double.tryParse(
+                                              incomeController.text.replaceAll('.', ''),
+                                            ) ?? 0;
                                         widget.data.sourceCode = selectedCode;
                                         widget.data.date = selectedDate;
                                         widget.onNext();
                                       },
-
                                       child: Text(
                                         l10n.lanjutkan,
                                         style: TextStyle(
@@ -366,9 +407,7 @@ class _Page2State extends State<Page2> {
                                       ),
                                     ),
                                   ),
-
                                   const SizedBox(height: 24),
-
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -409,29 +448,14 @@ class _Page2State extends State<Page2> {
 
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    if (newValue.selection.baseOffset == 0) {
-      return newValue;
-    }
-
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) return newValue;
     final cleanString = newValue.text.replaceAll(RegExp(r'\D'), '');
-
     if (cleanString.isEmpty) {
-      return const TextEditingValue(
-        text: '',
-        selection: TextSelection.collapsed(offset: 0),
-      );
+      return const TextEditingValue(text: '', selection: TextSelection.collapsed(offset: 0));
     }
-
     final formatter = NumberFormat.decimalPattern('id');
     final newText = formatter.format(int.parse(cleanString));
-
-    return newValue.copyWith(
-      text: newText,
-      selection: TextSelection.collapsed(offset: newText.length),
-    );
+    return newValue.copyWith(text: newText, selection: TextSelection.collapsed(offset: newText.length));
   }
 }

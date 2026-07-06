@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jinahku/pages/main_pages.dart';
@@ -25,13 +26,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool isDark = false;
-  String languageCode = 'id';
+  late String languageCode;
   late Future<bool> _isFirstTime;
 
   @override
   void initState() {
     super.initState();
     _isFirstTime = DBHelper.isFirstTime();
+
+    final systemLang = ui.PlatformDispatcher.instance.locale.languageCode;
+    const supported =['en', 'id'];
+    languageCode = supported.contains(systemLang) ? systemLang : 'id';
 
     ShareService.startListening((media) async {
       final attachments = media.attachments;
@@ -108,9 +113,7 @@ class _MyAppState extends State<MyApp> {
               if (snapshot.data!) {
                 return OnboardingPage(
                   isDark: isDark,
-                  isEnglish: languageCode == 'en',
                   onToggleTheme: toggleTheme,
-                  onChangeLanguage: changeLanguage,
                   finishOnboarding: finishOnboarding,
                 );
               }

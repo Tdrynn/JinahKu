@@ -9,9 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class Page3 extends StatefulWidget {
   final OnboardingData data;
   final bool isDark;
-  final bool isEnglish;
   final Function(bool) onToggleTheme;
-  final Function(String) onChangeLanguage;
   final VoidCallback finishOnboarding;
   final VoidCallback? onBack;
 
@@ -19,9 +17,7 @@ class Page3 extends StatefulWidget {
     super.key,
     required this.data,
     required this.isDark,
-    required this.isEnglish,
     required this.onToggleTheme,
-    required this.onChangeLanguage,
     required this.finishOnboarding,
     this.onBack,
   });
@@ -31,25 +27,14 @@ class Page3 extends StatefulWidget {
 }
 
 class _Page3State extends State<Page3> {
-  String _getSourceName(String? sourceCode) {
+  String _getSourceName(AppLocalizations l10n, String? sourceCode) {
     switch (sourceCode) {
-      case 'salary':
-        return 'Gaji';
-
-      case 'allowance':
-        return 'Tunjangan';
-
-      case 'freelance':
-        return 'Freelance';
-
-      case 'business':
-        return 'Bisnis';
-
-      case 'other':
-        return 'Lainnya';
-
-      default:
-        return '-';
+      case 'salary': return l10n.salary;
+      case 'allowance': return l10n.allowance;
+      case 'freelance': return l10n.freelance;
+      case 'business': return l10n.business;
+      case 'other': return l10n.other;
+      default: return '-';
     }
   }
 
@@ -132,7 +117,7 @@ class _Page3State extends State<Page3> {
                                     ),
                                     const SizedBox(width: 10),
                                     Text(
-                                      "Informasi Pengguna",
+                                      l10n.informasiP,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 22.sp,
@@ -200,7 +185,7 @@ class _Page3State extends State<Page3> {
                                     ),
                                     const SizedBox(width: 10),
                                     Text(
-                                      "Detail Pendapatan",
+                                      l10n.detailP,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 22.sp,
@@ -222,7 +207,7 @@ class _Page3State extends State<Page3> {
                                   child: Column(
                                     children: [
                                       buildRow(
-                                        "Jumlah Pemasukan",
+                                        l10n.jumlah,
                                         NumberFormat.currency(
                                           locale: 'id',
                                           symbol: 'Rp. ',
@@ -232,18 +217,18 @@ class _Page3State extends State<Page3> {
                                       ),
                                       const SizedBox(height: 14),
                                       buildRow(
-                                        "Sumber Pemasukan",
-                                        _getSourceName(
+                                        l10n.sumber,
+                                        _getSourceName(l10n,
                                           widget.data.sourceCode,
                                         ),
                                       ),
                                       const SizedBox(height: 14),
                                       buildRow(
-                                        "Tanggal Terpilih",
+                                        l10n.tanggalT,
                                         widget.data.date == null
                                             ? "-"
                                             : DateFormat(
-                                                'dd MMMM yyyy',
+                                                'dd',
                                                 'id',
                                               ).format(
                                                 widget.data.date!,
@@ -290,7 +275,7 @@ class _Page3State extends State<Page3> {
                                           ).showSnackBar(
                                             SnackBar(
                                               content: Text(
-                                                "Gagal menyimpan data: $e",
+                                                "${l10n.error} $e",
                                               ),
                                             ),
                                           );
