@@ -850,10 +850,10 @@ class _SettingsState extends State<Settings> {
     final iconColor = widget.isDark ? Colors.white : Colors.black87;
     final borderColor = widget.isDark
         ? Colors.white.withOpacity(0.15)
-        : Colors.black.withOpacity(0.08);
+        : Colors.blue.withOpacity(0.5);
     final backgroundColor = widget.isDark
         ? Colors.white.withOpacity(0.08)
-        : Colors.grey.withOpacity(0.2);
+        : Colors.blue.withOpacity(0.2);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
@@ -966,10 +966,10 @@ class _SettingsState extends State<Settings> {
     final iconColor = widget.isDark ? Colors.white : Colors.black87;
     final borderColor = widget.isDark
         ? Colors.white.withOpacity(0.15)
-        : Colors.black.withOpacity(0.08);
+        : Colors.blue.withOpacity(0.5);
     final backgroundColor = widget.isDark
         ? Colors.white.withOpacity(0.08)
-        : Colors.grey.withOpacity(0.2);
+        : Colors.blue.withOpacity(0.2);
     return Container(
       width: 42,
       height: 42,
