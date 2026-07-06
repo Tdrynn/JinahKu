@@ -20,8 +20,6 @@ class Page2 extends StatefulWidget {
 
 class _Page2State extends State<Page2> {
   List<Map<String, dynamic>> sources = [];
-
-  // Mengubah selectedId (int?) menjadi selectedCode (String?) sesuai dengan kolom 'code' di tabel category
   String? selectedCode;
   DateTime? selectedDate;
 
@@ -40,7 +38,6 @@ class _Page2State extends State<Page2> {
   }
 
   void loadSources() async {
-    // Pastikan metode ini mengambil data dari tabel category dengan klausa WHERE type = 'income'
     final data = await DBHelper.getIncomeCategories();
     setState(() {
       sources = data;
@@ -212,7 +209,6 @@ class _Page2State extends State<Page2> {
                                       ),
                                     ),
                                     child: DropdownButtonHideUnderline(
-                                      // Mengubah tipe parameter DropdownButtonFormField menjadi <String>
                                       child: DropdownButtonFormField<String>(
                                         validator: (value) {
                                           if (value == null) {
@@ -237,12 +233,10 @@ class _Page2State extends State<Page2> {
                                           color: Colors.white,
                                           fontSize: 16,
                                         ),
-                                        // Mengubah DropdownMenuItem value ke String (item['code'])
                                         items: sources.map((item) {
                                           return DropdownMenuItem<String>(
                                             value: item['code'] as String,
                                             child: Text(
-                                              // Kapitalisasi huruf pertama kode kategori untuk tampilan UI (contoh: salary -> Salary)
                                               (item['code'] as String)
                                                   .replaceFirstMapped(
                                                     RegExp(r'^\w'),
@@ -357,7 +351,6 @@ class _Page2State extends State<Page2> {
                                               ),
                                             ) ??
                                             0;
-                                        // Sesuaikan penamaan parameter di bawah ini dengan model OnboardingData Anda
                                         widget.data.sourceCode = selectedCode;
                                         widget.data.date = selectedDate;
                                         widget.onNext();

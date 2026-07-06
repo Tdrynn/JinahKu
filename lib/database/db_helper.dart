@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:jinahku/services/home_widget_service.dart';
 
 class DBHelper {
   static Database? _database;
@@ -47,6 +48,8 @@ class DBHelper {
           await db.execute(
             "ALTER TABLE category ADD COLUMN icon TEXT NOT NULL DEFAULT 'category'",
           );
+
+          await _backfillDefaultCategoryIcons(db);
         }
 
         if (oldVersion < 4) {
@@ -71,6 +74,43 @@ class DBHelper {
   // ==========================================================================
   // CREATE TABLES
   // ==========================================================================
+
+  static const Map<String, String> _defaultIncomeIcons = {
+    'salary': 'work',
+    'allowance': 'wallet',
+    'freelance': 'laptop',
+    'business': 'store',
+    'other': 'category',
+  };
+
+  static const Map<String, String> _defaultExpenseIcons = {
+    'food': 'restaurant',
+    'transport': 'car',
+    'shopping': 'shopping_bag',
+    'bills': 'receipt',
+    'entertainment': 'movie',
+    'other': 'category',
+  };
+
+  static Future<void> _backfillDefaultCategoryIcons(Database db) async {
+    for (final entry in _defaultIncomeIcons.entries) {
+      await db.update(
+        'category',
+        {'icon': entry.value},
+        where: 'type=? AND code=?',
+        whereArgs: ['income', entry.key],
+      );
+    }
+
+    for (final entry in _defaultExpenseIcons.entries) {
+      await db.update(
+        'category',
+        {'icon': entry.value},
+        where: 'type=? AND code=?',
+        whereArgs: ['expense', entry.key],
+      );
+    }
+  }
 
   static Future<void> _createDB(Database db) async {
     await db.execute('''
@@ -401,6 +441,9 @@ class DBHelper {
     final result = await db.query('transactions');
     print(result);
 
+    final summary = await getFinancialSummary();
+    await HomeWidgetService.updateBalanceWidget(summary['balance'] ?? 0);
+
     return id;
   }
 
@@ -467,23 +510,17 @@ class DBHelper {
   static Future<void> syncGoalWithBalance() async {
     final db = await database;
 
-    // Ambil saldo Home saat ini
     final summary = await getFinancialSummary();
     final balance = summary['balance']!;
 
-    // Ambil Goals yang masih aktif
     final goal = await getActiveGoal();
 
-    // Tidak ada goal aktif
     if (goal == null) return;
 
     final saved = (goal['saved_amount'] as num).toDouble();
 
-    // Kalau saldo Home masih cukup menutupi tabungan Goals,
-    // tidak perlu mengubah progress.
     if (balance >= saved) return;
 
-    // Jangan sampai saved_amount negatif
     final newSaved = balance < 0 ? 0.0 : balance;
 
     await db.update(
@@ -539,7 +576,6 @@ class DBHelper {
         'image_path': imagePath,
         'reminder': reminder ? 1 : 0,
 
-        // Reset reminder ketika goal diedit
         'last_reminder': null,
       },
       where: 'id = ?',
@@ -555,7 +591,6 @@ class DBHelper {
     final db = await database;
 
     await db.transaction((txn) async {
-      // Ambil goal
       final result = await txn.query(
         'goals',
         where: 'id = ?',
@@ -567,10 +602,8 @@ class DBHelper {
       final saved = (goal['saved_amount'] as num).toDouble();
       final target = (goal['target_amount'] as num).toDouble();
 
-      // Sisa target
       final remaining = target - saved;
 
-      // Nominal yang benar-benar masuk
       final actualAmount = amount > remaining ? remaining : amount;
 
       await txn.insert('transactions', {
@@ -581,7 +614,6 @@ class DBHelper {
         'note': note ?? 'Tambah dana Goals',
       });
 
-      // Update saldo goal
       final newSaved = saved + actualAmount;
 
       await txn.update(
@@ -594,7 +626,6 @@ class DBHelper {
         whereArgs: [goalId],
       );
 
-      // Simpan histori
       await txn.insert('goal_transactions', {
         'goal_id': goalId,
         'amount': actualAmount,
@@ -602,6 +633,9 @@ class DBHelper {
         'date': DateTime.now().toIso8601String(),
       });
     });
+
+    final summary = await getFinancialSummary();
+    await HomeWidgetService.updateBalanceWidget(summary['balance'] ?? 0);
 
     return true;
   }
@@ -692,7 +726,6 @@ class DBHelper {
   // ==========================================================================
   // CATEGORY CRUD
   // ==========================================================================
-  // Alias -- identik dengan getIncomeCategories/getExpenseCategories di atas.
   static Future<List<Map<String, dynamic>>> getIncomeCategoriesFromTable() =>
       getIncomeCategories();
 
@@ -853,17 +886,11 @@ class DBHelper {
 
   static Future<void> clearAllData() async {
     final db = await database;
-
-    // Hapus histori goal dulu (foreign key)
     await db.delete('goal_transactions');
-
-    // Hapus goals
     await db.delete('goals');
-
-    // Hapus transaksi
     await db.delete('transactions');
-
-    // Hapus user
     await db.delete('user_profile');
+
+    await HomeWidgetService.updateBalanceWidget(0);
   }
 }

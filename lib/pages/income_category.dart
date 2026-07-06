@@ -145,7 +145,7 @@ class _IncomeCategoryPageState extends State<IncomeCategoryPage> {
                         icon: selectedIcon,
                       );
                       Navigator.pop(context);
-                      _refreshCategories(); // Memperbarui list di halaman utama
+                      _refreshCategories();
                     }
                   },
                   child: Text(
