@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jinahku/pages/history.dart';
 import 'package:jinahku/pages/main_pages.dart';
+import 'package:jinahku/utils/thousands_separator_input_formatter.dart';
 import 'package:jinahku/models/transaction_data.dart';
 
 import '../database/db_helper.dart';
@@ -107,9 +108,9 @@ class _TransactionState extends State<Transaction> {
   }
 
   Future<void> _loadCategoriesFromDB() async {
-    final categories = await DBHelper.getCategories(
-      isExpense ? 'expense' : 'income',
-    );
+    final categories = isExpense
+        ? await DBHelper.getExpenseCategories()
+        : await DBHelper.getIncomeCategories();
 
     setState(() {
       _loadedCategories = categories;
@@ -327,6 +328,11 @@ class _TransactionState extends State<Transaction> {
           ? null
           : _noteController.text.trim(),
     );
+
+    // Sinkronkan Goals dengan saldo Home
+    if (isExpense) {
+      await DBHelper.syncGoalWithBalance();
+    }
 
     Fluttertoast.showToast(
       msg: l10n.disimpan,

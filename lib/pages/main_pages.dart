@@ -3,7 +3,6 @@ import 'package:jinahku/pages/transaction.dart';
 import 'homepage.dart';
 import 'history.dart';
 import 'package:jinahku/widgets/navbar.dart';
-import 'dart:async';
 import 'package:share_handler/share_handler.dart';
 import 'package:jinahku/services/share_service.dart';
 import 'package:jinahku/services/ocr_service.dart';
@@ -32,7 +31,10 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int selectedIndex = 0;
+
   TransactionData? importedTransaction;
+
+  final GlobalKey<HomePageState> homeKey = GlobalKey<HomePageState>();
 
   Future<void> listenShare() async {
     ShareService.startListening((media) async {
@@ -84,6 +86,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final pages = [
       HomePage(
+        key: homeKey,
         isDark: widget.isDark,
         isEnglish: widget.isEnglish,
         onToggleTheme: widget.onToggleTheme,
@@ -96,9 +99,11 @@ class _MainPageState extends State<MainPage> {
       Transaction(
         isDark: widget.isDark,
         initialData: importedTransaction,
-        onTransactionSaved: () {
+        onTransactionSaved: () async {
+          await homeKey.currentState?.refreshData();
+
           setState(() {
-            selectedIndex = 1;
+            selectedIndex = 0;
           });
         },
       ),
@@ -110,7 +115,6 @@ class _MainPageState extends State<MainPage> {
           ? const Color(0xFF0F172A)
           : const Color(0xFFF8FAFC),
       body: IndexedStack(index: selectedIndex, children: pages),
-
       bottomNavigationBar: Navbar(
         selectedIndex: selectedIndex,
         isDark: widget.isDark,

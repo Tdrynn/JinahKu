@@ -20,7 +20,7 @@ class DBHelper {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
@@ -28,6 +28,8 @@ class DBHelper {
       onCreate: (db, version) async {
         await _createDB(db);
         await _createTransactionTable(db);
+        await _createGoalTable(db);
+        await _createGoalTransactionTable(db);
       },
 
       onUpgrade: (db, oldVersion, newVersion) async {
@@ -45,6 +47,18 @@ class DBHelper {
           await db.execute(
             "ALTER TABLE category ADD COLUMN icon TEXT NOT NULL DEFAULT 'category'",
           );
+        }
+
+        if (oldVersion < 4) {
+          await _createGoalTable(db);
+        }
+
+        if (oldVersion < 4) {
+          await _createGoalTransactionTable(db);
+        }
+
+        if (oldVersion < 5) {
+          await db.execute("ALTER TABLE goals ADD COLUMN last_reminder TEXT");
         }
       },
 
@@ -174,17 +188,43 @@ class DBHelper {
     ''');
   }
 
-  // ==========================================================================
-  // CATEGORY METHODS
-  // ==========================================================================
+  static Future<void> _createGoalTable(Database db) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS goals (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      goal_name TEXT NOT NULL,
+      target_amount REAL NOT NULL,
+      saved_amount REAL DEFAULT 0,
+      target_date TEXT NOT NULL,
+      note TEXT,
+      image_path TEXT,
+      reminder INTEGER DEFAULT 0,
+      last_reminder TEXT,
+      status TEXT DEFAULT 'active'
+    )
+  ''');
+  }
 
-  static Future<List<Map<String, dynamic>>> getCategories(String type) async {
+  static Future<void> _createGoalTransactionTable(Database db) async {
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS goal_transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      goal_id INTEGER NOT NULL,
+      amount REAL NOT NULL,
+      note TEXT,
+      date TEXT NOT NULL,
+      FOREIGN KEY(goal_id) REFERENCES goals(id) ON DELETE CASCADE
+    )
+  ''');
+  }
+
+  static Future<List<Map<String, dynamic>>> getIncomeSource() async {
     final db = await database;
 
     return await db.query(
       'category',
       where: 'type = ?',
-      whereArgs: [type],
+      whereArgs: ['income'],
       orderBy: 'code ASC',
     );
   }
@@ -424,16 +464,240 @@ class DBHelper {
     };
   }
 
+  static Future<void> syncGoalWithBalance() async {
+    final db = await database;
+
+    // Ambil saldo Home saat ini
+    final summary = await getFinancialSummary();
+    final balance = summary['balance']!;
+
+    // Ambil Goals yang masih aktif
+    final goal = await getActiveGoal();
+
+    // Tidak ada goal aktif
+    if (goal == null) return;
+
+    final saved = (goal['saved_amount'] as num).toDouble();
+
+    // Kalau saldo Home masih cukup menutupi tabungan Goals,
+    // tidak perlu mengubah progress.
+    if (balance >= saved) return;
+
+    // Jangan sampai saved_amount negatif
+    final newSaved = balance < 0 ? 0.0 : balance;
+
+    await db.update(
+      'goals',
+      {'saved_amount': newSaved, 'status': 'active'},
+      where: 'id = ?',
+      whereArgs: [goal['id']],
+    );
+  }
+
+  // GOALS METHODS
+  static Future<int> insertGoal({
+    required String goalName,
+    required double targetAmount,
+    required DateTime targetDate,
+    String? note,
+    String? imagePath,
+    required bool reminder,
+  }) async {
+    final db = await database;
+
+    return await db.insert('goals', {
+      'goal_name': goalName,
+      'target_amount': targetAmount,
+      'saved_amount': 0,
+      'target_date': targetDate.toIso8601String(),
+      'note': note,
+      'image_path': imagePath,
+      'reminder': reminder ? 1 : 0,
+      'last_reminder': null,
+      'status': 'active',
+    });
+  }
+
+  static Future<int> updateGoal({
+    required int id,
+    required String goalName,
+    required double targetAmount,
+    required DateTime targetDate,
+    String? note,
+    String? imagePath,
+    required bool reminder,
+  }) async {
+    final db = await database;
+
+    return await db.update(
+      'goals',
+      {
+        'goal_name': goalName,
+        'target_amount': targetAmount,
+        'target_date': targetDate.toIso8601String(),
+        'note': note,
+        'image_path': imagePath,
+        'reminder': reminder ? 1 : 0,
+
+        // Reset reminder ketika goal diedit
+        'last_reminder': null,
+      },
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  static Future<bool> addMoneyToGoal({
+    required int goalId,
+    required double amount,
+    String? note,
+  }) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      // Ambil goal
+      final result = await txn.query(
+        'goals',
+        where: 'id = ?',
+        whereArgs: [goalId],
+      );
+
+      final goal = result.first;
+
+      final saved = (goal['saved_amount'] as num).toDouble();
+      final target = (goal['target_amount'] as num).toDouble();
+
+      // Sisa target
+      final remaining = target - saved;
+
+      // Nominal yang benar-benar masuk
+      final actualAmount = amount > remaining ? remaining : amount;
+
+      await txn.insert('transactions', {
+        'type': 'income',
+        'amount': actualAmount,
+        'category_code': 'other',
+        'date': DateTime.now().toIso8601String(),
+        'note': note ?? 'Tambah dana Goals',
+      });
+
+      // Update saldo goal
+      final newSaved = saved + actualAmount;
+
+      await txn.update(
+        'goals',
+        {
+          'saved_amount': newSaved,
+          'status': newSaved >= target ? 'completed' : 'active',
+        },
+        where: 'id = ?',
+        whereArgs: [goalId],
+      );
+
+      // Simpan histori
+      await txn.insert('goal_transactions', {
+        'goal_id': goalId,
+        'amount': actualAmount,
+        'note': note,
+        'date': DateTime.now().toIso8601String(),
+      });
+    });
+
+    return true;
+  }
+
+  static Future<Map<String, dynamic>?> getGoalById(int id) async {
+    final db = await database;
+
+    final result = await db.query('goals', where: 'id = ?', whereArgs: [id]);
+
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+
+    return null;
+  }
+
+  static Future<int> deleteGoal(int id) async {
+    final db = await database;
+
+    return await db.delete('goals', where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<Map<String, dynamic>?> getLatestGoal() async {
+    final db = await database;
+
+    final result = await db.query('goals', orderBy: 'id DESC', limit: 1);
+
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+
+    return null;
+  }
+
+  static Future<List<Map<String, dynamic>>> getReminderGoals() async {
+    final db = await database;
+
+    return await db.query(
+      'goals',
+      where: 'status = ? AND reminder = ?',
+      whereArgs: ['active', 1],
+    );
+  }
+
+  static Future<void> updateLastReminder(
+    int goalId,
+    String reminderType,
+  ) async {
+    final db = await database;
+
+    await db.update(
+      'goals',
+      {'last_reminder': reminderType},
+      where: 'id = ?',
+      whereArgs: [goalId],
+    );
+  }
+
+  static Future<Map<String, dynamic>?> getActiveGoal() async {
+    final db = await database;
+
+    final result = await db.query(
+      'goals',
+      where: 'status = ?',
+      whereArgs: ['active'],
+      orderBy: 'id DESC',
+      limit: 1,
+    );
+
+    if (result.isEmpty) return null;
+
+    return result.first;
+  }
+
+  static Future<List<Map<String, dynamic>>> getGoalTransactions(
+    int goalId,
+  ) async {
+    final db = await database;
+
+    return await db.query(
+      'goal_transactions',
+      where: 'goal_id = ?',
+      whereArgs: [goalId],
+      orderBy: 'date DESC',
+    );
+  }
+
   // ==========================================================================
   // CATEGORY CRUD
   // ==========================================================================
-
   // Alias -- identik dengan getIncomeCategories/getExpenseCategories di atas.
-  static Future<List<Map<String, dynamic>>>
-  getIncomeCategoriesFromTable() => getIncomeCategories();
+  static Future<List<Map<String, dynamic>>> getIncomeCategoriesFromTable() =>
+      getIncomeCategories();
 
-  static Future<List<Map<String, dynamic>>>
-  getExpenseCategoriesFromTable() => getExpenseCategories();
+  static Future<List<Map<String, dynamic>>> getExpenseCategoriesFromTable() =>
+      getExpenseCategories();
 
   static Future<int> insertIncomeCategory(
     String code, {
@@ -590,7 +854,16 @@ class DBHelper {
   static Future<void> clearAllData() async {
     final db = await database;
 
+    // Hapus histori goal dulu (foreign key)
+    await db.delete('goal_transactions');
+
+    // Hapus goals
+    await db.delete('goals');
+
+    // Hapus transaksi
     await db.delete('transactions');
+
+    // Hapus user
     await db.delete('user_profile');
   }
 }
