@@ -539,6 +539,36 @@ abstract class AppLocalizations {
   /// **'Business'**
   String get business;
 
+  /// No description provided for @food.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get food;
+
+  /// No description provided for @transport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transportation'**
+  String get transport;
+
+  /// No description provided for @shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get shopping;
+
+  /// No description provided for @bills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills'**
+  String get bills;
+
+  /// No description provided for @entertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get entertainment;
+
   /// No description provided for @other.
   ///
   /// In en, this message translates to:
@@ -688,6 +718,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Goals'**
   String get saveGoals;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Code'**
+  String get error;
+
+  /// No description provided for @tanggalT.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Date: '**
+  String get tanggalT;
+
+  /// No description provided for @detailP.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue Details'**
+  String get detailP;
+
+  /// No description provided for @informasiP.
+  ///
+  /// In en, this message translates to:
+  /// **'User Information'**
+  String get informasiP;
+
+  /// No description provided for @angkaI.
+  ///
+  /// In en, this message translates to:
+  /// **'This figure will be used as fixed monthly income.'**
+  String get angkaI;
+
+  /// No description provided for @namaI.
+  ///
+  /// In en, this message translates to:
+  /// **'This name will be used as the username in the app.'**
+  String get namaI;
+
+  /// No description provided for @pilihA.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Avatar'**
+  String get pilihA;
 
   /// No description provided for @goalDetail.
   ///

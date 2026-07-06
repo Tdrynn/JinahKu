@@ -231,6 +231,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get business => 'Business';
 
   @override
+  String get food => 'Food';
+
+  @override
+  String get transport => 'Transportation';
+
+  @override
+  String get shopping => 'Shopping';
+
+  @override
+  String get bills => 'Bills';
+
+  @override
+  String get entertainment => 'Entertainment';
+
+  @override
   String get other => 'Other';
 
   @override
@@ -304,6 +319,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveGoals => 'Save Goals';
+
+  @override
+  String get error => 'Error Code';
+
+  @override
+  String get tanggalT => 'Selected Date: ';
+
+  @override
+  String get detailP => 'Revenue Details';
+
+  @override
+  String get informasiP => 'User Information';
+
+  @override
+  String get angkaI => 'This figure will be used as fixed monthly income.';
+
+  @override
+  String get namaI => 'This name will be used as the username in the app.';
+
+  @override
+  String get pilihA => 'Select Avatar';
 
   @override
   String get goalDetail => 'Goal Details';

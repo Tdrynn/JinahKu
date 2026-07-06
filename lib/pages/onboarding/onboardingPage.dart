@@ -6,17 +6,13 @@ import 'package:jinahku/models/modelUser.dart';
 
 class OnboardingPage extends StatefulWidget {
   final bool isDark;
-  final bool isEnglish;
   final Function(bool) onToggleTheme;
-  final Function(String) onChangeLanguage;
   final VoidCallback finishOnboarding;
 
   const OnboardingPage({
     super.key,
     required this.isDark,
-    required this.isEnglish,
     required this.onToggleTheme,
-    required this.onChangeLanguage,
     required this.finishOnboarding,
   });
 
@@ -58,9 +54,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           Page3(
             data: data,
             isDark: widget.isDark,
-            isEnglish: widget.isEnglish,
             onToggleTheme: widget.onToggleTheme,
-            onChangeLanguage: widget.onChangeLanguage,
             finishOnboarding: widget.finishOnboarding,
           ),
         ],

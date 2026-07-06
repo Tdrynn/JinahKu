@@ -231,6 +231,21 @@ class AppLocalizationsId extends AppLocalizations {
   String get business => 'Bisnis';
 
   @override
+  String get food => 'Makanan';
+
+  @override
+  String get transport => 'Transportasi';
+
+  @override
+  String get shopping => 'Belanja';
+
+  @override
+  String get bills => 'Tagihan';
+
+  @override
+  String get entertainment => 'Hiburan';
+
+  @override
   String get other => 'Lainnya';
 
   @override
@@ -304,6 +319,27 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get saveGoals => 'Simpan Goals';
+
+  @override
+  String get error => 'Error Code';
+
+  @override
+  String get tanggalT => 'Tanggal Terpilih: ';
+
+  @override
+  String get detailP => 'Detail Pendapatan';
+
+  @override
+  String get informasiP => 'Informasi Pengguna';
+
+  @override
+  String get angkaI => 'Angka ini akan digunakan sebagai pendapatan tetap setiap bulannya.';
+
+  @override
+  String get namaI => 'Nama ini akan digunakan sebagai nama pengguna di aplikasi.';
+
+  @override
+  String get pilihA => 'Pilih Avatar';
 
   @override
   String get goalDetail => 'Detail Goals';
