@@ -54,6 +54,7 @@ dependencies:
 
   fluttertoast: ^9.0.0
   fl_chart: ^1.2.0
+  home_widget: ^0.9.3
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1

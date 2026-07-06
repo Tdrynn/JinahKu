@@ -31,7 +31,6 @@ class Page3 extends StatefulWidget {
 }
 
 class _Page3State extends State<Page3> {
-  // Fungsi helper untuk menerjemahkan sourceCode ke teks yang user-friendly
   String _getSourceName(String? sourceCode) {
     switch (sourceCode) {
       case 'salary':
@@ -187,7 +186,7 @@ class _Page3State extends State<Page3> {
                                             ? AssetImage(widget.data.avatar)
                                             : const AssetImage(
                                                 'assets/images/default_avatar.png',
-                                              ), // Fallback jika avatar kosong
+                                              ),
                                       ),
                                     ],
                                   ),
@@ -236,7 +235,7 @@ class _Page3State extends State<Page3> {
                                         "Sumber Pemasukan",
                                         _getSourceName(
                                           widget.data.sourceCode,
-                                        ), // Menggunakan helper String sourceCode
+                                        ),
                                       ),
                                       const SizedBox(height: 14),
                                       buildRow(
@@ -248,7 +247,7 @@ class _Page3State extends State<Page3> {
                                                 'id',
                                               ).format(
                                                 widget.data.date!,
-                                              ), // Format tanggal lebih rapi
+                                              ),
                                       ),
                                     ],
                                   ),
@@ -342,7 +341,6 @@ class _Page3State extends State<Page3> {
           style: const TextStyle(color: Colors.white70, fontSize: 16),
         ),
         Flexible(
-          // Menghindari overflow jika teks value terlalu panjang
           child: Text(
             value,
             textAlign: TextAlign.end,

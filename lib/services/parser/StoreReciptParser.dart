@@ -50,7 +50,6 @@ class StoreReceiptParser {
     return candidates.last;
   }
 
-  // helper: ambil angka nominal dari satu baris teks
   static int? _extractAmountFromLine(String line) {
     final relevant = line.contains(':') ? line.split(':').last : line;
 

@@ -13,7 +13,6 @@ import '../theme/dark_colors.dart' as dark;
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'category_icons.dart';
 
-// --- HELPER MAPPING UNTUK UI ---
 class CategoryUI {
   static String getName(String code) {
     return code
@@ -143,8 +142,6 @@ class _TransactionState extends State<Transaction> {
         widget.initialData != null) {
       final formatter = NumberFormat.decimalPattern('id');
       _amountController.text = formatter.format(widget.initialData!.amount);
-      // NOTE: masih hardcode ke "shopping" seperti sebelumnya (bug lama yang
-      // sudah pernah saya tandai) -- ikon disamakan supaya minimal tidak mismatch.
       _selectedCategoryCode = "shopping";
       _selectedCategoryIcon = "shopping_bag";
       _noteController.text = widget.initialData!.note ?? '';
@@ -227,7 +224,7 @@ class _TransactionState extends State<Transaction> {
                                 : null,
                             onTap: () {
                               setState(() {
-                                _selectedCategoryCode = item['code']; // Simpan code-nya
+                                _selectedCategoryCode = item['code'];
                                 _selectedCategoryIcon =
                                     item['icon'] as String? ?? 'category';
                               });
@@ -318,7 +315,6 @@ class _TransactionState extends State<Transaction> {
       return;
     }
 
-    // Mengirim ke database: Menyesuaikan parameter relasi komposit baru
     await DBHelper.insertTransaction(
       type: isExpense ? 'expense' : 'income',
       amount: amount,
@@ -329,7 +325,6 @@ class _TransactionState extends State<Transaction> {
           : _noteController.text.trim(),
     );
 
-    // Sinkronkan Goals dengan saldo Home
     if (isExpense) {
       await DBHelper.syncGoalWithBalance();
     }
@@ -497,7 +492,6 @@ class _TransactionState extends State<Transaction> {
             ),
             const SizedBox(height: 24),
 
-            // Input Jumlah Uang
             Text(
               l10n.jumlah,
               style: TextStyle(

@@ -13,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jinahku/pages/settings.dart';
 
 import 'package:jinahku/pages/add_goal.dart';
+import 'package:jinahku/services/home_widget_service.dart';
 
 class HomePage extends StatefulWidget {
   final bool isDark;
@@ -54,27 +55,12 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-    print("1");
-
     loadUser();
-
-    print("2");
-
     loadExpenseChart();
-
-    print("3");
-
     loadFinancialSummary();
-
-    print("4");
-
     loadLatestGoal();
 
-    print("5");
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print("6");
       checkGoalReminder();
     });
   }
@@ -123,6 +109,8 @@ class HomePageState extends State<HomePage> {
       totalExpenseValue = summary['expense']!;
       currentBalance = summary['balance']!;
     });
+
+    await HomeWidgetService.updateBalanceWidget(currentBalance);
   }
 
   Future<void> checkGoalReminder() async {
@@ -166,7 +154,6 @@ class HomePageState extends State<HomePage> {
         continue;
       }
 
-      // Jangan tampilkan reminder yang sama dua kali
       if (goal['last_reminder'] == reminderType) {
         continue;
       }
@@ -803,7 +790,6 @@ class HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// ====== JUDUL ======
           Row(
             children: [
               Expanded(
@@ -839,7 +825,7 @@ class HomePageState extends State<HomePage> {
 
                   await loadFinancialSummary();
                   await loadLatestGoal();
-                  await checkGoalReminder(); // <-- tambahkan ini
+                  await checkGoalReminder();
                 },
               ),
             ],
@@ -847,7 +833,6 @@ class HomePageState extends State<HomePage> {
 
           const SizedBox(height: 4),
 
-          /// ====== FOTO + INFO ======
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

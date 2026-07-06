@@ -367,7 +367,6 @@ class _AddGoalPageState extends State<AddGoalPage> {
 
               const SizedBox(width: 12),
 
-              /// Catatan
               Text(
                 l10n.goalNote,
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
@@ -402,7 +401,7 @@ class _AddGoalPageState extends State<AddGoalPage> {
                         16,
                         16,
                         16,
-                        34, // kasih ruang bawah buat counter
+                        34,
                       ),
 
                       counterText: "",
@@ -478,7 +477,6 @@ class _AddGoalPageState extends State<AddGoalPage> {
 
               const SizedBox(height: 8),
 
-              /// Tombol Simpan
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -502,7 +500,6 @@ class _AddGoalPageState extends State<AddGoalPage> {
                       _amountController.text.replaceAll('.', ''),
                     );
 
-                    // Validasi nominal target
                     if (targetAmount < 1000) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(l10n.minimumTarget)),
@@ -545,14 +542,12 @@ class _AddGoalPageState extends State<AddGoalPage> {
                         reminder: _isReminder,
                       );
 
-                      // Hapus goal lama jika ada
                       if (widget.oldGoalId != null) {
                         await DBHelper.deleteGoal(widget.oldGoalId!);
                       }
 
                       if (!mounted) return;
 
-                      // Kembali ke halaman sebelumnya sambil mengirim id goal baru
                       Navigator.pop(context, goalId);
                     }
                   },
