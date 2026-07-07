@@ -606,32 +606,38 @@ class DBHelper {
 
       final actualAmount = amount > remaining ? remaining : amount;
 
-      await txn.insert('transactions', {
-        'type': 'income',
-        'amount': actualAmount,
-        'category_code': 'other',
-        'date': DateTime.now().toIso8601String(),
-        'note': note ?? 'Tambah dana Goals',
-      });
-
       final newSaved = saved + actualAmount;
+      final completed = newSaved >= target;
 
+      // Update progress goal
       await txn.update(
         'goals',
         {
           'saved_amount': newSaved,
-          'status': newSaved >= target ? 'completed' : 'active',
+          'status': completed ? 'completed' : 'active',
         },
         where: 'id = ?',
         whereArgs: [goalId],
       );
 
+      // Simpan histori goal
       await txn.insert('goal_transactions', {
         'goal_id': goalId,
         'amount': actualAmount,
         'note': note,
         'date': DateTime.now().toIso8601String(),
       });
+
+      // goal completed, insert income transaction
+      if (completed) {
+        await txn.insert('transactions', {
+          'type': 'income',
+          'amount': target,
+          'category_code': 'other',
+          'date': DateTime.now().toIso8601String(),
+          'note': 'Goal Completed',
+        });
+      }
     });
 
     final summary = await getFinancialSummary();

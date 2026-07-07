@@ -292,10 +292,6 @@ class _TransactionState extends State<Transaction> {
           : _noteController.text.trim(),
     );
 
-    if (isExpense) {
-      await DBHelper.syncGoalWithBalance();
-    }
-
     Fluttertoast.showToast(
       msg: l10n.disimpan,
       toastLength: Toast.LENGTH_SHORT,
