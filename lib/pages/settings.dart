@@ -492,10 +492,28 @@ class _SettingsState extends State<Settings> {
                             ),
                           ),
                           onPressed: () async {
-                            final newIncome =
-                                double.tryParse(controller.text) ?? 0;
+                            final cleanValue = controller.text.replaceAll(
+                              '.',
+                              '',
+                            );
+
+                            if (cleanValue.isEmpty) {
+                              Fluttertoast.showToast(
+                                msg: "Pemasukan tidak boleh kosong",
+                              );
+                              return;
+                            }
+
+                            final newIncome = double.parse(cleanValue);
+
                             await _updateUserData('monthly_income', newIncome);
+
+                            setState(() {
+                              income = newIncome;
+                            });
+
                             showSuccessToast(l10n.dsimpan);
+
                             if (mounted) Navigator.pop(context);
                           },
                           child: Text(
@@ -960,9 +978,7 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  Widget _glassCircleIcon(
-    IconData icon,
-  ) {
+  Widget _glassCircleIcon(IconData icon) {
     final iconColor = widget.isDark ? Colors.white : Colors.black87;
     final borderColor = widget.isDark
         ? Colors.white.withOpacity(0.15)
@@ -1117,7 +1133,10 @@ class _SettingsState extends State<Settings> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => IncomeCategoryPage(isDark: widget.isDark, isEnglish: widget.isEnglish,),
+                            builder: (context) => IncomeCategoryPage(
+                              isDark: widget.isDark,
+                              isEnglish: widget.isEnglish,
+                            ),
                           ),
                         );
                       },
@@ -1131,7 +1150,10 @@ class _SettingsState extends State<Settings> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ExpenseCategoryPage(isDark: widget.isDark, isEnglish: widget.isEnglish,),
+                            builder: (context) => ExpenseCategoryPage(
+                              isDark: widget.isDark,
+                              isEnglish: widget.isEnglish,
+                            ),
                           ),
                         );
                       },

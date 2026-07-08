@@ -21,7 +21,7 @@ class DBHelper {
 
     return await openDatabase(
       path,
-      version: 5,
+      version: 6,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
@@ -62,6 +62,11 @@ class DBHelper {
 
         if (oldVersion < 5) {
           await db.execute("ALTER TABLE goals ADD COLUMN last_reminder TEXT");
+        }
+        if (oldVersion < 6) {
+          await db.execute(
+            "ALTER TABLE user_profile ADD COLUMN last_income_added TEXT",
+          );
         }
       },
 
@@ -201,6 +206,8 @@ class DBHelper {
 
         income_type TEXT NOT NULL DEFAULT 'income',
         income_category_code TEXT NOT NULL,
+
+        last_income_added TEXT,
 
         FOREIGN KEY (income_type, income_category_code)
         REFERENCES category(type, code)
@@ -644,6 +651,66 @@ class DBHelper {
     await HomeWidgetService.updateBalanceWidget(summary['balance'] ?? 0);
 
     return true;
+  }
+
+  static Future<void> autoAddMonthlyIncome() async {
+    final db = await database;
+
+    final user = await db.query('user_profile', orderBy: 'id DESC', limit: 1);
+
+    if (user.isEmpty) return;
+
+    final profile = user.first;
+
+    final income = (profile['monthly_income'] as num).toDouble();
+
+    final category = profile['income_category_code'] as String;
+
+    final incomeDate = DateTime.parse(profile['income_date'].toString());
+
+    final lastIncomeAdded = profile['last_income_added'];
+
+    final now = DateTime.now();
+
+    DateTime nextSalaryDate;
+
+    if (lastIncomeAdded == null) {
+      nextSalaryDate = DateTime(
+        incomeDate.year,
+        incomeDate.month,
+        incomeDate.day,
+      );
+    } else {
+      final last = DateTime.parse(lastIncomeAdded.toString());
+
+      nextSalaryDate = DateTime(last.year, last.month + 1, incomeDate.day);
+    }
+
+    while (!nextSalaryDate.isAfter(now)) {
+      await db.insert('transactions', {
+        'type': 'income',
+        'amount': income,
+        'category_code': category,
+        'date': nextSalaryDate.toIso8601String(),
+        'note': 'Pemasukan bulanan otomatis',
+      });
+
+      await db.update(
+        'user_profile',
+        {'last_income_added': nextSalaryDate.toIso8601String()},
+        where: 'id=?',
+        whereArgs: [profile['id']],
+      );
+
+      nextSalaryDate = DateTime(
+        nextSalaryDate.year,
+        nextSalaryDate.month + 1,
+        incomeDate.day,
+      );
+    }
+
+    final summary = await getFinancialSummary();
+    await HomeWidgetService.updateBalanceWidget(summary['balance']!);
   }
 
   static Future<Map<String, dynamic>?> getGoalById(int id) async {
