@@ -5,6 +5,8 @@ import 'package:jinahku/database/db_helper.dart';
 import 'package:jinahku/l10n/app_localizations.dart';
 import 'package:jinahku/models/modelUser.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jinahku/pages/onboarding/page1.dart';
+import 'package:jinahku/pages/onboarding/page2.dart';
 
 class Page3 extends StatefulWidget {
   final OnboardingData data;
@@ -29,12 +31,18 @@ class Page3 extends StatefulWidget {
 class _Page3State extends State<Page3> {
   String _getSourceName(AppLocalizations l10n, String? sourceCode) {
     switch (sourceCode) {
-      case 'salary': return l10n.salary;
-      case 'allowance': return l10n.allowance;
-      case 'freelance': return l10n.freelance;
-      case 'business': return l10n.business;
-      case 'other': return l10n.other;
-      default: return '-';
+      case 'salary':
+        return l10n.salary;
+      case 'allowance':
+        return l10n.allowance;
+      case 'freelance':
+        return l10n.freelance;
+      case 'business':
+        return l10n.business;
+      case 'other':
+        return l10n.other;
+      default:
+        return '-';
     }
   }
 
@@ -65,7 +73,7 @@ class _Page3State extends State<Page3> {
                           Container(
                             color: const Color(0xFF000C2C),
                             width: double.infinity,
-                            padding: EdgeInsets.only(top: paddingTop + 70),
+                            padding: EdgeInsets.only(top: paddingTop + 30),
                             child: Image.asset(
                               'assets/images/BG_PG3.webp',
                               width: double.infinity,
@@ -73,24 +81,6 @@ class _Page3State extends State<Page3> {
                               alignment: Alignment.topCenter,
                             ),
                           ),
-                          if (widget.onBack != null)
-                            Positioned(
-                              top: paddingTop + 10,
-                              left: 16,
-                              child: ClipOval(
-                                child: Material(
-                                  color: Colors.black26,
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.arrow_back_ios_new,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    onPressed: widget.onBack,
-                                  ),
-                                ),
-                              ),
-                            ),
                         ],
                       ),
                       Expanded(
@@ -218,7 +208,8 @@ class _Page3State extends State<Page3> {
                                       const SizedBox(height: 14),
                                       buildRow(
                                         l10n.sumber,
-                                        _getSourceName(l10n,
+                                        _getSourceName(
+                                          l10n,
                                           widget.data.sourceCode,
                                         ),
                                       ),
@@ -230,15 +221,13 @@ class _Page3State extends State<Page3> {
                                             : DateFormat(
                                                 'dd',
                                                 'id',
-                                              ).format(
-                                                widget.data.date!,
-                                              ),
+                                              ).format(widget.data.date!),
                                       ),
                                     ],
                                   ),
                                 ),
                                 const Spacer(),
-                                const SizedBox(height: 32),
+                                const SizedBox(height: 20),
                                 SizedBox(
                                   width: double.infinity,
                                   height: 50.h,
@@ -274,9 +263,7 @@ class _Page3State extends State<Page3> {
                                             context,
                                           ).showSnackBar(
                                             SnackBar(
-                                              content: Text(
-                                                "${l10n.error} $e",
-                                              ),
+                                              content: Text("${l10n.error} $e"),
                                             ),
                                           );
                                         }
@@ -284,6 +271,31 @@ class _Page3State extends State<Page3> {
                                     },
                                     child: Text(
                                       l10n.simpan,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 10),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 50.h,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red.shade400,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                     widget.onBack?.call();
+                                    },
+                                    child: Text(
+                                      l10n.kembali,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.sp,

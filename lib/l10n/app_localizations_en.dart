@@ -249,6 +249,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get other => 'Other';
 
   @override
+  String get kembali => 'Back & Edit Data';
+
+  @override
   String get goals => 'Goals';
 
   @override
