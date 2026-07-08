@@ -202,13 +202,17 @@ class HomePageState extends State<HomePage> {
 
   Color getCategoryColor(String category) {
     switch (category.toLowerCase()) {
-      case 'makanan':
+      case 'makanan' || 'food':
         return const Color(0xFF5AC18E);
-      case 'hiburan':
+      case 'hiburan' || 'entertainment':
         return const Color(0xFF4F7BFF);
-      case 'transportasi':
+      case 'transportasi' || 'transport':
         return const Color(0xFFF6B52C);
-      case 'lainnya':
+      case 'tagihan' || 'bills':
+        return const Color.fromARGB(255, 246, 44, 44);
+      case 'belanja' || 'shopping':
+        return const Color.fromARGB(255, 44, 246, 229);
+      case 'lainnya' || 'other':
         return const Color(0xFFF2994A);
       default:
         return Colors.grey;
