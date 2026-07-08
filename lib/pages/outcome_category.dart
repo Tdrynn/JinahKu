@@ -309,6 +309,7 @@ class _ExpenseCategoryPageState extends State<ExpenseCategoryPage> {
   void _showDeleteConfirmationDialog(int id, String categoryName) {
     final l10n = AppLocalizations.of(context)!;
     final colors = widget.isDark ? dark.darkColors : light.lightColors;
+    final displayName = CategoryUI.getName(l10n, code);
 
     showDialog(
       context: context,
@@ -337,7 +338,7 @@ class _ExpenseCategoryPageState extends State<ExpenseCategoryPage> {
               const SizedBox(height: 10),
 
               Text(
-                "${l10n.hapusK} ${categoryName} ?",
+                "${l10n.hapusK} $displayName?",
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
