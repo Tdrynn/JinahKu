@@ -35,6 +35,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
+  void goToPage(int index) {
+    _controller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   void onPageChanged(int index) {
     setState(() {
       currentIndex = index;
@@ -56,6 +64,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             isDark: widget.isDark,
             onToggleTheme: widget.onToggleTheme,
             finishOnboarding: widget.finishOnboarding,
+            onBack: () => goToPage(0),
           ),
         ],
       ),

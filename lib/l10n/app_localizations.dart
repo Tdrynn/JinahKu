@@ -575,6 +575,12 @@ abstract class AppLocalizations {
   /// **'Other'**
   String get other;
 
+  /// No description provided for @kembali.
+  ///
+  /// In en, this message translates to:
+  /// **'Back & Edit Data'**
+  String get kembali;
+
   /// No description provided for @goals.
   ///
   /// In en, this message translates to:

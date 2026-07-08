@@ -249,6 +249,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get other => 'Lainnya';
 
   @override
+  String get kembali => 'Kembali & Ubah Data';
+
+  @override
   String get goals => 'Goals';
 
   @override
