@@ -55,10 +55,7 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    loadUser();
-    loadExpenseChart();
-    loadFinancialSummary();
-    loadLatestGoal();
+    _initialize();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkGoalReminder();
@@ -69,6 +66,19 @@ class HomePageState extends State<HomePage> {
   void dispose() {
     subscription?.cancel();
     super.dispose();
+  }
+
+  Future<void> _initialize() async {
+    await DBHelper.autoAddMonthlyIncome();
+
+    await loadUser();
+    await loadExpenseChart();
+    await loadFinancialSummary();
+    await loadLatestGoal();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkGoalReminder();
+    });
   }
 
   Future<void> loadUser() async {
@@ -539,16 +549,18 @@ class HomePageState extends State<HomePage> {
                           children: [
                             Text(
                               l10n.ringkasan,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: colors.textPrimary,
-                                fontSize: 20,
+                                fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
+                                color: colors.textPrimary,
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 4.h,
                               ),
                               decoration: BoxDecoration(
                                 border: Border.all(color: colors.textPrimary),
@@ -556,7 +568,10 @@ class HomePageState extends State<HomePage> {
                               ),
                               child: Text(
                                 "Bulanan",
-                                style: TextStyle(color: colors.textPrimary),
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: colors.textPrimary,
+                                ),
                               ),
                             ),
                           ],
